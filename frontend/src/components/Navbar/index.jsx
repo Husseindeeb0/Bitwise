@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaBars, FaHome, FaBullhorn } from "react-icons/fa";
+import { FaBars, FaHome, FaBullhorn, FaSignInAlt, FaUserPlus } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import logo from "../../assets/logo.png"
 
@@ -22,6 +22,12 @@ const Navbar = () => {
         <Link to="/announcements" className="flex items-center gap-2 cursor-pointer transition hover:scale-110">
           <FaBullhorn /> Announcements
         </Link>
+        <Link to="/login" className="flex items-center gap-2 cursor-pointer transition hover:scale-110">
+          <FaSignInAlt /> Login
+        </Link>
+        <Link to="/signup" className="flex items-center gap-2 cursor-pointer transition hover:scale-110">
+          <FaUserPlus /> Signup
+        </Link>
       </nav>
 
       {/* Open & Close nav button for mobiles */}
@@ -39,6 +45,12 @@ const Navbar = () => {
           </Link>
           <Link to="Resources" className="flex items-center gap-2 transition">
             <FaBullhorn /> Announcements
+          </Link>
+          <Link to="Resources" className="flex items-center gap-2 transition">
+            <FaSignInAlt /> Login
+          </Link>
+          <Link to="Resources" className="flex items-center gap-2 transition">
+            <FaUserPlus /> Signup
           </Link>
         </div>
       )}
