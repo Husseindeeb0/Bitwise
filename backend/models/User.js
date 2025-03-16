@@ -1,4 +1,9 @@
 const userSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   email: {
     type: String,
     required: true,
@@ -8,9 +13,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  tests: [{ type: mongoose.Schema.Types.ObjectId, ref: "Test" }],
+  role: {
+    type: String,
+    default: "user",
+  },
 });
 
 const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+module.exports = { User };

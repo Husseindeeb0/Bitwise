@@ -40,16 +40,16 @@ const Navbar = () => {
         <div
           className="fixed top-0 right-0 h-screen w-2/3 bg-black/80 p-6 flex flex-col items-center gap-6 text-white text-lg"
         >
-          <Link to="roadmaps" className="flex items-center gap-2 transition">
+          <Link to="/" className="flex items-center gap-2 transition">
             <FaHome /> Home
           </Link>
-          <Link to="Resources" className="flex items-center gap-2 transition">
+          <Link to="/announcements" className="flex items-center gap-2 transition">
             <FaBullhorn /> Announcements
           </Link>
-          <Link to="Resources" className="flex items-center gap-2 transition">
+          <Link to="/login" className="flex items-center gap-2 transition">
             <FaSignInAlt /> Login
           </Link>
-          <Link to="Resources" className="flex items-center gap-2 transition">
+          <Link to="/signup" className="flex items-center gap-2 transition">
             <FaUserPlus /> Signup
           </Link>
         </div>

@@ -6,13 +6,13 @@ const { User } = require("../models/User");
 const login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).json({ message: "Email and Password are Required" });
+    return res.status(400).json({ status: "failed", message: "Email and Password are Required" });
   }
 
   // Find user by email
   const user = await User.findOne({ email: email }).exec();
   if (!user) {
-    return res.status(401).json({ message: "Incorrect Email" }); // Unauthorized
+    return res.status(401).json({ status: "failed", message: "Incorrect Email" }); // Unauthorized
   }
 
   // Compare password
@@ -20,26 +20,26 @@ const login = async (req, res) => {
   if (matchedPassword) {
     // Generate accessToken
     const accessToken = jwt.sign(
-      { userId: user._id, email: user.email },
-      process.env.SECRET_KEY,
+      { userId: user._id, email: user.email, role: user.role },
+      process.env.ACCESS_SECRET_TOKEN,
       { expiresIn: "1h" }
     );
 
     // Generate refreshToken
     const refreshToken = jwt.sign(
-      { userId: user._id, email: user.email },
-      process.env.REFRESH_SECRET_KEY,
+      { userId: user._id, email: user.email, role: user.role },
+      process.env.REFRESH_SECRET_TOKEN,
       { expiresIn: "7d" }
     );
 
     res.status(200).json({
-      message: "Login successful",
       status: "success",
+      message: "User logged in successfully",
       accessToken,
       refreshToken,
     });
   } else {
-    res.status(401).json({ message: "Incorrect Password" });
+    res.status(401).json({ status: "failed", message: "Incorrect Password" });
   }
 };
 
