@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaUser, FaLock, FaEnvelope } from "react-icons/fa";
+import Navbar from "../../components/Navbar";
 
 export default function Signup() {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-navy-blue to-light-purple p-5">
+      <Navbar />
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}

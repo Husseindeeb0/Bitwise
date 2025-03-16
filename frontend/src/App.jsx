@@ -10,11 +10,11 @@ function App() {
   return (
     <HashRouter>
       <Routes>
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="/announcements" element={<Announcements />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
         </Route>
       </Routes>
     </HashRouter>
