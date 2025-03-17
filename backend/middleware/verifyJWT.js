@@ -9,9 +9,9 @@ const verifyJWT = (req, res, next) => {
 
   const token = authHeader.split(" ")[1]; // Extract the token from the header
 
-  jwt.verify(token, process.env.ACCESS_SECRET_TOKEN, (err, decoded) => {
-    if (err) {
-      return res.status(403).json({ status: "failed", message: "Unauthorized: Access Token is expired" });
+  jwt.verify(token, process.env.ACCESS_SECRET_TOKEN, (error, decoded) => {
+    if (error) {
+      return res.status(403).json({ status: "failed", message: `Unauthorized: ${error}` });
     }
 
     req.userId = decoded.userId;

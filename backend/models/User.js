@@ -17,8 +17,17 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "user",
   },
+  refreshToken: { type: String },
+  accomplishments: {
+    type: Array,
+    default: [],
+  },
+  score: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const User = mongoose.model("User", userSchema);
 
-module.exports = { User };
+module.exports = User;

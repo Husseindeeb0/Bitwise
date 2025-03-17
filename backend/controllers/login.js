@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { User } = require("../models/User");
+const User = require("../models/User");
 
 // Login user
 const login = async (req, res) => {
@@ -31,6 +31,10 @@ const login = async (req, res) => {
       process.env.REFRESH_SECRET_TOKEN,
       { expiresIn: "7d" }
     );
+
+    // Update refresh token in database
+    user.refreshToken = refreshToken;
+    await newUser.save();
 
     res.status(200).json({
       status: "success",

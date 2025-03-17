@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const { User } = require("../models/User");
 const bcrypt = require("bcrypt");
 
-const register = async (req, res) => {
+const signup = async (req, res) => {
   const { username, email, password } = req.body;
 
   if (!email || !password || !username) {
@@ -47,6 +47,10 @@ const register = async (req, res) => {
       { expiresIn: "7d" }
     );
 
+    // Store refresh token in database
+    newUser.refreshToken = refreshToken;
+    await newUser.save();
+
     res.status(201).json({
       status: "success",
       message: "User registered successfully",
@@ -61,4 +65,4 @@ const register = async (req, res) => {
   }
 };
 
-module.exports = { register };
+module.exports = { signup };
