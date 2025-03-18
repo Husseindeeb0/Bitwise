@@ -3,10 +3,11 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaUser, FaLock, FaEnvelope } from "react-icons/fa";
 import Navbar from "../../components/Navbar";
-import authenticateUser from "../../api/userauthentication";
+import authenticateUser from "../../api/authenticateUser";
+import { useMyContext } from "../../context";
 
 export default function Signup() {
-  const [accessToken, setAccessToken] = useState("");
+  const { setAccessToken } = useMyContext();
   const [userDetails, setUserDetails] = useState({
     username: "",
     email: "",
@@ -60,8 +61,6 @@ export default function Signup() {
         <h2 className="text-2xl font-bold text-navy-blue mb-5">
           Create an Account
         </h2>
-
-        {error && <p className="text-red-500 mb-3">{error}</p>}
 
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="flex items-center border-b border-gray-300 p-2">

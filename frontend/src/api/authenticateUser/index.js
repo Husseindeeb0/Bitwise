@@ -1,5 +1,5 @@
 const authenticateUser = async (userDetails, action) => {
-  const url = `${process.env.REACT_APP_API_URL}/${action}`; // Dynamic URL based on action (signup or login)
+  const url = `${process.env.REACT_APP_API_URL}/auth/${action}`; // Dynamic URL based on action (signup or login)
 
   try {
     const response = await fetch(url, {

@@ -3,10 +3,11 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import Navbar from "../../components/Navbar";
-import authenticateUser from "../../api/userauthentication";
+import authenticateUser from "../../api/authenticateUser";
+import { useMyContext } from "../../context";
 
 export default function Login() {
-  const [accessToken, setAccessToken] = useState("");
+  const { setAccessToken } = useMyContext();
   const [loginDetails, setLoginDetails] = useState({
     email: "",
     password: "",
@@ -58,17 +59,6 @@ export default function Login() {
       >
         <h2 className="text-2xl font-bold text-navy-blue mb-5">Welcome Back</h2>
 
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="mt-4 bg-red-100 text-red-700 p-3 rounded-lg border border-red-400"
-          >
-            {error}
-          </motion.div>
-        )}
-
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="flex items-center border-b border-gray-300 p-2">
             <FaEnvelope className="text-navy-blue" />
@@ -104,6 +94,17 @@ export default function Login() {
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mt-4 bg-red-100 text-red-700 p-3 rounded-lg border border-red-400"
+          >
+            {error}
+          </motion.div>
+        )}
 
         <p className="mt-4 text-gray-500">
           Don't have an account?{" "}
