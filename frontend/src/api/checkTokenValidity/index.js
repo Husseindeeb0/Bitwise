@@ -1,6 +1,6 @@
 const checkTokenValidity = async (accessToken) => {
   try {
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/verifyJWT`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/verifyJWT`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

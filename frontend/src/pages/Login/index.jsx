@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import Navbar from "../../components/Navbar";
@@ -7,11 +7,12 @@ import authenticateUser from "../../api/authenticateUser";
 import { useMyContext } from "../../context";
 
 export default function Login() {
-  const { setAccessToken } = useMyContext();
+  const { setAccessToken, setIsAuthenticated } = useMyContext();
   const [loginDetails, setLoginDetails] = useState({
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -34,9 +35,11 @@ export default function Login() {
         setError(data.message);
         console.log(data.message);
       } else if (data.status === "success" && data.accessToken && data.refreshToken) {
-        localStorage.setItem("token", data.refreshToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
         setAccessToken(data.accessToken);
-        console.log("Login successful:", data);
+        setIsAuthenticated(true);
+        navigate("/");
+        console.log("Login successfully");
       } else {
         setError(data.message)
         console.log(data.message)
@@ -44,6 +47,7 @@ export default function Login() {
     } catch (error) {
       setError(error.message);
     } finally {
+      setLoginDetails({ email: "", password: "" });
       setLoading(false);
     }
   };

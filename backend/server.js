@@ -10,6 +10,7 @@ const app = express();
 connectDB();
 
 app.use(cors(corsOptions));
+app.use(express.json());
 app.use("/auth", authRoutes);
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

@@ -2,6 +2,7 @@ const User = require("../models/User");
 
 const logout = async (req, res) => {
   const { refreshToken } = req.body;
+  // const refreshToken = req.headers.authorization;
 
   if (!refreshToken) {
     return res.status(400).json({ status: "failed", message: "Refresh token is required" });

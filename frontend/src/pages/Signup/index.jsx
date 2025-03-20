@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaUser, FaLock, FaEnvelope } from "react-icons/fa";
 import Navbar from "../../components/Navbar";
@@ -7,12 +7,13 @@ import authenticateUser from "../../api/authenticateUser";
 import { useMyContext } from "../../context";
 
 export default function Signup() {
-  const { setAccessToken } = useMyContext();
+  const { setAccessToken, setIsAuthenticated } = useMyContext();
   const [userDetails, setUserDetails] = useState({
     username: "",
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -31,13 +32,16 @@ export default function Signup() {
 
     try {
       const data = await authenticateUser(userDetails, "signup");
+      console.log("after")
       if (data.status === "failed") {
         setError(data.message)
         console.log(data.message)
       } else if (data.status === "success" && data.accessToken && data.refreshToken){
-        localStorage.setItem("token", data.refreshToken);
-        setAccessToken(data.accessToken)
-        console.log("Signup successful:", data);
+        localStorage.setItem("refreshToken", data.refreshToken);
+        setAccessToken(data.accessToken);
+        setIsAuthenticated(true);
+        navigate("/");
+        console.log("Signup successfully");
       } else {
         setError(data.message)
         console.log(data.message)
@@ -45,6 +49,7 @@ export default function Signup() {
     } catch (error) {
       setError(error.message);
     } finally {
+      setUserDetails({ username: "", email: "", password: "" });
       setLoading(false);
     }
   };

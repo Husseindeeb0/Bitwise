@@ -1,8 +1,8 @@
 const refreshToken = async () => {
   try {
     const refreshToken = localStorage.getItem("refreshToken")
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/refreshToken`, {
-      method: "GET",
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/refreshToken`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${ refreshToken }`,
@@ -21,7 +21,7 @@ const refreshToken = async () => {
 
     return data.accessToken;
   } catch (error) {
-    console.error("Error verifying token:", error);
+    console.error("Error refreshing token:", error);
     return false;
   }
 };

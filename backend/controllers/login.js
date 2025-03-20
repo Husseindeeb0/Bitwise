@@ -34,7 +34,7 @@ const login = async (req, res) => {
 
     // Update refresh token in database
     user.refreshToken = refreshToken;
-    await newUser.save();
+    await user.save();
 
     res.status(200).json({
       status: "success",

@@ -1,16 +1,27 @@
-import React from "react";
+import { useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import "./style.css";
 import background from "../../assets/background.jpg";
+import { useMyContext } from "../../context";
 
 const Home = () => {
+  const { setIsAuthenticated, setAccessToken, isAuthenticated, accessToken } = useMyContext();
   // Refs for sections that should animate on scroll
   const section1Ref = useRef(null);
   const section2Ref = useRef(null);
   const section3Ref = useRef(null);
   const section4Ref = useRef(null);
   const section5Ref = useRef(null);
+
+  // useEffect(() => {
+  //   localStorage.removeItem("refreshToken");
+  //   setIsAuthenticated(false);
+  //   setAccessToken("");
+  //   console.log("AccessToken:",accessToken);
+  //   console.log("Authenticated:", isAuthenticated);
+
+  // }, [])
 
   // Check when sections come into view
   const section1InView = useInView(section1Ref, {

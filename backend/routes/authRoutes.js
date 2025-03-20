@@ -9,7 +9,7 @@ const { refreshToken } = require("../controllers/refreshToken");
 // Define routes
 router.post("/signup", signup);
 router.post("/login", login);
-router.post("/logout", verifyJWT, logout);
+router.post("/logout", logout);
 router.post("/refreshToken", refreshToken);
 router.get('/verifyJWT', verifyJWT, (req, res) => {
   res.status(200).json({ message: "Token is valid" });

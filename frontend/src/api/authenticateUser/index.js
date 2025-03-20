@@ -1,5 +1,5 @@
 const authenticateUser = async (userDetails, action) => {
-  const url = `${process.env.REACT_APP_API_URL}/auth/${action}`; // Dynamic URL based on action (signup or login)
+  const url = `${import.meta.env.VITE_API_URL}/auth/${action}`; // Dynamic URL based on action (signup or login)
 
   try {
     const response = await fetch(url, {
@@ -11,6 +11,7 @@ const authenticateUser = async (userDetails, action) => {
     });
 
     const data = await response.json();
+    console.log("finish fetching")
 
     if (!response.ok) {
       console.error('Error:', data.message || 'Authentication failed!');
