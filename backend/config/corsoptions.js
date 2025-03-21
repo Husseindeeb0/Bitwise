@@ -1,6 +1,6 @@
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://bitwise0.netlify.app/",
+  "https://bitwise0.netlify.app",
 ];
 
 const corsOptions = {
