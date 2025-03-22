@@ -8,11 +8,12 @@ export function useMyContext() {
 }
 
 const Context = ({ children }) => {
-  const refreshToken = localStorage.getItem("refreshToken")
+  const refreshToken = localStorage.getItem("refreshToken");
   const [accessToken, setAccessToken] = useState("");
-    const [isAuthenticated, setIsAuthenticated] = useState(
-      refreshToken ? true : false
-    );
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    refreshToken ? true : false
+  );
+  const [role, setRole] = useState(null);
 
   return (
     <GlobalContext
@@ -21,6 +22,8 @@ const Context = ({ children }) => {
         setAccessToken,
         isAuthenticated,
         setIsAuthenticated,
+        role,
+        setRole,
       }}
     >
       {children}

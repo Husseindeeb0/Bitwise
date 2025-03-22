@@ -10,15 +10,25 @@ import {
   FaSignInAlt,
   FaUserPlus,
 } from "react-icons/fa";
+import { MdManageAccounts } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
 import { FiLogOut } from "react-icons/fi";
+import { GrAnnounce } from "react-icons/gr";
+import { RiAdminFill } from "react-icons/ri";
+import { GiAchievement } from "react-icons/gi";
 import logo from "../../assets/logo.png";
 
 const Navbar = () => {
-  const { isAuthenticated, setIsAuthenticated, setAccessToken } =
+  const { isAuthenticated, setIsAuthenticated, setAccessToken, role } =
     useMyContext();
   const [isOpen, setIsOpen] = useState(false);
   const sidebarRef = useRef(null);
+  const dropDownRef = useRef(null);
+  const [isDisplay, setIsDisplay] = useState(false);
+
+  const toggleDialog = () => {
+    setIsDisplay(!isDisplay);
+  };
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -28,7 +38,8 @@ const Navbar = () => {
     try {
       const result = await logout();
       if (result?.status === "failed" || !result) {
-        console.log("Logging out failed", result);
+        c;
+        onsole.log("Logging out failed", result);
         return;
       }
       localStorage.removeItem("refreshToken");
@@ -38,6 +49,24 @@ const Navbar = () => {
       console.error("Logout failed:", error);
     }
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropDownRef.current && !dropDownRef.current.contains(event.target)) {
+        setIsDisplay(false);
+      }
+    };
+
+    if (isDisplay) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDisplay]);
 
   // Close sidebar when clicking outside
   useEffect(() => {
@@ -102,6 +131,41 @@ const Navbar = () => {
             <FiLogOut /> Logout
           </button>
         )}
+
+        {role !== "user" ? (
+          <div className="relative" ref={dropDownRef}>
+            {/* Management Button */}
+            <button
+              className="px-4 py-2 flex gap-2 items-center text-lg text-white bg-navy-blue rounded-md hover:bg-dark-purple"
+              onClick={toggleDialog}
+            >
+              <MdManageAccounts />
+              Management
+            </button>
+
+            {/* Dialog Dropdown */}
+            <dialog
+              open={isDisplay}
+              className="absolute top-full -left-16 w-52 mt-2 bg-white shadow-lg border border-gray-300 rounded-md p-2"
+              onClose={() => setIsDisplay(false)}
+            >
+              <ul className="space-y-2 mt-2 text-sm">
+                <li className="cursor-pointer flex gap-2 items-center text-navy-blue hover:bg-light p-2 rounded-md">
+                  <RiAdminFill />
+                  Manage Admins
+                </li>
+                <li className="cursor-pointer flex gap-2 items-center text-navy-blue hover:bg-light p-2 rounded-md">
+                  <GrAnnounce />
+                  Announcements Center
+                </li>
+                <li className="cursor-pointer flex gap-2 items-center text-navy-blue hover:bg-light p-2 rounded-md">
+                  <GiAchievement className="text-lg" />
+                  Achievements Center
+                </li>
+              </ul>
+            </dialog>
+          </div>
+        ) : null}
       </nav>
 
       {/* Open & Close nav button for mobiles */}

@@ -39,7 +39,6 @@ export default function Login() {
         setAccessToken(data.accessToken);
         setIsAuthenticated(true);
         navigate("/");
-        console.log("Login successfully");
       } else {
         setError(data.message)
         console.log(data.message)

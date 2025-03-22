@@ -11,7 +11,6 @@ const authenticateUser = async (userDetails, action) => {
     });
 
     const data = await response.json();
-    console.log("finish fetching")
 
     if (!response.ok) {
       console.error('Error:', data.message || 'Authentication failed!');
