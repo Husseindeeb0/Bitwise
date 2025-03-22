@@ -38,8 +38,7 @@ const Navbar = () => {
     try {
       const result = await logout();
       if (result?.status === "failed" || !result) {
-        c;
-        onsole.log("Logging out failed", result);
+        console.log("Logging out failed", result);
         return;
       }
       localStorage.removeItem("refreshToken");
@@ -132,7 +131,7 @@ const Navbar = () => {
           </button>
         )}
 
-        {role !== "user" ? (
+        {role === "admin" || role === "top-admin" ? (
           <div className="relative" ref={dropDownRef}>
             {/* Management Button */}
             <button

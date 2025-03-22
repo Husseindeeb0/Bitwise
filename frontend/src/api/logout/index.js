@@ -18,8 +18,8 @@ const logout = async () => {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("Error:", data.message || "Authentication failed!");
-      throw new Error(data.message || "Authentication failed!");
+      console.error("Error:", data.message || "Logout failed!");
+      throw new Error(data.message || "Logout failed!");
     }
 
     if (data.status === "failed") {

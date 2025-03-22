@@ -32,7 +32,6 @@ export default function Signup() {
 
     try {
       const data = await authenticateUser(userDetails, "signup");
-      console.log("after")
       if (data.status === "failed") {
         setError(data.message)
         console.log(data.message)
@@ -41,7 +40,6 @@ export default function Signup() {
         setAccessToken(data.accessToken);
         setIsAuthenticated(true);
         navigate("/");
-        console.log("Signup successfully");
       } else {
         setError(data.message)
         console.log(data.message)
