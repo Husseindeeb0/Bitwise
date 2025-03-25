@@ -1,6 +1,7 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Announcements from "./pages/Announcements";
+import ManageAdmins from "./pages/ManageAdmins";
 import Layout from "./Layout";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -25,12 +26,13 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route element={<ProtectedRoutes />}>
             <Route path="/announcements" element={<Announcements />} />
-            {role === "admin" && (
+            <Route path="/manageAdmins" element={<ManageAdmins />} />
+            {/* {role === "admin" && (
               <Route path="/admin" element={<div>Admin Page</div>} />
             )}
             {role === "top-admin" && (
-              <Route path="/manage-admins" element={<div>Manage Admins</div>} />
-            )}
+              <Route path="/manageAdmins" element={<ManageAdmins />} />
+            )} */}
           </Route>
           <Route index element={<Home />} />
         </Route>

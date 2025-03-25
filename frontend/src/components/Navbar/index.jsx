@@ -131,6 +131,7 @@ const Navbar = () => {
           </button>
         )}
 
+        {/* {true ? ( */}
         {role === "admin" || role === "top-admin" ? (
           <div className="relative" ref={dropDownRef}>
             {/* Management Button */}
@@ -141,7 +142,6 @@ const Navbar = () => {
               <MdManageAccounts />
               Management
             </button>
-
             {/* Dialog Dropdown */}
             <dialog
               open={isDisplay}
@@ -149,9 +149,11 @@ const Navbar = () => {
               onClose={() => setIsDisplay(false)}
             >
               <ul className="space-y-2 mt-2 text-sm">
-                <li className="cursor-pointer flex gap-2 items-center text-navy-blue hover:bg-light p-2 rounded-md">
-                  <RiAdminFill />
-                  Manage Admins
+                <li className="cursor-pointer text-navy-blue hover:bg-light p-2 rounded-md">
+                  <Link to="/manageAdmins" className="flex gap-2 items-center">
+                    <RiAdminFill />
+                    Manage Admins
+                  </Link>
                 </li>
                 <li className="cursor-pointer flex gap-2 items-center text-navy-blue hover:bg-light p-2 rounded-md">
                   <GrAnnounce />
