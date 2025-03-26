@@ -1,13 +1,13 @@
-const changeUserRole = async (accessToken, newRole) => {
+const changeUserRole = async (accessToken, userId, newRole) => {
   const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/user/updateRole`,
+    `${import.meta.env.VITE_API_URL}/user/changeUserRole`,
     {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
-      body: JSON.stringify({ newRole }),
+      body: JSON.stringify({ newRole, userId }),
     }
   );
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useMyContext } from "../../context";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import logout from "../../api/logout";
 import {
@@ -19,8 +19,10 @@ import { GiAchievement } from "react-icons/gi";
 import logo from "../../assets/logo.png";
 
 const Navbar = () => {
-  const { isAuthenticated, setIsAuthenticated, setAccessToken, role } =
+  const role = localStorage.getItem("role");
+  const { isAuthenticated, setIsAuthenticated, setAccessToken, accessToken } =
     useMyContext();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const sidebarRef = useRef(null);
   const dropDownRef = useRef(null);
@@ -36,16 +38,18 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const result = await logout();
+      const result = await logout(accessToken);
       if (result?.status === "failed" || !result) {
         console.log("Logging out failed", result);
-        return;
       }
-      localStorage.removeItem("refreshToken");
-      setAccessToken("");
-      setIsAuthenticated(false);
     } catch (error) {
       console.error("Logout failed:", error);
+    } finally {
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("role");
+      setAccessToken(null);
+      setIsAuthenticated(false);
+      navigate("/login");
     }
   };
 
@@ -131,8 +135,7 @@ const Navbar = () => {
           </button>
         )}
 
-        {/* {true ? ( */}
-        {role === "admin" || role === "top-admin" ? (
+        {role === "admin" || role === "top_admin" ? (
           <div className="relative" ref={dropDownRef}>
             {/* Management Button */}
             <button
@@ -149,17 +152,31 @@ const Navbar = () => {
               onClose={() => setIsDisplay(false)}
             >
               <ul className="space-y-2 mt-2 text-sm">
-                <li className="cursor-pointer text-navy-blue hover:bg-light p-2 rounded-md">
-                  <Link to="/manageAdmins" className="flex gap-2 items-center">
-                    <RiAdminFill />
-                    Manage Admins
-                  </Link>
-                </li>
-                <li className="cursor-pointer flex gap-2 items-center text-navy-blue hover:bg-light p-2 rounded-md">
+                {role === "top_admin" ? (
+                  <li
+                    onClick={toggleDialog}
+                    className="cursor-pointer text-navy-blue hover:bg-light p-2 rounded-md"
+                  >
+                    <Link
+                      to="/manageAdmins"
+                      className="flex gap-2 items-center"
+                    >
+                      <RiAdminFill />
+                      Manage Admins
+                    </Link>
+                  </li>
+                ) : null}
+                <li
+                  onClick={toggleDialog}
+                  className="cursor-pointer flex gap-2 items-center text-navy-blue hover:bg-light p-2 rounded-md"
+                >
                   <GrAnnounce />
                   Announcements Center
                 </li>
-                <li className="cursor-pointer flex gap-2 items-center text-navy-blue hover:bg-light p-2 rounded-md">
+                <li
+                  onClick={toggleDialog}
+                  className="cursor-pointer flex gap-2 items-center text-navy-blue hover:bg-light p-2 rounded-md"
+                >
                   <GiAchievement className="text-lg" />
                   Achievements Center
                 </li>

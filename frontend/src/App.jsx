@@ -11,10 +11,10 @@ import { useEffect } from "react";
 import { useMyContext } from "./context";
 
 function App() {
-  const { accessToken, role, setRole } = useMyContext();
+  const { accessToken } = useMyContext();
   useEffect(() => {
     if (accessToken) {
-      setRole(getRoleFromToken(accessToken));
+      localStorage.setItem("role", getRoleFromToken(accessToken));
     }
   }, [accessToken]);
 

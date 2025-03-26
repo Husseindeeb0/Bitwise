@@ -15,47 +15,82 @@ const ManageAdmins = () => {
   const [processingUser, setProcessingUser] = useState(null);
   const { accessToken } = useMyContext();
 
-  // Change role function
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await getAllUsers(accessToken);
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await getAllUsers(accessToken);
+      console.log(response);
 
-        // Destructure the data from the response
+      // Check if the response contains the expected data
+      if (response && response.users && response.admins) {
         const { users = [], admins = [], counts = {} } = response;
 
-        // Set the states with the fetched data
-        setUsers(users);
-        setAdmins(admins);
-      } catch (error) {
-        console.error("Error fetching users and admins:", error);
-      } finally {
-        setLoading(false);
+        setUsers(users.length > 0 ? users : []);
+        setAdmins(admins.length > 0 ? admins : []);
+      } else {
+        console.warn("No valid data received.");
+        setUsers([]);
+        setAdmins([]);
       }
-    };
-
-    fetchData();
-  }, []);
-
-  const handleUserPromotion = async (newRole) => {
-    const result = await changeUserRole(accessToken, newRole);
-    if (result.status === "failed") {
-      console.log(result.message);
+    } catch (error) {
+      console.error("Error fetching users and admins:", error);
+      // Optionally, set empty arrays or show an error message
+      setUsers([]);
+      setAdmins([]);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
+  // Change role function
+  useEffect(() => {
+    fetchData();
+  }, [accessToken]);
+
+  const handleUserPromotion = async (userId, newRole) => {
+    setProcessingUser(userId);
+    try {
+      const result = await changeUserRole(accessToken, userId, newRole);
+      if (result.status === "failed") {
+        console.log(result.message);
+      } else {
+        fetchData();
+      }
+    } catch (error) {
+      console.error("Error changing role:", error);
+    } finally {
+      setProcessingUser(null);
+    }
+  };
+
+  // Handler for refreshing data (to be implemented with actual API)
+  const handleRefresh = async () => {
+    try {
+      setLoading(true);
+      await fetchData();
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    } finally {
+      setLoading(false); // Ensure loading state is reset even if fetch fails
+    }
+  };
+  
 
   // Filter users and admins based on search
   const filteredUsers = users.filter(
     (user) =>
-      user.name.toLowerCase().includes(userSearch.toLowerCase()) ||
-      user.email.toLowerCase().includes(userSearch.toLowerCase())
+      (user.name &&
+        user.name.toLowerCase().includes(userSearch.toLowerCase())) ||
+      (user.email &&
+        user.email.toLowerCase().includes(userSearch.toLowerCase()))
   );
 
   const filteredAdmins = admins.filter(
     (admin) =>
-      admin.name.toLowerCase().includes(adminSearch.toLowerCase()) ||
-      admin.email.toLowerCase().includes(adminSearch.toLowerCase())
+      (admin.name &&
+        admin.name.toLowerCase().includes(adminSearch.toLowerCase())) ||
+      (admin.email &&
+        admin.email.toLowerCase().includes(adminSearch.toLowerCase()))
   );
 
   const itemVariants = {
@@ -70,18 +105,6 @@ const ManageAdmins = () => {
     },
   };
 
-  // Handler for refreshing data (to be implemented with actual API)
-  const handleRefresh = () => {
-    setLoading(true);
-    // Simulating API call
-    setTimeout(() => {
-      setLoading(false);
-    }, 800);
-
-    // Replace with actual API call later
-    // fetchData();
-  };
-
   // Render the user card
   const UserCard = ({ user }) => (
     <motion.div
@@ -90,7 +113,7 @@ const ManageAdmins = () => {
     >
       <div className="p-4 flex justify-between items-center">
         <div>
-          <h3 className="font-medium text-gray-800">{user.name}</h3>
+          <h3 className="font-medium text-gray-800">{user.username}</h3>
           <p className="text-sm text-gray-500">{user.email}</p>
           <p className="text-xs text-gray-400 mt-1">
             Joined: {new Date(user.createdAt).toLocaleDateString()}
@@ -103,7 +126,7 @@ const ManageAdmins = () => {
               ? "bg-blue-200 text-blue-700 cursor-wait"
               : "bg-blue-500 text-white hover:bg-blue-600"
           }`}
-          onClick={() => handleUserPromotion("admin")}
+          onClick={() => handleUserPromotion(user._id, "admin")}
           disabled={processingUser === user._id}
         >
           {processingUser === user._id ? (
@@ -136,7 +159,7 @@ const ManageAdmins = () => {
       <div className="p-4 flex justify-between items-center">
         <div>
           <div className="flex items-center">
-            <h3 className="font-medium text-gray-800">{admin.name}</h3>
+            <h3 className="font-medium text-gray-800">{admin.username}</h3>
             <span className="ml-2 px-2 py-0.5 text-xs bg-blue-100 text-blue-800 rounded-full">
               Admin
             </span>
@@ -153,7 +176,7 @@ const ManageAdmins = () => {
               ? "bg-red-200 text-red-700 cursor-wait"
               : "bg-red-500 text-white hover:bg-red-600"
           }`}
-          onClick={() => handleUserPromotion("user")}
+          onClick={() => handleUserPromotion(admin._id, "user")}
           disabled={processingUser === admin._id}
         >
           {processingUser === admin._id ? (

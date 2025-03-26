@@ -10,7 +10,7 @@ const { checkUserRole } = require("../controllers/checkUserRole");
 // Define routes
 router.post("/signup", signup);
 router.post("/login", login);
-router.post("/logout", logout);
+router.post("/logout", verifyJWT, logout);
 router.post("/refreshToken", refreshToken);
 router.get("/checkUserRole", verifyJWT, checkUserRole);
 router.get('/verifyJWT', verifyJWT, (req, res) => {

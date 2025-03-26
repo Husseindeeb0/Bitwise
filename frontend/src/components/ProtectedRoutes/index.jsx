@@ -14,14 +14,14 @@ const ProtectedRoutes = () => {
     setAccessToken,
     isAuthenticated,
     setIsAuthenticated,
-    role,
   } = useMyContext();
   const refreshToken = localStorage.getItem("refreshToken");
+  const role = localStorage.getItem("role");
 
   const handleLogout = () => {
-    console.log("Logging out");
     localStorage.removeItem("refreshToken");
-    setAccessToken('');
+    localStorage.removeItem("role");
+    setAccessToken(null);
     setIsValid(false);
     setIsAuthenticated(false);
     navigate("/login");

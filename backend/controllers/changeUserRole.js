@@ -1,7 +1,8 @@
+const User = require("../models/User");
+
 const changeUserRole = async (req, res) => {
   try {
-    const { newRole } = req.body;
-    const { userId } = req.body;
+    const { newRole, userId } = req.body;
 
     // Validate the new role
     const validRoles = ['user', 'admin'];
