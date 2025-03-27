@@ -109,7 +109,7 @@ const ManageAdmins = () => {
   const UserCard = ({ user }) => (
     <motion.div
       variants={itemVariants}
-      className="bg-light rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+      className="bg-blue-50 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
     >
       <div className="p-4 flex justify-between items-center">
         <div>
@@ -121,10 +121,10 @@ const ManageAdmins = () => {
         </div>
         <motion.button
           whileTap={{ scale: 0.95 }}
-          className={`flex items-center gap-1 px-3 py-2 rounded-md ${
+          className={`flex items-center text-white gap-1 px-3 py-2 rounded-md ${
             processingUser === user._id
-              ? "bg-blue-200 text-blue-700 cursor-wait"
-              : "bg-blue-500 text-white hover:bg-blue-600"
+              ? "bg-light-purple cursor-wait"
+              : "bg-navy-blue hover:bg-dark-purple"
           }`}
           onClick={() => handleUserPromotion(user._id, "admin")}
           disabled={processingUser === user._id}
@@ -160,7 +160,7 @@ const ManageAdmins = () => {
         <div>
           <div className="flex items-center">
             <h3 className="font-medium text-gray-800">{admin.username}</h3>
-            <span className="ml-2 px-2 py-0.5 text-xs bg-blue-100 text-blue-800 rounded-full">
+            <span className="ml-2 px-2 py-0.5 text-xs bg-blue-100 text-navy-blue rounded-full">
               Admin
             </span>
           </div>
@@ -201,20 +201,20 @@ const ManageAdmins = () => {
   );
 
   return (
-    <div className="min-h-screen pt-20 bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen pt-20 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white shadow rounded-lg mb-8 p-6"
+          className="bg-dark-purple shadow rounded-lg mb-8 p-6"
         >
-          <h1 className="text-2xl font-bold text-gray-900">Admin Management</h1>
-          <p className="mt-1 text-gray-600">
+          <h1 className="text-2xl font-bold text-white">Admin Management</h1>
+          <p className="mt-1 text-gray-200">
             Manage your application's admin users and permissions
           </p>
           <div className="mt-4 flex justify-between">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-300">
               <span className="font-medium">{users.length}</span> Regular Users
               <span className="font-medium ml-1">{admins.length}</span> Admins
             </p>
@@ -222,7 +222,7 @@ const ManageAdmins = () => {
               whileTap={{ scale: 0.95 }}
               onClick={handleRefresh}
               disabled={loading}
-              className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900"
+              className="flex items-center gap-1 text-sm text-gray-300 transition hover:text-navy-blue"
             >
               <motion.span
                 animate={loading ? { rotate: 360 } : {}}
@@ -250,7 +250,7 @@ const ManageAdmins = () => {
                   placeholder="Search users..."
                   value={userSearch}
                   onChange={(e) => setUserSearch(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue focus:border-transparent"
                 />
               </div>
             </div>
@@ -260,7 +260,7 @@ const ManageAdmins = () => {
                 {[1, 2, 3].map((i) => (
                   <div
                     key={i}
-                    className="bg-white rounded-lg shadow-md overflow-hidden h-24 animate-pulse"
+                    className="bg-blue-50 rounded-lg shadow-md overflow-hidden h-24 animate-pulse"
                   >
                     <div className="p-4 flex justify-between items-center">
                       <div className="space-y-2">
@@ -277,7 +277,7 @@ const ManageAdmins = () => {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="bg-white p-8 rounded-lg shadow-md text-center"
+                className="bg-blue-50 p-8 rounded-lg shadow-md text-center"
               >
                 <p className="text-gray-500">No users found</p>
                 {userSearch && (
@@ -312,7 +312,7 @@ const ManageAdmins = () => {
                   placeholder="Search admins..."
                   value={adminSearch}
                   onChange={(e) => setAdminSearch(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue focus:border-transparent"
                 />
               </div>
             </div>

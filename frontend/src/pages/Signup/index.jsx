@@ -99,6 +99,7 @@ export default function Signup() {
               name="password"
               placeholder="Password"
               value={userDetails.password}
+              minLength={6}
               onChange={handleChange}
               className="w-full p-2 outline-none"
               required

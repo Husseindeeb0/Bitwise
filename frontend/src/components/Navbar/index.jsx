@@ -28,13 +28,8 @@ const Navbar = () => {
   const dropDownRef = useRef(null);
   const [isDisplay, setIsDisplay] = useState(false);
 
-  const toggleDialog = () => {
-    setIsDisplay(!isDisplay);
-  };
-
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
+  const toggleDialog = () => setIsDisplay((prev) => !prev);
+  const toggleSidebar = () => setIsOpen((prev) => !prev);
 
   const handleLogout = async () => {
     try {
@@ -58,37 +53,33 @@ const Navbar = () => {
       if (dropDownRef.current && !dropDownRef.current.contains(event.target)) {
         setIsDisplay(false);
       }
-    };
-
-    if (isDisplay) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isDisplay]);
-
-  // Close sidebar when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     };
 
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
+  // Reusable Nav Components
+  const NavItem = ({ to, icon, label, onClick }) => (
+    <Link
+      to={to}
+      className="flex items-center gap-2 transition hover:text-dark-purple"
+      onClick={onClick}
+    >
+      {icon} {label}
+    </Link>
+  );
+
+  const NavDropdownItem = ({ to, icon, label }) => (
+    <li className="cursor-pointer flex gap-2 items-center text-navy-blue hover:bg-light p-2 rounded-md">
+      <Link to={to} className="flex gap-2 items-center" onClick={toggleDialog}>
+        {icon} {label}
+      </Link>
+    </li>
+  );
 
   return (
     <header className="fixed top-0 left-0 w-full backdrop-blur-3xl bg-white/10 shadow-lg py-2 px-4 flex justify-between items-center z-50">
@@ -99,37 +90,22 @@ const Navbar = () => {
 
       {/* Large screens Nav */}
       <nav className="hidden md:flex gap-6 text-navy-blue text-xl font-semibold">
-        <Link
-          to="/"
-          className="flex items-center gap-2 cursor-pointer transition hover:scale-110"
-        >
-          <FaHome /> Home
-        </Link>
-        <Link
+        <NavItem to="/" icon={<FaHome />} label="Home" />
+        <NavItem
           to="/announcements"
-          className="flex items-center gap-2 cursor-pointer transition hover:scale-110"
-        >
-          <FaBullhorn /> Announcements
-        </Link>
+          icon={<FaBullhorn />}
+          label="Announcements"
+        />
+
         {!isAuthenticated ? (
           <>
-            <Link
-              to="/login"
-              className="flex items-center gap-2 cursor-pointer transition hover:scale-110"
-            >
-              <FaSignInAlt /> Login
-            </Link>
-            <Link
-              to="/signup"
-              className="flex items-center gap-2 cursor-pointer transition hover:scale-110"
-            >
-              <FaUserPlus /> Signup
-            </Link>
+            <NavItem to="/login" icon={<FaSignInAlt />} label="Login" />
+            <NavItem to="/signup" icon={<FaUserPlus />} label="Signup" />
           </>
         ) : (
           <button
-            className="flex items-center gap-2 cursor-pointer transition hover:scale-110"
-            onClick={() => handleLogout()}
+            className="flex items-center gap-2 transition hover:text-dark-purple"
+            onClick={handleLogout}
           >
             <FiLogOut /> Logout
           </button>
@@ -137,7 +113,6 @@ const Navbar = () => {
 
         {role === "admin" || role === "top_admin" ? (
           <div className="relative" ref={dropDownRef}>
-            {/* Management Button */}
             <button
               className="px-4 py-2 flex gap-2 items-center text-lg text-white bg-navy-blue rounded-md hover:bg-dark-purple"
               onClick={toggleDialog}
@@ -145,43 +120,30 @@ const Navbar = () => {
               <MdManageAccounts />
               Management
             </button>
-            {/* Dialog Dropdown */}
-            <dialog
-              open={isDisplay}
-              className="absolute top-full -left-16 w-52 mt-2 bg-white shadow-lg border border-gray-300 rounded-md p-2"
-              onClose={() => setIsDisplay(false)}
-            >
-              <ul className="space-y-2 mt-2 text-sm">
-                {role === "top_admin" ? (
-                  <li
-                    onClick={toggleDialog}
-                    className="cursor-pointer text-navy-blue hover:bg-light p-2 rounded-md"
-                  >
-                    <Link
+
+            {isDisplay && (
+              <div className="absolute top-full -left-16 w-52 mt-2 bg-white shadow-lg border border-gray-300 rounded-md p-2">
+                <ul className="space-y-2 text-sm">
+                  {role === "top_admin" && (
+                    <NavDropdownItem
                       to="/manageAdmins"
-                      className="flex gap-2 items-center"
-                    >
-                      <RiAdminFill />
-                      Manage Admins
-                    </Link>
-                  </li>
-                ) : null}
-                <li
-                  onClick={toggleDialog}
-                  className="cursor-pointer flex gap-2 items-center text-navy-blue hover:bg-light p-2 rounded-md"
-                >
-                  <GrAnnounce />
-                  Announcements Center
-                </li>
-                <li
-                  onClick={toggleDialog}
-                  className="cursor-pointer flex gap-2 items-center text-navy-blue hover:bg-light p-2 rounded-md"
-                >
-                  <GiAchievement className="text-lg" />
-                  Achievements Center
-                </li>
-              </ul>
-            </dialog>
+                      icon={<RiAdminFill />}
+                      label="Manage Admins"
+                    />
+                  )}
+                  <NavDropdownItem
+                    to="/announcementsCenter"
+                    icon={<GrAnnounce />}
+                    label="Announcements Center"
+                  />
+                  <NavDropdownItem
+                    to="/achievementsCenter"
+                    icon={<GiAchievement />}
+                    label="Achievements Center"
+                  />
+                </ul>
+              </div>
+            )}
           </div>
         ) : null}
       </nav>
@@ -205,36 +167,58 @@ const Navbar = () => {
             transition={{ type: "tween", duration: 0.3 }}
             className="fixed top-0 right-0 h-screen w-2/3 bg-navy-blue/80 p-6 flex flex-col items-center gap-6 text-white text-lg shadow-lg transform"
           >
-            <Link
+            <NavItem
               to="/"
+              icon={<FaHome />}
+              label="Home"
               onClick={toggleSidebar}
-              className="flex items-center gap-2 transition hover:text-dark-purple"
-            >
-              <FaHome /> Home
-            </Link>
-            <Link
+            />
+            <NavItem
               to="/announcements"
+              icon={<FaBullhorn />}
+              label="Announcements"
               onClick={toggleSidebar}
-              className="flex items-center gap-2 transition hover:text-dark-purple"
-            >
-              <FaBullhorn /> Announcements
-            </Link>
+            />
+
+            {role === "admin" || role === "top_admin" ? (
+              <div className="flex flex-col items-center gap-6">
+                {role === "top_admin" && (
+                  <NavItem
+                    to="/manageAdmins"
+                    icon={<RiAdminFill />}
+                    label="Manage Admins"
+                    onClick={toggleSidebar}
+                  />
+                )}
+                <NavItem
+                  to="/announcementsCenter"
+                  icon={<GrAnnounce />}
+                  label="Announcements Center"
+                  onClick={toggleSidebar}
+                />
+                <NavItem
+                  to="/achievementsCenter"
+                  icon={<GiAchievement />}
+                  label="Achievements Center"
+                  onClick={toggleSidebar}
+                />
+              </div>
+            ) : null}
+
             {!isAuthenticated ? (
               <>
-                <Link
+                <NavItem
                   to="/login"
+                  icon={<FaSignInAlt />}
+                  label="Login"
                   onClick={toggleSidebar}
-                  className="flex items-center gap-2 transition hover:text-dark-purple"
-                >
-                  <FaSignInAlt /> Login
-                </Link>
-                <Link
+                />
+                <NavItem
                   to="/signup"
+                  icon={<FaUserPlus />}
+                  label="Signup"
                   onClick={toggleSidebar}
-                  className="flex items-center gap-2 transition hover:text-dark-purple"
-                >
-                  <FaUserPlus /> Signup
-                </Link>
+                />
               </>
             ) : (
               <button
@@ -244,7 +228,7 @@ const Navbar = () => {
                 }}
                 className="flex items-center gap-2 transition hover:text-dark-purple"
               >
-                <FaUserPlus /> Logout
+                <FiLogOut /> Logout
               </button>
             )}
           </motion.div>
