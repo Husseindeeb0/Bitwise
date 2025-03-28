@@ -81,7 +81,7 @@ const ProtectedRoutes = () => {
           }
         } catch (error) {
           console.error("Token validation error:", error);
-          if (isMounted) handleLogout();
+          handleLogout();
           return;
         }
       }

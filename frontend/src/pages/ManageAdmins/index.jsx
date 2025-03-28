@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import { FiUserPlus, FiUserMinus, FiSearch, FiRefreshCw } from "react-icons/fi";
 import getAllUsers from "../../api/getAllUsers";
@@ -19,7 +19,7 @@ const ManageAdmins = () => {
     try {
       setLoading(true);
       const response = await getAllUsers(accessToken);
-      console.log(response);
+      if (!isMounted) return;
 
       // Check if the response contains the expected data
       if (response && response.users && response.admins) {
@@ -74,24 +74,27 @@ const ManageAdmins = () => {
       setLoading(false); // Ensure loading state is reset even if fetch fails
     }
   };
-  
 
   // Filter users and admins based on search
-  const filteredUsers = users.filter(
-    (user) =>
-      (user.name &&
-        user.name.toLowerCase().includes(userSearch.toLowerCase())) ||
-      (user.email &&
-        user.email.toLowerCase().includes(userSearch.toLowerCase()))
-  );
-
-  const filteredAdmins = admins.filter(
-    (admin) =>
-      (admin.name &&
-        admin.name.toLowerCase().includes(adminSearch.toLowerCase())) ||
-      (admin.email &&
-        admin.email.toLowerCase().includes(adminSearch.toLowerCase()))
-  );
+  const filteredUsers = useMemo(() => {
+    return users.filter(
+      (user) =>
+        (user.name &&
+          user.name.toLowerCase().includes(userSearch.toLowerCase())) ||
+        (user.email &&
+          user.email.toLowerCase().includes(userSearch.toLowerCase()))
+    );
+  }, [users, userSearch]);
+  
+  const filteredAdmins = useMemo(() => {
+    return admins.filter(
+      (admin) =>
+        (admin.name &&
+          admin.name.toLowerCase().includes(adminSearch.toLowerCase())) ||
+        (admin.email &&
+          admin.email.toLowerCase().includes(adminSearch.toLowerCase()))
+    );
+  }, [admins, adminSearch]);
 
   const itemVariants = {
     hidden: { y: 10, opacity: 0 },
@@ -106,7 +109,7 @@ const ManageAdmins = () => {
   };
 
   // Render the user card
-  const UserCard = ({ user }) => (
+  const UserCard = React.memo(({ user }) => (
     <motion.div
       variants={itemVariants}
       className="bg-blue-50 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
@@ -148,10 +151,10 @@ const ManageAdmins = () => {
         </motion.button>
       </div>
     </motion.div>
-  );
+  ));
 
   // Render the admin card
-  const AdminCard = ({ admin }) => (
+  const AdminCard = React.memo(({ admin }) => (
     <motion.div
       variants={itemVariants}
       className="bg-blue-50 border border-blue-100 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
@@ -198,6 +201,26 @@ const ManageAdmins = () => {
         </motion.button>
       </div>
     </motion.div>
+  ));
+
+  const LoadingCard = () => (
+    <div className="space-y-4">
+      {[1, 2, 3].map((i) => (
+        <div
+          key={i}
+          className="bg-blue-50 rounded-lg shadow-md overflow-hidden h-24 animate-pulse"
+        >
+          <div className="p-4 flex justify-between items-center">
+            <div className="space-y-2">
+              <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+              <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-2 bg-gray-200 rounded w-1/4"></div>
+            </div>
+            <div className="h-8 bg-gray-200 rounded w-24"></div>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 
   return (
@@ -239,7 +262,7 @@ const ManageAdmins = () => {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
           {/* Users Section */}
           <div>
-            <div className="mb-4 flex justify-between items-center">
+            <div className="mb-4 flex md:flex-row flex-col justify-between items-start md:items-center gap-3">
               <h2 className="text-xl font-medium text-gray-900">
                 Regular Users
               </h2>
@@ -256,23 +279,7 @@ const ManageAdmins = () => {
             </div>
 
             {loading ? (
-              <div className="space-y-4">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className="bg-blue-50 rounded-lg shadow-md overflow-hidden h-24 animate-pulse"
-                  >
-                    <div className="p-4 flex justify-between items-center">
-                      <div className="space-y-2">
-                        <div className="h-4 bg-gray-200 rounded w-1/3"></div>
-                        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-                        <div className="h-2 bg-gray-200 rounded w-1/4"></div>
-                      </div>
-                      <div className="h-8 bg-gray-200 rounded w-24"></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <LoadingCard />
             ) : filteredUsers.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -301,7 +308,7 @@ const ManageAdmins = () => {
 
           {/* Admins Section */}
           <div>
-            <div className="mb-4 flex justify-between items-center">
+            <div className="mb-4 flex md:flex-row flex-col justify-between items-start md:items-center gap-3">
               <h2 className="text-xl font-medium text-gray-900">
                 Administrators
               </h2>
@@ -318,23 +325,7 @@ const ManageAdmins = () => {
             </div>
 
             {loading ? (
-              <div className="space-y-4">
-                {[1, 2].map((i) => (
-                  <div
-                    key={i}
-                    className="bg-blue-50 rounded-lg shadow-md overflow-hidden h-24 animate-pulse"
-                  >
-                    <div className="p-4 flex justify-between items-center">
-                      <div className="space-y-2">
-                        <div className="h-4 bg-blue-200 rounded w-1/3"></div>
-                        <div className="h-3 bg-blue-200 rounded w-1/2"></div>
-                        <div className="h-2 bg-blue-200 rounded w-1/4"></div>
-                      </div>
-                      <div className="h-8 bg-blue-200 rounded w-28"></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <LoadingCard />
             ) : filteredAdmins.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}

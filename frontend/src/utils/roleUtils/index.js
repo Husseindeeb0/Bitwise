@@ -17,7 +17,7 @@ export const getRoleFromToken = (accessToken) => {
 export const fetchUserRole = async (accessToken) => {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/auth/checkUserRole`,
+      `${import.meta.env.VITE_API_URL}/auth/getUserRole`,
       {
         method: "GET",
         headers: {

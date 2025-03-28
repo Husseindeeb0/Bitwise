@@ -3,6 +3,7 @@ import { useMyContext } from "../../context";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import logout from "../../api/logout";
+import Loader from "../Loader";
 import {
   FaBars,
   FaHome,
@@ -20,7 +21,7 @@ import logo from "../../assets/logo.png";
 
 const Navbar = () => {
   const role = localStorage.getItem("role");
-  const { isAuthenticated, setIsAuthenticated, setAccessToken, accessToken } =
+  const { isAuthenticated, setIsAuthenticated, setAccessToken, accessToken, setLoading } =
     useMyContext();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -33,6 +34,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
+      setLoading(true)
       const result = await logout(accessToken);
       if (result?.status === "failed" || !result) {
         console.log("Logging out failed", result);
@@ -45,6 +47,7 @@ const Navbar = () => {
       setAccessToken(null);
       setIsAuthenticated(false);
       navigate("/login");
+      setLoading(false);
     }
   };
 
@@ -66,7 +69,7 @@ const Navbar = () => {
   const NavItem = ({ to, icon, label, onClick }) => (
     <Link
       to={to}
-      className="flex items-center gap-2 transition hover:text-dark-purple"
+      className="flex items-center gap-2 transition hover:text-dark-purple text-center"
       onClick={onClick}
     >
       {icon} {label}

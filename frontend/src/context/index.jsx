@@ -14,6 +14,7 @@ const Context = ({ children }) => {
     refreshToken ? true : false
   );
   const [role, setRole] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   return (
     <GlobalContext
@@ -24,6 +25,8 @@ const Context = ({ children }) => {
         setIsAuthenticated,
         role,
         setRole,
+        loading,
+        setLoading,
       }}
     >
       {children}

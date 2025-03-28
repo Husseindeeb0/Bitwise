@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-const checkUserRole = async (req, res) => {
+const getUserRole = async (req, res) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
 
@@ -28,4 +28,4 @@ const checkUserRole = async (req, res) => {
   }
 };
 
-module.exports = { checkUserRole };
+module.exports = { getUserRole };

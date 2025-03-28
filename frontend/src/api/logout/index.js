@@ -17,10 +17,6 @@ const logout = async (accessToken) => {
       throw new Error(data.message || "Logout failed!");
     }
 
-    if (data.status === "failed") {
-      return false;
-    }
-
     return data;
   } catch (error) {
     console.error(error);
