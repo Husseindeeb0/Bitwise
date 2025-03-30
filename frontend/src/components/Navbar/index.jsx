@@ -37,7 +37,7 @@ const Navbar = () => {
       setLoading(true)
       const result = await logout(accessToken);
       if (result?.status === "failed" || !result) {
-        console.log("Logging out failed", result);
+        console.log("Logging out failed", result.message);
       }
     } catch (error) {
       console.error("Logout failed:", error);
@@ -125,7 +125,7 @@ const Navbar = () => {
             </button>
 
             {isDisplay && (
-              <div className="absolute top-full -left-16 w-52 mt-2 bg-white shadow-lg border border-gray-300 rounded-md p-2">
+              <div className="absolute top-full -left-16 w-56 mt-2 bg-white shadow-lg border border-gray-300 rounded-md p-2">
                 <ul className="space-y-2 text-sm">
                   {role === "top_admin" && (
                     <NavDropdownItem
@@ -135,14 +135,14 @@ const Navbar = () => {
                     />
                   )}
                   <NavDropdownItem
-                    to="/announcementsCenter"
+                    to="/manageAnnouncements"
                     icon={<GrAnnounce />}
-                    label="Announcements Center"
+                    label="Manage Announcements"
                   />
                   <NavDropdownItem
-                    to="/achievementsCenter"
+                    to="/manageAchievements"
                     icon={<GiAchievement />}
-                    label="Achievements Center"
+                    label="Manage Achievements"
                   />
                 </ul>
               </div>
@@ -194,15 +194,15 @@ const Navbar = () => {
                   />
                 )}
                 <NavItem
-                  to="/announcementsCenter"
+                  to="/manageAnnouncements"
                   icon={<GrAnnounce />}
-                  label="Announcements Center"
+                  label="Manage Announcements"
                   onClick={toggleSidebar}
                 />
                 <NavItem
-                  to="/achievementsCenter"
+                  to="/manageAchievements"
                   icon={<GiAchievement />}
-                  label="Achievements Center"
+                  label="Manage Achievements"
                   onClick={toggleSidebar}
                 />
               </div>

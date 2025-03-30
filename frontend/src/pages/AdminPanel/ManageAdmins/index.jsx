@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { motion } from "framer-motion";
 import { FiUserPlus, FiUserMinus, FiSearch, FiRefreshCw } from "react-icons/fi";
-import getAllUsers from "../../api/getAllUsers";
-import changeUserRole from "../../api/changeUserRole";
-import { useMyContext } from "../../context";
+import getAllUsers from "../../../api/getAllUsers";
+import changeUserRole from "../../../api/changeUserRole";
+import { useMyContext } from "../../../context";
 
 const ManageAdmins = () => {
   // States for users and admins
@@ -19,7 +19,6 @@ const ManageAdmins = () => {
     try {
       setLoading(true);
       const response = await getAllUsers(accessToken);
-      if (!isMounted) return;
 
       // Check if the response contains the expected data
       if (response && response.users && response.admins) {
@@ -85,7 +84,7 @@ const ManageAdmins = () => {
           user.email.toLowerCase().includes(userSearch.toLowerCase()))
     );
   }, [users, userSearch]);
-  
+
   const filteredAdmins = useMemo(() => {
     return admins.filter(
       (admin) =>
@@ -224,7 +223,7 @@ const ManageAdmins = () => {
   );
 
   return (
-    <div className="min-h-screen pt-20 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div

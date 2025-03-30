@@ -1,17 +1,20 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
+import { useMyContext } from "./context";
 import Home from "./pages/Home";
 import Announcements from "./pages/Announcements";
-import ManageAdmins from "./pages/ManageAdmins";
+import ManageAdmins from "./pages/AdminPanel/ManageAdmins";
 import Layout from "./Layout";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import { getRoleFromToken } from "./utils/roleUtils";
-import { useEffect } from "react";
-import { useMyContext } from "./context";
+import ManageAnnouncements from "./pages/AdminPanel/ManageAnnouncements";
+import ManageAchievements from "./pages/AdminPanel/ManageAchievements";
 
 function App() {
   const { accessToken } = useMyContext();
+  const role = localStorage.getItem("role");
   useEffect(() => {
     if (accessToken) {
       localStorage.setItem("role", getRoleFromToken(accessToken));
@@ -26,13 +29,21 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route element={<ProtectedRoutes />}>
             <Route path="/announcements" element={<Announcements />} />
-            <Route path="/manageAdmins" element={<ManageAdmins />} />
-            {/* {role === "admin" && (
-              <Route path="/admin" element={<div>Admin Page</div>} />
+            {role === "admin" || role === "top_admin" && (
+              <>
+                <Route
+                  path="/manageAnnouncements"
+                  element={<ManageAnnouncements />}
+                />
+                <Route
+                  path="/manageAchievements"
+                  element={<ManageAchievements />}
+                />
+              </>
             )}
-            {role === "top-admin" && (
+            {role === "top_admin" && (
               <Route path="/manageAdmins" element={<ManageAdmins />} />
-            )} */}
+            )}
           </Route>
           <Route index element={<Home />} />
         </Route>
