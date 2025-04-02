@@ -17,6 +17,7 @@ const getAllUsers = async (req, res) => {
     // Return structured response with both sets of users
     res.status(200).json({
       state: "success",
+      message: "Users & Admins returned successfully",
       data: {
         users,
         admins,

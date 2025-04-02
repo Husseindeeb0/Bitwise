@@ -21,7 +21,7 @@ const ManageAdmins = () => {
       const response = await getAllUsers(accessToken);
 
       // Check if the response contains the expected data
-      if (response && response.users && response.admins) {
+      if (response.state === "success" && response.users && response.admins) {
         const { users = [], admins = [], counts = {} } = response;
 
         setUsers(users.length > 0 ? users : []);
@@ -33,7 +33,6 @@ const ManageAdmins = () => {
       }
     } catch (error) {
       console.error("Error fetching users and admins:", error);
-      // Optionally, set empty arrays or show an error message
       setUsers([]);
       setAdmins([]);
     } finally {
@@ -41,7 +40,6 @@ const ManageAdmins = () => {
     }
   };
 
-  // Change role function
   useEffect(() => {
     fetchData();
   }, [accessToken]);
@@ -223,7 +221,7 @@ const ManageAdmins = () => {
   );
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen pt-30 pb-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div

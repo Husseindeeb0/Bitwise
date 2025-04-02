@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaTrash,
   FaEdit,
@@ -9,62 +9,20 @@ import {
   FaCalendar,
   FaMapMarkerAlt,
 } from "react-icons/fa";
+import { useMyContext } from "../../../context";
+import getAnnouncements from "../../../api/getAnnouncements";
+import addAnnouncements from "../../../api/addAnnouncements";
 
 const ManageAnnouncements = () => {
-  // Sample initial events
-  const [events, setEvents] = useState([
-    {
-      id: 1,
-      title: "Workshop: Introduction to AI",
-      description:
-        "Learn the fundamentals of artificial intelligence and machine learning in this hands-on workshop.",
-      date: "2025-04-15",
-      time: "14:00",
-      location: "Main Conference Room, Building A",
-      category: "workshop",
-      mainImage: "/api/placeholder/400/220",
-      organizers: [
-        {
-          id: 1,
-          name: "Dr. Sarah Johnson",
-          role: "AI Researcher",
-          image: "/api/placeholder/80/80",
-        },
-        {
-          id: 2,
-          name: "Prof. Michael Chen",
-          role: "Computer Science Lead",
-          image: "/api/placeholder/80/80",
-        },
-      ],
-      active: true,
-    },
-    {
-      id: 2,
-      title: "Annual Innovation Summit",
-      description:
-        "Join us for our annual innovation summit featuring keynote speakers from leading tech companies.",
-      date: "2025-05-10",
-      time: "09:00",
-      location: "Grand Ballroom, City Convention Center",
-      category: "conference",
-      mainImage: "/api/placeholder/400/220",
-      organizers: [
-        {
-          id: 3,
-          name: "Emily Reynolds",
-          role: "Event Coordinator",
-          image: "/api/placeholder/80/80",
-        },
-      ],
-      active: true,
-    },
-  ]);
+  const { accessToken } = useMyContext();
 
+  // Sample initial announcemets
+  const [announcemets, setAnnouncements] = useState([]);
+
+  const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [currentEvent, setCurrentEvent] = useState({
-    id: null,
     title: "",
     description: "",
     date: "",
@@ -72,13 +30,11 @@ const ManageAnnouncements = () => {
     location: "",
     category: "workshop",
     mainImage: "/api/placeholder/400/220",
-    organizers: [],
     active: true,
   });
 
   // Organizer form state
   const [currentOrganizer, setCurrentOrganizer] = useState({
-    id: null,
     name: "",
     role: "",
     image: "/api/placeholder/80/80",
@@ -88,12 +44,36 @@ const ManageAnnouncements = () => {
 
   const [isDeleting, setIsDeleting] = useState(null);
 
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await getAnnouncements(accessToken);
+
+      // Check if the response contains the expected data
+      if (response.state === "success") {
+        setAnnouncements(response);
+      } else {
+        console.error(response.message);
+        setAnnouncements([]);
+      }
+    } catch (error) {
+      console.error("Error fetching announcements:", error);
+      setAnnouncements([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [accessToken]);
+
   // Event form handling
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setCurrentEvent({
       ...currentEvent,
-      [name]: value,
+      [name]: value.trim(),
     });
   };
 
@@ -109,30 +89,51 @@ const ManageAnnouncements = () => {
     const { name, value } = e.target;
     setCurrentOrganizer({
       ...currentOrganizer,
-      [name]: value,
+      [name]: value.trim(),
     });
   };
 
-  // CRUD operations for events
-  const addEvent = () => {
-    if (
-      !currentEvent.title ||
-      !currentEvent.description ||
-      !currentEvent.date
-    ) {
-      return;
+  // CRUD operations for announcemets
+  const newAnnouncements = async () => {
+    try {
+      // Check if fields exist
+      const requiredFields = [
+        "title",
+        "description",
+        "date",
+        "time",
+        "location",
+        "category",
+      ];
+      for (const field of requiredFields) {
+        if (!currentEvent[field]) {
+          console.log(`${field} is required`);
+          throw new Error(`Field "${field}" is required`);
+        }
+      }
+
+      const newAnnouncement = {
+        ...currentEvent,
+        organizers:
+          currentOrganizer.name || currentOrganizer.role
+            ? [currentOrganizer]
+            : [], // Default to empty array
+      };
+
+      const response = await addAnnouncements(newAnnouncement, accessToken);
+      if (response.state === "success") {
+        await fetchData();
+      } else {
+        console.log(response.message);
+      }
+    } catch (error) {
+      console.error("Error adding event:", error);
+    } finally {
+      resetForm();
     }
-
-    const newEvent = {
-      ...currentEvent,
-      id: events.length > 0 ? Math.max(...events.map((a) => a.id)) + 1 : 1,
-    };
-
-    setEvents([...events, newEvent]);
-    resetForm();
   };
 
-  const updateEvent = () => {
+  const updateAnnouncements = () => {
     if (
       !currentEvent.title ||
       !currentEvent.description ||
@@ -141,8 +142,8 @@ const ManageAnnouncements = () => {
       return;
     }
 
-    setEvents(
-      events.map((event) =>
+    setAnnouncements(
+      announcemets.map((event) =>
         event.id === currentEvent.id ? currentEvent : event
       )
     );
@@ -151,7 +152,7 @@ const ManageAnnouncements = () => {
   };
 
   const deleteEvent = (id) => {
-    setEvents(events.filter((event) => event.id !== id));
+    setAnnouncements(announcemets.filter((event) => event.id !== id));
     setIsDeleting(null);
   };
 
@@ -271,7 +272,7 @@ const ManageAnnouncements = () => {
         </button>
       </div>
 
-      {/* Form for adding/editing events */}
+      {/* Form for adding/editing announcemets */}
       {showForm && (
         <form className="bg-light-purple p-6 rounded-lg mb-16 border-2 border-navy-blue">
           <h2 className="text-xl font-semibold mb-4">
@@ -558,7 +559,7 @@ const ManageAnnouncements = () => {
             </button>
             <button
               type="submit"
-              onClick={isEditing ? updateEvent : addEvent}
+              onClick={isEditing ? updateAnnouncements : newAnnouncements}
               className="flex items-center gap-2 px-4 py-2 bg-navy-blue text-white rounded-md hover:bg-dark-purple"
             >
               <FaSave size={18} />
@@ -571,8 +572,8 @@ const ManageAnnouncements = () => {
       {/* Announcements list */}
       <div>
         <div className="grid grid-cols-1 gap-6">
-          {events.length > 0 ? (
-            events.map((event) => (
+          {announcemets.length > 0 ? (
+            announcemets.map((event) => (
               <div
                 key={event.id}
                 className="bg-light-purple border border-gray-200 rounded-lg shadow-sm overflow-hidden"
@@ -684,7 +685,7 @@ const ManageAnnouncements = () => {
               <div className="flex flex-col items-center">
                 <FaCalendar size={40} className="text-gray-400 mb-2" />
                 <h3 className="text-lg font-medium text-gray-900">
-                  No events found
+                  No announcemets found
                 </h3>
                 <p className="text-gray-500 mt-1">
                   Start by creating your first event!

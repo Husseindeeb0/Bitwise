@@ -4,6 +4,7 @@ import checkTokenValidity from "../../api/checkTokenValidity";
 import { useMyContext } from "../../context";
 import refreshAccessToken from "../../api/refreshToken";
 import { fetchUserRole } from "../../utils/roleUtils";
+import Loader from "../Loader";
 
 const ProtectedRoutes = () => {
   const [isValid, setIsValid] = useState(false);
@@ -123,7 +124,7 @@ const ProtectedRoutes = () => {
 
   // Render a loading state until the verification completes.
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   if (isValid) {
