@@ -4,10 +4,12 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Loader from "../components/Loader";
 import { useMyContext } from "../context";
+import useAuthVerification from "../hooks/useAuthVerification";
 
 const Layout = () => {
   const { loading } = useMyContext();
   const [pageLoaded, setPageLoaded] = useState(false);
+  const { isLoading } = useAuthVerification(false);
 
   useEffect(() => {
     if (document.readyState === "complete") {
@@ -23,7 +25,7 @@ const Layout = () => {
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-1 bg-light">
-        {!pageLoaded ? <Loader /> : <Outlet />}
+        {!pageLoaded || isLoading ? <Loader /> : <Outlet />}
         { loading ? <Loader /> : null}
       </main>
       <Footer />
