@@ -1,7 +1,7 @@
 const addAnnouncements = async (newAnnouncement, accessToken) => {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/user/addAnnouncements`,
+      `${import.meta.env.VITE_API_URL}/announcements/addAnnouncements`,
       {
         method: "POST",
         headers: {

@@ -1,5 +1,5 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useMyContext } from "./context";
 import Home from "./pages/Home";
 import Announcements from "./pages/Announcements";
@@ -14,29 +14,14 @@ import ManageAchievements from "./pages/AdminPanel/ManageAchievements";
 
 function App() {
   const { accessToken } = useMyContext();
-  // Use state instead of directly reading from localStorage to render routes
-  const [role, setRole] = useState(localStorage.getItem("role"));
   
+  // Effect to update role when access token changes
   useEffect(() => {
     if (accessToken) {
       const userRole = getRoleFromToken(accessToken);
       localStorage.setItem("role", userRole);
-      setRole(userRole); // Update state when role changes
-    } else {
-      // Handle logout case
-      setRole(null);
     }
   }, [accessToken]);
-  
-  // Also listen for localStorage changes from other components
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setRole(localStorage.getItem("role"));
-    };
-    
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
 
   return (
     <HashRouter>
@@ -46,21 +31,9 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route element={<ProtectedRoutes />}>
             <Route path="/announcements" element={<Announcements />} />
-            {(role === "admin" || role === "top_admin") && (
-              <>
-                <Route
-                  path="/manageAnnouncements"
-                  element={<ManageAnnouncements />}
-                />
-                <Route
-                  path="/manageAchievements"
-                  element={<ManageAchievements />}
-                />
-              </>
-            )}
-            {role === "top_admin" && (
-              <Route path="/manageAdmins" element={<ManageAdmins />} />
-            )}
+            <Route path="/manageAnnouncements" element={<ManageAnnouncements />} />
+            <Route path="/manageAchievements" element={<ManageAchievements />} />
+            <Route path="/manageAdmins" element={<ManageAdmins />} />
           </Route>
           <Route index element={<Home />} />
         </Route>

@@ -99,6 +99,7 @@ const useAuthVerification = (redirectOnFail = true) => {
         try {
           const userRole = await fetchUserRole(currentAccessToken);
           if (!isMounted) return;
+          localStorage.setItem("role", userRole);
 
           if (userRole !== role) {
             handleLogout();
@@ -111,7 +112,6 @@ const useAuthVerification = (redirectOnFail = true) => {
         }
       }
 
-      // All checks passed
       if (isMounted) {
         setIsValid(true);
         setIsLoading(false);

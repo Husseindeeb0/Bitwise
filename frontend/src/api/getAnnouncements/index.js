@@ -1,7 +1,7 @@
 const getAnnouncements = async (accessToken) => {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/user/getAnnouncements`,
+      `${import.meta.env.VITE_API_URL}/announcements/getAnnouncements`,
       {
         method: "GET",
         headers: {
