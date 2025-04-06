@@ -1,14 +1,14 @@
-const addAnnouncements = async (newAnnouncement, accessToken) => {
+const editAnnouncements = async (updatedAnnouncement, accessToken) => {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/announcements/addAnnouncements`,
+      `${import.meta.env.VITE_API_URL}/announcements/editAnnouncements`,
       {
-        method: "POST",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ newAnnouncement }),
+        body: JSON.stringify({ updatedAnnouncement }),
       }
     );
 
@@ -28,4 +28,4 @@ const addAnnouncements = async (newAnnouncement, accessToken) => {
   }
 };
 
-export default addAnnouncements;
+export default editAnnouncements;

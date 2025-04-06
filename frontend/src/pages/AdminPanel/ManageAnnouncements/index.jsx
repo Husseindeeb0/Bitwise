@@ -12,12 +12,61 @@ import {
 import { useMyContext } from "../../../context";
 import getAnnouncements from "../../../api/getAnnouncements";
 import addAnnouncements from "../../../api/addAnnouncements";
+import editAnnouncements from "../../../api/editAnnouncements";
+
+// Skeleton loading component
+const AnnouncementSkeleton = () => {
+  return (
+    <div className="bg-light-purple border border-gray-200 rounded-lg shadow-sm overflow-hidden animate-pulse">
+      <div className="flex flex-col md:flex-row">
+        <div className="md:w-1/3 md:my-auto md:ml-5 md:mr-0 mx-5 mt-5">
+          <div className="w-full h-52 bg-gray-300"></div>
+        </div>
+        <div className="md:w-2/3 p-4">
+          <div className="flex justify-between items-start mb-4">
+            <div className="flex">
+              <div className="h-6 w-20 bg-gray-300 rounded-full"></div>
+              <div className="h-6 w-20 bg-gray-300 rounded-full ml-2"></div>
+            </div>
+            <div className="flex items-center space-x-3">
+              <div className="h-6 w-6 bg-gray-300 rounded"></div>
+              <div className="h-6 w-6 bg-gray-300 rounded"></div>
+            </div>
+          </div>
+
+          <div className="h-7 bg-gray-300 w-3/4 mb-3 rounded"></div>
+          <div className="h-4 bg-gray-300 w-full mb-2 rounded"></div>
+          <div className="h-4 bg-gray-300 w-5/6 mb-4 rounded"></div>
+
+          <div className="mt-3 flex flex-col space-y-3">
+            <div className="flex items-center">
+              <div className="h-5 w-5 bg-gray-300 rounded mr-2"></div>
+              <div className="h-4 bg-gray-300 w-1/2 rounded"></div>
+            </div>
+            <div className="flex items-center">
+              <div className="h-5 w-5 bg-gray-300 rounded mr-2"></div>
+              <div className="h-4 bg-gray-300 w-2/3 rounded"></div>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <div className="h-5 bg-gray-300 w-24 mb-2 rounded"></div>
+            <div className="flex flex-wrap gap-2">
+              <div className="flex items-center gap-2 bg-gray-300 px-4 py-3 rounded-md w-32"></div>
+              <div className="flex items-center gap-2 bg-gray-300 px-4 py-3 rounded-md w-36"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ManageAnnouncements = () => {
   const { accessToken } = useMyContext();
 
-  // Sample initial announcemets
-  const [announcemets, setAnnouncements] = useState([]);
+  // Sample initial announcements
+  const [announcements, setAnnouncements] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -30,6 +79,7 @@ const ManageAnnouncements = () => {
     location: "",
     category: "workshop",
     mainImage: "/api/placeholder/400/220",
+    organizers: [],
     active: true,
   });
 
@@ -48,10 +98,11 @@ const ManageAnnouncements = () => {
     try {
       setLoading(true);
       const response = await getAnnouncements(accessToken);
+      console.log(response);
 
       // Check if the response contains the expected data
       if (response.state === "success") {
-        setAnnouncements(response);
+        setAnnouncements(response.data);
       } else {
         console.error(response.message);
         setAnnouncements([]);
@@ -73,7 +124,7 @@ const ManageAnnouncements = () => {
     const { name, value } = e.target;
     setCurrentEvent({
       ...currentEvent,
-      [name]: value.trim(),
+      [name]: value,
     });
   };
 
@@ -89,70 +140,65 @@ const ManageAnnouncements = () => {
     const { name, value } = e.target;
     setCurrentOrganizer({
       ...currentOrganizer,
-      [name]: value.trim(),
+      [name]: value,
     });
   };
 
-  // CRUD operations for announcemets
+  // CRUD operations for announcements
+  const handleEventSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission
+    
+    if (isEditing) {
+      await updateAnnouncements();
+    } else {
+      await newAnnouncements();
+    }
+  };
+
   const newAnnouncements = async () => {
     try {
-      // Check if fields exist
-      const requiredFields = [
-        "title",
-        "description",
-        "date",
-        "time",
-        "location",
-        "category",
-      ];
-      for (const field of requiredFields) {
-        if (!currentEvent[field]) {
-          console.log(`${field} is required`);
-          throw new Error(`Field "${field}" is required`);
-        }
-      }
-
       const newAnnouncement = {
-        ...currentEvent,
-        organizers:
-          currentOrganizer.name || currentOrganizer.role
-            ? [currentOrganizer]
-            : [], // Default to empty array
+        ...currentEvent
       };
 
       const response = await addAnnouncements(newAnnouncement, accessToken);
       if (response.state === "success") {
         await fetchData();
+        resetForm();
       } else {
         console.log(response.message);
       }
     } catch (error) {
       console.error("Error adding event:", error);
-    } finally {
-      resetForm();
     }
   };
 
-  const updateAnnouncements = () => {
-    if (
-      !currentEvent.title ||
-      !currentEvent.description ||
-      !currentEvent.date
-    ) {
-      return;
+  const updateAnnouncements = async () => {
+    try {
+      // Ensure we have the ID for the event being updated
+      if (!currentEvent._id) {
+        console.error("Missing event ID for update operation");
+        return;
+      }
+      
+      const updatedAnnouncement = {
+        ...currentEvent
+      };
+
+      const response = await editAnnouncements(updatedAnnouncement, accessToken);
+      if (response.state === "success") {
+        await fetchData();
+        resetForm();
+      } else {
+        console.error("Update failed:", response.message);
+      }
+    } catch (error) {
+      console.error("Error updating event:", error);
     }
-
-    setAnnouncements(
-      announcemets.map((event) =>
-        event.id === currentEvent.id ? currentEvent : event
-      )
-    );
-
-    resetForm();
   };
 
   const deleteEvent = (id) => {
-    setAnnouncements(announcemets.filter((event) => event.id !== id));
+    setAnnouncements(announcements.filter((event) => event.id !== id));
     setIsDeleting(null);
   };
 
@@ -162,8 +208,9 @@ const ManageAnnouncements = () => {
     setCurrentEvent({ ...event });
   };
 
-  // CRUD operations for organizers
-  const addOrganizer = () => {
+  const handleOrganizerSubmit = (e) => {
+    if (e) e.preventDefault(); // Prevent default form submission if event exists
+    
     if (!currentOrganizer.name) {
       return;
     }
@@ -225,6 +272,7 @@ const ManageAnnouncements = () => {
       organizers: [],
       active: true,
     });
+    resetOrganizerForm();
   };
 
   const resetOrganizerForm = () => {
@@ -264,7 +312,7 @@ const ManageAnnouncements = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Event Management</h1>
         <button
-          onClick={() => setShowForm(!showForm)}
+          onClick={() => {setShowForm(!showForm), showForm ? resetForm() : null}}
           className="flex items-center gap-2 px-4 py-2 bg-navy-blue text-white rounded-md hover:bg-dark-purple transition-colors"
         >
           {showForm ? <FaTimes size={18} /> : <FaPlus size={18} />}
@@ -272,9 +320,12 @@ const ManageAnnouncements = () => {
         </button>
       </div>
 
-      {/* Form for adding/editing announcemets */}
+      {/* Form for adding/editing announcements */}
       {showForm && (
-        <form className="bg-light-purple p-6 rounded-lg mb-16 border-2 border-navy-blue">
+        <form 
+          className="bg-light-purple p-6 rounded-lg mb-16 border-2 border-navy-blue"
+          onSubmit={handleEventSubmit} // Add form submission handler
+        >
           <h2 className="text-xl font-semibold mb-4">
             {isEditing ? "Edit Event" : "Create New Event"}
           </h2>
@@ -417,7 +468,7 @@ const ManageAnnouncements = () => {
 
             {/* Organizer form */}
             {showOrganizerForm && (
-              <form className="bg-white p-4 rounded-md border border-gray-200 mb-3">
+              <div className="bg-white p-4 rounded-md border border-gray-200 mb-3">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -473,14 +524,14 @@ const ManageAnnouncements = () => {
                 </div>
                 <div className="flex justify-end">
                   <button
-                    type="submit"
-                    onClick={addOrganizer}
+                    type="button" // Changed to button type to prevent form submission
+                    onClick={handleOrganizerSubmit} // Direct click handler
                     className="px-3 py-1 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700"
                   >
                     {editingOrganizerIndex !== null ? "Update" : "Add"}
                   </button>
                 </div>
-              </form>
+              </div>
             )}
 
             {/* Organizers list */}
@@ -489,7 +540,7 @@ const ManageAnnouncements = () => {
                 <ul className="divide-y divide-gray-200">
                   {currentEvent.organizers.map((organizer, index) => (
                     <li
-                      key={organizer.id}
+                      key={organizer.id || index}
                       className="p-3 flex items-center justify-between"
                     >
                       <div className="flex items-center gap-3">
@@ -552,6 +603,7 @@ const ManageAnnouncements = () => {
 
           <div className="flex justify-end gap-2">
             <button
+              type="button"
               onClick={resetForm}
               className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
             >
@@ -559,7 +611,6 @@ const ManageAnnouncements = () => {
             </button>
             <button
               type="submit"
-              onClick={isEditing ? updateAnnouncements : newAnnouncements}
               className="flex items-center gap-2 px-4 py-2 bg-navy-blue text-white rounded-md hover:bg-dark-purple"
             >
               <FaSave size={18} />
@@ -569,13 +620,20 @@ const ManageAnnouncements = () => {
         </form>
       )}
 
-      {/* Announcements list */}
+      {/* Announcements list with skeleton loading */}
       <div>
         <div className="grid grid-cols-1 gap-6">
-          {announcemets.length > 0 ? (
-            announcemets.map((event) => (
+          {loading ? (
+            <>
+              {/* Show multiple skeleton loaders */}
+              {[...Array(3)].map((_, index) => (
+                <AnnouncementSkeleton key={index} />
+              ))}
+            </>
+          ) : announcements.length > 0 ? (
+            announcements.map((event) => (
               <div
-                key={event.id}
+                key={event._id || event.id}
                 className="bg-light-purple border border-gray-200 rounded-lg shadow-sm overflow-hidden"
               >
                 <div className="flex flex-col md:flex-row">
@@ -609,13 +667,15 @@ const ManageAnnouncements = () => {
                       </div>
                       <div className="flex items-center space-x-3">
                         <button
+                          type="button"
                           onClick={() => editEvent(event)}
                           className="text-indigo-600 hover:text-indigo-900"
                         >
                           <FaEdit size={18} />
                         </button>
                         <button
-                          onClick={() => setIsDeleting(event.id)}
+                          type="button"
+                          onClick={() => setIsDeleting(event._id || event.id)}
                           className="text-red-600 hover:text-red-900"
                         >
                           <FaTrash size={18} />
@@ -644,15 +704,15 @@ const ManageAnnouncements = () => {
                       </div>
                     </div>
 
-                    {event.organizers.length > 0 && (
+                    {event.organizers && event.organizers.length > 0 && (
                       <div className="mt-3">
                         <h3 className="text-sm font-medium text-gray-700 mb-2">
                           Organizers
                         </h3>
                         <div className="flex flex-wrap gap-2">
-                          {event.organizers.map((organizer) => (
+                          {event.organizers.map((organizer, idx) => (
                             <div
-                              key={organizer.id}
+                              key={organizer.id || idx}
                               className="flex items-center gap-2 bg-gray-50 px-2 py-1 rounded-md"
                             >
                               <img
@@ -685,12 +745,13 @@ const ManageAnnouncements = () => {
               <div className="flex flex-col items-center">
                 <FaCalendar size={40} className="text-gray-400 mb-2" />
                 <h3 className="text-lg font-medium text-gray-900">
-                  No announcemets found
+                  No announcements found
                 </h3>
                 <p className="text-gray-500 mt-1">
                   Start by creating your first event!
                 </p>
                 <button
+                  type="button"
                   onClick={() => setShowForm(true)}
                   className="mt-4 flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
                 >

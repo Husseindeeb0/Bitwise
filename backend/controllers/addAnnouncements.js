@@ -2,12 +2,12 @@ const Announcement = require("../models/Announcements");
 
 const addAnnouncements = async (req, res) => {
   try {
-    const { announcementData } = req.body;
+    const { newAnnouncement } = req.body;
 
-    const newAnnouncement = new Announcement(announcementData);
+    const announcement = new Announcement(newAnnouncement);
 
     // Save to database
-    const savedAnnouncement = await newAnnouncement.save();
+    const savedAnnouncement = await announcement.save();
 
     return res.status(201).json({
       state: "success",
