@@ -13,54 +13,8 @@ import { useMyContext } from "../../../context";
 import getAnnouncements from "../../../api/getAnnouncements";
 import addAnnouncements from "../../../api/addAnnouncements";
 import editAnnouncements from "../../../api/editAnnouncements";
-
-// Skeleton loading component
-const AnnouncementSkeleton = () => {
-  return (
-    <div className="bg-light-purple border border-gray-200 rounded-lg shadow-sm overflow-hidden animate-pulse">
-      <div className="flex flex-col md:flex-row">
-        <div className="md:w-1/3 md:my-auto md:ml-5 md:mr-0 mx-5 mt-5">
-          <div className="w-full h-52 bg-gray-300"></div>
-        </div>
-        <div className="md:w-2/3 p-4">
-          <div className="flex justify-between items-start mb-4">
-            <div className="flex">
-              <div className="h-6 w-20 bg-gray-300 rounded-full"></div>
-              <div className="h-6 w-20 bg-gray-300 rounded-full ml-2"></div>
-            </div>
-            <div className="flex items-center space-x-3">
-              <div className="h-6 w-6 bg-gray-300 rounded"></div>
-              <div className="h-6 w-6 bg-gray-300 rounded"></div>
-            </div>
-          </div>
-
-          <div className="h-7 bg-gray-300 w-3/4 mb-3 rounded"></div>
-          <div className="h-4 bg-gray-300 w-full mb-2 rounded"></div>
-          <div className="h-4 bg-gray-300 w-5/6 mb-4 rounded"></div>
-
-          <div className="mt-3 flex flex-col space-y-3">
-            <div className="flex items-center">
-              <div className="h-5 w-5 bg-gray-300 rounded mr-2"></div>
-              <div className="h-4 bg-gray-300 w-1/2 rounded"></div>
-            </div>
-            <div className="flex items-center">
-              <div className="h-5 w-5 bg-gray-300 rounded mr-2"></div>
-              <div className="h-4 bg-gray-300 w-2/3 rounded"></div>
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <div className="h-5 bg-gray-300 w-24 mb-2 rounded"></div>
-            <div className="flex flex-wrap gap-2">
-              <div className="flex items-center gap-2 bg-gray-300 px-4 py-3 rounded-md w-32"></div>
-              <div className="flex items-center gap-2 bg-gray-300 px-4 py-3 rounded-md w-36"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+import deleteAnnouncements from "../../../api/deleteAnnouncement";
+import AnnouncementCardsLoader from "../../../components/AnnouncementCardsLoader";
 
 const ManageAnnouncements = () => {
   const { accessToken } = useMyContext();
@@ -98,7 +52,6 @@ const ManageAnnouncements = () => {
     try {
       setLoading(true);
       const response = await getAnnouncements(accessToken);
-      console.log(response);
 
       // Check if the response contains the expected data
       if (response.state === "success") {
@@ -197,9 +150,25 @@ const ManageAnnouncements = () => {
     }
   };
 
-  const deleteEvent = (id) => {
-    setAnnouncements(announcements.filter((event) => event.id !== id));
-    setIsDeleting(null);
+  const deleteEvent = async (id) => {
+    try {
+      // Ensure we have the ID for the event being updated
+      if (!id) {
+        console.error("Missing event ID for deleting operation");
+        return;
+      }
+
+      const response = await deleteAnnouncements(id, accessToken);
+      if (response.state === "success") {
+        await fetchData();
+      } else {
+        console.error("delete failed:", response.message);
+      }
+    } catch (error) {
+      console.error("Error deleting event:", error);
+    } finally {
+      setIsDeleting(null);
+    }
   };
 
   const editEvent = (event) => {
@@ -627,7 +596,7 @@ const ManageAnnouncements = () => {
             <>
               {/* Show multiple skeleton loaders */}
               {[...Array(3)].map((_, index) => (
-                <AnnouncementSkeleton key={index} />
+                <AnnouncementCardsLoader key={index} />
               ))}
             </>
           ) : announcements.length > 0 ? (
@@ -675,7 +644,7 @@ const ManageAnnouncements = () => {
                         </button>
                         <button
                           type="button"
-                          onClick={() => setIsDeleting(event._id || event.id)}
+                          onClick={() => setIsDeleting(event._id)}
                           className="text-red-600 hover:text-red-900"
                         >
                           <FaTrash size={18} />
