@@ -3,7 +3,6 @@ import { useMyContext } from "../../context";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import logout from "../../api/logout";
-import Loader from "../Loader";
 import {
   FaBars,
   FaHome,
@@ -17,7 +16,6 @@ import { FiLogOut } from "react-icons/fi";
 import { GrAnnounce } from "react-icons/gr";
 import { RiAdminFill } from "react-icons/ri";
 import { GiAchievement } from "react-icons/gi";
-import logo from "../../assets/logo.png";
 
 const Navbar = () => {
   const role = localStorage.getItem("role");
@@ -88,7 +86,7 @@ const Navbar = () => {
     <header className="fixed top-0 left-0 w-full backdrop-blur-3xl bg-white/10 shadow-lg py-2 px-4 flex justify-between items-center z-50">
       {/* Logo */}
       <Link to="/">
-        <img src={logo} alt="Bitwise" className="w-16" />
+        <img src="/logo.png" alt="Bitwise" className="w-16" />
       </Link>
 
       {/* Large screens Nav */}

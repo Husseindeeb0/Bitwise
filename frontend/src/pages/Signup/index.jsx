@@ -5,6 +5,7 @@ import { FaUser, FaLock, FaEnvelope } from "react-icons/fa";
 import Navbar from "../../components/Navbar";
 import authenticateUser from "../../api/authenticateUser";
 import { useMyContext } from "../../context";
+import LoggingLoader from "../../components/LoggingLoader";
 
 export default function Signup() {
   const { setAccessToken, setIsAuthenticated } = useMyContext();
@@ -111,7 +112,7 @@ export default function Signup() {
             className="w-full bg-navy-blue text-white py-2 rounded-lg hover:bg-light-purple transition duration-300"
             disabled={loading}
           >
-            {loading ? "Signing up..." : "Sign Up"}
+            {loading ? <LoggingLoader /> : "Sign Up"}
           </button>
         </form>
         

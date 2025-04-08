@@ -5,6 +5,7 @@ import { FaEnvelope, FaLock } from "react-icons/fa";
 import Navbar from "../../components/Navbar";
 import authenticateUser from "../../api/authenticateUser";
 import { useMyContext } from "../../context";
+import LoggingLoader from "../../components/LoggingLoader";
 
 export default function Login() {
   const { setAccessToken, setIsAuthenticated } = useMyContext();
@@ -91,10 +92,10 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full bg-navy-blue text-white py-2 rounded-lg hover:bg-light-purple transition duration-300"
+            className={`w-full ${loading ? "bg-light-purple" : "bg-navy-blue"} text-lg text-white py-2 rounded-lg hover:bg-light-purple transition duration-300`}
             disabled={loading}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? <LoggingLoader /> : "Login"}
           </button>
         </form>
 

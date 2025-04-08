@@ -1,7 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import "./style.css";
-import background from "../../assets/background.jpg";
 
 const Home = () => {
   // Refs for sections that should animate on scroll
@@ -86,7 +85,7 @@ const Home = () => {
       <section
         ref={section1Ref}
         className="flex flex-col items-center justify-center h-screen text-center px-6 backdrop-blur-lg  bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${background})` }}
+        style={{ backgroundImage: `url(/background.jpg)` }}
       >
         <motion.h1
           initial={{ opacity: 0, y: -50 }}

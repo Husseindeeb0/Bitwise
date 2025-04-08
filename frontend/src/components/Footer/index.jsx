@@ -1,4 +1,3 @@
-import logo from "../../assets/logo.png";
 import { FaInstagram, FaWhatsapp, FaYoutube } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
@@ -8,7 +7,7 @@ const Footer = () => {
       <div className="container mx-auto gap-3 flex flex-col md:flex-row justify-between items-start md:items-center">
         {/* Logo & Description */}
         <div className="mb-6 md:mb-0 max-w-xs">
-          <img src={logo} alt="Bitwise Logo" className="h-12 mb-2 md:mx-auto" />
+          <img src="/logo.png" alt="Bitwise Logo" className="h-12 mb-2 md:mx-auto" />
           <p className="text-sm text-gray-300 md:text-center">
             Bitwise – Your go-to platform for tech solutions & innovation.
           </p>
