@@ -50,7 +50,7 @@ function Announcements() {
         ) : announcements.length > 0 ? (
           announcements.map((event) => (
             <div key={event._id}>
-              <AnnouncementCard event={event} page="adminPanel" />
+              <AnnouncementCard event={event} page="announcements" />
             </div>
           ))
         ) : (
