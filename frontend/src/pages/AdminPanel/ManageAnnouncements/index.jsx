@@ -35,6 +35,8 @@ const ManageAnnouncements = () => {
     mainImage: "/api/placeholder/400/220",
     organizers: [],
     active: true,
+    hasRegistration: false,
+    registrationUrl: "",
   });
 
   // Organizer form state
@@ -91,6 +93,15 @@ const ManageAnnouncements = () => {
     });
   };
 
+  const handleRegistrationCheckboxChange = (e) => {
+    setCurrentEvent({
+      ...currentEvent,
+      hasRegistration: e.target.checked,
+      // Clear the URL if unchecking
+      registrationUrl: e.target.checked ? currentEvent.registrationUrl : "",
+    });
+  };
+
   // Organizer form handling
   const handleOrganizerInputChange = (e) => {
     const { name, value } = e.target;
@@ -103,18 +114,21 @@ const ManageAnnouncements = () => {
   // CRUD operations for announcements
   const handleEventSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
-    
+    setLoading(true);
+
     if (isEditing) {
       await updateAnnouncements();
     } else {
       await newAnnouncements();
     }
+    resetForm();
+    setLoading(false);
   };
 
   const newAnnouncements = async () => {
     try {
       const newAnnouncement = {
-        ...currentEvent
+        ...currentEvent,
       };
 
       const response = await addAnnouncements(newAnnouncement, accessToken);
@@ -136,12 +150,15 @@ const ManageAnnouncements = () => {
         console.error("Missing event ID for update operation");
         return;
       }
-      
+
       const updatedAnnouncement = {
-        ...currentEvent
+        ...currentEvent,
       };
 
-      const response = await editAnnouncements(updatedAnnouncement, accessToken);
+      const response = await editAnnouncements(
+        updatedAnnouncement,
+        accessToken
+      );
       if (response.state === "success") {
         await fetchData();
         resetForm();
@@ -182,7 +199,7 @@ const ManageAnnouncements = () => {
 
   const handleOrganizerSubmit = (e) => {
     if (e) e.preventDefault(); // Prevent default form submission if event exists
-    
+
     if (!currentOrganizer.name) {
       return;
     }
@@ -284,7 +301,9 @@ const ManageAnnouncements = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Event Management</h1>
         <button
-          onClick={() => {setShowForm(!showForm), showForm ? resetForm() : null}}
+          onClick={() => {
+            setShowForm(!showForm), showForm ? resetForm() : null;
+          }}
           className="flex items-center gap-2 px-4 py-2 bg-navy-blue text-white rounded-md hover:bg-dark-purple transition-colors"
         >
           {showForm ? <FaTimes size={18} /> : <FaPlus size={18} />}
@@ -294,7 +313,7 @@ const ManageAnnouncements = () => {
 
       {/* Form for adding/editing announcements */}
       {showForm && (
-        <form 
+        <form
           className="bg-light-purple p-6 rounded-lg mb-16 border-2 border-navy-blue"
           onSubmit={handleEventSubmit} // Add form submission handler
         >
@@ -417,10 +436,6 @@ const ManageAnnouncements = () => {
                 />
               </div>
             </div>
-            <p className="text-xs text-gray-500 mt-1">
-              For this demo, use placeholder URLs like
-              "/api/placeholder/width/height"
-            </p>
           </div>
 
           <div className="mb-4">
@@ -573,6 +588,44 @@ const ManageAnnouncements = () => {
             </label>
           </div>
 
+          <div className="mb-4">
+            <div className="flex items-center mb-2">
+              <input
+                type="checkbox"
+                id="hasRegistration"
+                checked={currentEvent.hasRegistration}
+                onChange={handleRegistrationCheckboxChange}
+                className="h-4 w-4 text-indigo-600 bg-navy-blue focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <label
+                htmlFor="hasRegistration"
+                className="ml-2 block text-sm text-gray-700"
+              >
+                Enable Registration
+              </label>
+            </div>
+
+            {currentEvent.hasRegistration && (
+              <div className="mt-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Registration URL
+                </label>
+                <input
+                  type="url"
+                  name="registrationUrl"
+                  value={currentEvent.registrationUrl}
+                  required={currentEvent.hasRegistration}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
+                  placeholder="https://example.com/register"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Enter the URL where users can register for this event
+                </p>
+              </div>
+            )}
+          </div>
+
           <div className="flex justify-end gap-2">
             <button
               type="button"
@@ -583,6 +636,7 @@ const ManageAnnouncements = () => {
             </button>
             <button
               type="submit"
+              disabled={loading ? true : false}
               className="flex items-center gap-2 px-4 py-2 bg-navy-blue text-white rounded-md hover:bg-dark-purple"
             >
               <FaSave size={18} />
@@ -605,7 +659,12 @@ const ManageAnnouncements = () => {
           ) : announcements.length > 0 ? (
             announcements.map((event) => (
               <div key={event._id}>
-                <AnnouncementCard event={event} page="adminPanel" />
+                <AnnouncementCard
+                  event={event}
+                  editEvent={editEvent}
+                  setIsDeleting={setIsDeleting}
+                  page="adminPanel"
+                />
               </div>
             ))
           ) : (

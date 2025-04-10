@@ -24,6 +24,8 @@ const announcementSchema = new mongoose.Schema(
       default: [],
     },
     active: { type: Boolean, required: true, default: false },
+    hasRegistration: { type: Boolean, default: false },
+    registrationUrl: { type: String, default: "" },
   },
   { timestamps: true }
 ); // Adds createdAt and updatedAt fields automatically

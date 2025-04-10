@@ -11,6 +11,7 @@ import ProtectedRoutes from "./components/ProtectedRoutes";
 import { getRoleFromToken } from "./utils/roleUtils";
 import ManageAnnouncements from "./pages/AdminPanel/ManageAnnouncements";
 import ManageAchievements from "./pages/AdminPanel/ManageAchievements";
+import RegistrationForm from "./pages/RegistrationForm";
 
 function App() {
   const { accessToken } = useMyContext();
@@ -34,6 +35,7 @@ function App() {
             <Route path="/manageAnnouncements" element={<ManageAnnouncements />} />
             <Route path="/manageAchievements" element={<ManageAchievements />} />
             <Route path="/manageAdmins" element={<ManageAdmins />} />
+            <Route path="/registrationForm" element={<RegistrationForm />} />
           </Route>
           <Route index element={<Home />} />
         </Route>

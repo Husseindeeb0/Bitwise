@@ -1,11 +1,7 @@
-import {
-  FaTrash,
-  FaEdit,
-  FaCalendar,
-  FaMapMarkerAlt,
-} from "react-icons/fa";
+import { FaTrash, FaEdit, FaCalendar, FaMapMarkerAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
-const AnnouncementCard = ({ event, page }) => {
+const AnnouncementCard = ({ event, page, editEvent, setIsDeleting }) => {
   const getCategoryColor = (category) => {
     switch (category) {
       case "workshop":
@@ -27,15 +23,13 @@ const AnnouncementCard = ({ event, page }) => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
   return (
-    <div
-      className="bg-light-purple border border-gray-200 rounded-lg shadow-sm overflow-hidden"
-    >
+    <div className="bg-light-purple border border-gray-200 rounded-lg shadow-sm overflow-hidden">
       <div className="flex flex-col md:flex-row">
         <div className="md:w-1/3">
           <img
             src={event.mainImage}
             alt={event.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover overflow-hidden max-h-72"
           />
         </div>
         <div className="md:w-2/3 p-4">
@@ -98,33 +92,43 @@ const AnnouncementCard = ({ event, page }) => {
           </div>
 
           {event.organizers && event.organizers.length > 0 && (
-            <div className="mt-3">
-              <h3 className="text-sm font-medium text-gray-700 mb-2">
-                Organizers
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {event.organizers.map((organizer, idx) => (
-                  <div
-                    key={organizer.id || idx}
-                    className="flex items-center gap-2 bg-gray-50 px-2 py-1 rounded-md"
-                  >
-                    <img
-                      src={organizer.image}
-                      alt={organizer.name}
-                      className="w-6 h-6 rounded-full object-cover"
-                    />
-                    <div className="text-sm">
-                      <span className="font-medium">{organizer.name}</span>
-                      {organizer.role && (
-                        <span className="text-gray-500 text-xs">
-                          {" "}
-                          · {organizer.role}
-                        </span>
-                      )}
+            <div className="flex justify-between items-end">
+              <div className="mt-3">
+                <h3 className="text-sm font-medium text-gray-700 mb-2">
+                  Organizers
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {event.organizers.map((organizer, idx) => (
+                    <div
+                      key={organizer.id || idx}
+                      className="flex items-center gap-2 bg-gray-50 px-2 py-1 rounded-md"
+                    >
+                      <img
+                        src={organizer.image}
+                        alt={organizer.name}
+                        className="w-6 h-6 rounded-full object-cover"
+                      />
+                      <div className="text-sm">
+                        <span className="font-medium">{organizer.name}</span>
+                        {organizer.role && (
+                          <span className="text-gray-500 text-xs">
+                            {" "}
+                            · {organizer.role}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
+              {event.hasRegistration && (
+                <Link
+                  to={`/registrationForm?formUrl=${encodeURIComponent(event.registrationUrl)}`} // Encoding url because of containing special characters that have certain meanings inside url
+                  className="bg-navy-blue rounded-md px-10 py-2 font-semibold hover:bg-dark-purple"
+                >
+                  Register
+                </Link>
+              )}
             </div>
           )}
         </div>
