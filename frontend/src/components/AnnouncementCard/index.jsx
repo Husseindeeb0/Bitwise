@@ -29,10 +29,10 @@ const AnnouncementCard = ({ event, page, editEvent, setIsDeleting }) => {
           <img
             src={event.mainImage}
             alt={event.title}
-            className="w-full h-full object-cover overflow-hidden max-h-72"
+            className="w-full h-full object-cover overflow-hidden max-h-80"
           />
         </div>
-        <div className="md:w-2/3 p-4">
+        <div className="md:w-2/3 p-4 flex flex-col">
           <div className="flex justify-between items-start">
             <div>
               <span
@@ -73,32 +73,41 @@ const AnnouncementCard = ({ event, page, editEvent, setIsDeleting }) => {
             ) : null}
           </div>
 
-          <h2 className="text-xl font-bold text-gray-900 mt-2">
-            {event.title}
-          </h2>
+          {/* Title */}
+          {event.title && (
+            <h2 className="text-xl font-bold text-gray-900 mt-2">
+              {event.title}
+            </h2>
+          )}
+
+          {/* Description */}
           <p className="text-gray-700 mt-1 line-clamp-2">{event.description}</p>
 
-          <div className="mt-3 flex flex-col space-y-2">
-            <div className="flex items-center text-gray-700">
-              <FaCalendar size={16} className="mr-2" />
-              <span>
-                {formatDate(event.date)} {event.time && `at ${event.time}`}
-              </span>
+          {/* Time */}
+          {event.time && (
+            <div className="mt-3 flex flex-col space-y-2">
+              <div className="flex items-center text-gray-700">
+                <FaCalendar size={16} className="mr-2 text-navy-blue" />
+                <span>
+                  {formatDate(event.date)} {event.time && `at ${event.time}`}
+                </span>
+              </div>
+              <div className="flex items-center text-gray-700">
+                <FaMapMarkerAlt size={16} className="mr-2 text-navy-blue" />
+                <span>{event.location}</span>
+              </div>
             </div>
-            <div className="flex items-center text-gray-700">
-              <FaMapMarkerAlt size={16} className="mr-2" />
-              <span>{event.location}</span>
-            </div>
-          </div>
+          )}
 
+          {/* Organizers */}
           {event.organizers && event.organizers.length > 0 && (
             <div className="flex justify-between items-end">
               <div className="mt-3">
                 <h3 className="text-sm font-medium text-gray-700 mb-2">
                   Organizers
                 </h3>
-                <div className="flex flex-wrap gap-2">
-                  {event.organizers.map((organizer, idx) => (
+                <div className="flex flex-wrap gap-2 line">
+                  {event.organizers.slice(0, 3).map((organizer, idx) => (
                     <div
                       key={organizer.id || idx}
                       className="flex items-center gap-2 bg-gray-50 px-2 py-1 rounded-md"
@@ -119,18 +128,25 @@ const AnnouncementCard = ({ event, page, editEvent, setIsDeleting }) => {
                       </div>
                     </div>
                   ))}
+                  {event.organizers.length > 3 && (
+                    <span
+                      className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-md text-sm text-navy-blue"
+                    >
+                      +{event.organizers.length - 3} more
+                    </span>
+                  )}
                 </div>
               </div>
-              {event.hasRegistration && (
-                <Link
-                  to={`/registrationForm?formUrl=${encodeURIComponent(event.registrationUrl)}`} // Encoding url because of containing special characters that have certain meanings inside url
-                  className="bg-navy-blue rounded-md px-10 py-2 font-semibold hover:bg-dark-purple"
-                >
-                  Register
-                </Link>
-              )}
             </div>
           )}
+          {/* View Announcement Details */}
+          <Link
+            to="/announcementDetails"
+            state={{ event: event }}
+            className="mt-4 text-navy-blue font-medium text-sm ml-auto hover:brightness-75"
+          >
+            View announcement details →
+          </Link>
         </div>
       </div>
     </div>
