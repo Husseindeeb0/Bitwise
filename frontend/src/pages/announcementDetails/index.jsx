@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useMyContext } from "../../context";
 import {
   FaCalendarAlt,
   FaClock,
@@ -8,36 +9,78 @@ import {
   FaChevronLeft,
   FaExternalLinkAlt,
   FaTimes,
-  FaShare,
+  FaLink,
+  FaCheck,
 } from "react-icons/fa";
+import getAnnouncementById from "../../api/getAnnouncementById";
 
 const AnnouncementDetails = () => {
-  const { id } = useParams();
+  const { accessToken, setLoading } = useMyContext();
   const location = useLocation();
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [shareOpen, setShareOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const fetchAnnouncementData = useCallback(async (id) => {
+      try {
+        setLoading(true);
+        const response = await getAnnouncementById(accessToken, id);
+
+        // Check if the response contains the expected data
+        if (response.state === "success") {
+          setEvent(response.data);
+        } else {
+          console.error(response.message);
+          setEvent([]);
+        }
+      } catch (error) {
+        console.error("Error fetching announcement:", error);
+        setEvent([]);
+      } finally {
+        setLoading(false);
+      }
+    }, []);
 
   useEffect(() => {
-    // Get event data from location state or fetch it
-    if (location.state && location.state.event) {
-      setEvent(location.state.event);
-      setLoading(false);
-    } else {
-      // Fetch event data using the ID
-      // For demo purposes, we'll just show an error
-      setLoading(false);
-    }
-  }, [id, location]);
+    const loadEvent = async () => {
+      // First check if the event data is in location state
+      const searchParams = new URLSearchParams(location.search);
+      const id = searchParams.get("id");
+      if (location.state && location.state.event) {
+        setEvent(location.state.event);
+        setLoading(false);
+      } else {
+        // If not in state, fetch it using the ID
+        await fetchAnnouncementData(id);
+      }
+    };
+    loadEvent();
+  }, [location, fetchAnnouncementData]);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-navy-blue"></div>
-      </div>
+  // Function to copy the current URL to clipboard
+  const copyEventLink = () => {
+    navigator.clipboard.writeText(window.location.href).then(
+      () => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      },
+      (err) => {
+        console.error("Could not copy URL: ", err);
+      }
     );
-  }
+  };
+
+  // Format date
+  const formatDate = (dateString) => {
+    if (!dateString) return "TBA";
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
 
   if (!event) {
     return (
@@ -61,25 +104,6 @@ const AnnouncementDetails = () => {
     );
   }
 
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return "TBA";
-    const options = {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
-  const handleShare = () => setShareOpen(!shareOpen);
-
-  const copyEventLink = () => {
-    navigator.clipboard.writeText(window.location.href);
-    setShareOpen(false);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 mt-20">
       {/* Hero section with full-width image */}
@@ -101,27 +125,21 @@ const AnnouncementDetails = () => {
               <FaChevronLeft /> Back
             </button>
 
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <button
-                  onClick={handleShare}
-                  className="p-2 bg-black/40 hover:bg-black/60 text-white rounded-full transition-all"
-                  title="Share event"
-                >
-                  <FaShare />
-                </button>
-                {shareOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                    <button
-                      onClick={copyEventLink}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Copy event link
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
+            <button
+              onClick={copyEventLink}
+              className="flex items-center gap-2 px-4 py-2 bg-black/40 hover:bg-black/60 text-white rounded-full transition-all"
+              title="Copy event link"
+            >
+              {copied ? (
+                <>
+                  <FaCheck size={14} /> Copied!
+                </>
+              ) : (
+                <>
+                  <FaLink size={14} /> Copy Link
+                </>
+              )}
+            </button>
           </div>
         </div>
 

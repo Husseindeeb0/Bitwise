@@ -141,7 +141,7 @@ const AnnouncementCard = ({ event, page, editEvent, setIsDeleting }) => {
           )}
           {/* View Announcement Details */}
           <Link
-            to="/announcementDetails"
+            to={`/announcementDetails?id=${event._id}`}
             state={{ event: event }}
             className="mt-4 text-navy-blue font-medium text-sm ml-auto hover:brightness-75"
           >

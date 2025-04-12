@@ -86,7 +86,7 @@ const RegistrationForm = () => {
   // Copy form URL to clipboard
   const copyToClipboard = () => {
     if (formUrl) {
-      navigator.clipboard.writeText(formUrl).then(
+      navigator.clipboard.writeText(window.location.href).then(
         () => {
           setCopied(true);
           setTimeout(() => setCopied(false), 2000);
@@ -124,13 +124,13 @@ const RegistrationForm = () => {
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           {/* Header section */}
           <div className="bg-navy-blue text-white p-6">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center gap-4">
               <h1 className="text-2xl font-bold">Event Registration</h1>
               <div className="flex items-center">
                 <button
                   onClick={copyToClipboard}
                   className="flex items-center gap-2 px-3 py-1 bg-white bg-opacity-20 text-black rounded text-sm hover:bg-opacity-30 transition-colors"
-                  title="Copy form URL"
+                  title="Copy registration URL"
                 >
                   {copied ? (
                     <FaCheck size={14} className="text-navy-blue" />

@@ -35,14 +35,21 @@ export default function Login() {
       if (data.status === "failed") {
         setError(data.message);
         console.log(data.message);
-      } else if (data.status === "success" && data.accessToken && data.refreshToken) {
+      } else if (
+        data.status === "success" &&
+        data.accessToken &&
+        data.refreshToken
+      ) {
         localStorage.setItem("refreshToken", data.refreshToken);
         setAccessToken(data.accessToken);
         setIsAuthenticated(true);
-        navigate("/");
+        // After successful login, redirect the user to the desired page
+        const redirectTo = sessionStorage.getItem("redirectAfterLogin") || "/";
+        sessionStorage.removeItem("redirectAfterLogin");
+        navigate(redirectTo);
       } else {
-        setError(data.message)
-        console.log(data.message)
+        setError(data.message);
+        console.log(data.message);
       }
     } catch (error) {
       setError(error.message);
@@ -92,7 +99,9 @@ export default function Login() {
 
           <button
             type="submit"
-            className={`w-full ${loading ? "bg-light-purple" : "bg-navy-blue"} text-lg text-white py-2 rounded-lg hover:bg-light-purple transition duration-300`}
+            className={`w-full ${
+              loading ? "bg-light-purple" : "bg-navy-blue"
+            } text-lg text-white py-2 rounded-lg hover:bg-light-purple transition duration-300`}
             disabled={loading}
           >
             {loading ? <LoggingLoader /> : "Login"}
@@ -112,7 +121,10 @@ export default function Login() {
 
         <p className="mt-4 text-gray-500">
           Don't have an account?{" "}
-          <Link to="/signup" className="text-navy-blue cursor-pointer hover:underline">
+          <Link
+            to="/signup"
+            className="text-navy-blue cursor-pointer hover:underline"
+          >
             Sign Up
           </Link>
         </p>

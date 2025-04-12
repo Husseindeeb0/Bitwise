@@ -7,7 +7,7 @@ const ProtectedRoutes = () => {
   const { isValid, isLoading } = useAuthVerification(true);
   const role = localStorage.getItem("role");
   const location = useLocation();
-  const currentPath = location.pathname;
+  const currentPath = location.pathname + location.search;
 
   // Render loading state until verification completes
   if (isLoading) {
@@ -32,6 +32,7 @@ const ProtectedRoutes = () => {
 
     return <Outlet />;
   } else {
+    sessionStorage.setItem("redirectAfterLogin", currentPath);
     return <Navigate to="/login" />;
   }
 };

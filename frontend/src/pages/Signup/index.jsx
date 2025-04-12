@@ -30,7 +30,7 @@ export default function Signup() {
     e.preventDefault();
     setError(null);
     setLoading(true);
-
+    http://localhost:5173/#/announcementDetails?id=67f8186e33742f4a96dc96a7
     try {
       const data = await authenticateUser(userDetails, "signup");
       if (data.status === "failed") {
@@ -40,7 +40,10 @@ export default function Signup() {
         localStorage.setItem("refreshToken", data.refreshToken);
         setAccessToken(data.accessToken);
         setIsAuthenticated(true);
-        navigate("/");
+        // After successful login, redirect the user to the desired page
+        const redirectTo = sessionStorage.getItem("redirectAfterLogin") || "/";
+        sessionStorage.removeItem("redirectAfterLogin");
+        navigate(redirectTo);
       } else {
         setError(data.message)
         console.log(data.message)
