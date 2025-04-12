@@ -19,15 +19,15 @@ const ManageAdmins = () => {
     try {
       setLoading(true);
       const response = await getAllUsers(accessToken);
-
+      console.log(response)
       // Check if the response contains the expected data
-      if (response.state === "success" && response.users && response.admins) {
-        const { users = [], admins = [], counts = {} } = response;
+      if (response.state === "success" && response.data.users && response.data.admins) {
+        const { users = [], admins = [], counts = {} } = response.data;
 
         setUsers(users.length > 0 ? users : []);
         setAdmins(admins.length > 0 ? admins : []);
       } else {
-        console.warn("No valid data received.");
+        console.error("No valid data received: ", response.message);
         setUsers([]);
         setAdmins([]);
       }
