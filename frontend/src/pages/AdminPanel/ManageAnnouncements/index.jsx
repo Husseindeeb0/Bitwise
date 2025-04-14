@@ -79,11 +79,12 @@ const ManageAnnouncements = () => {
 
   // Event form handling
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setCurrentEvent({
-      ...currentEvent,
-      [name]: value,
-    });
+    let { name, value } = e.target;
+    
+      setCurrentEvent({
+        ...currentEvent,
+        [name]: value,
+      });
   };
 
   const handleCheckboxChange = (e) => {
@@ -191,10 +192,49 @@ const ManageAnnouncements = () => {
     }
   };
 
+  // 3. Function to convert AM/PM time to 24-hour format
+  const convertTo24HourFormat = (time12) => {
+    if (!time12) return "";
+
+    // Handle already 24-hour format
+    if (/^\d{2}:\d{2}$/.test(time12)) {
+      return time12;
+    }
+
+    // Parse time with AM/PM
+    const regex = /(\d+):?\s*(\d+)?\s*(AM|PM)/i;
+    const match = time12.match(regex);
+
+    if (!match) return "";
+
+    let hours = parseInt(match[1], 10);
+    const minutes = match[2] ? match[2].padStart(2, "0") : "00";
+    const period = match[3].toUpperCase();
+
+    // Convert to 24-hour format
+    if (period === "PM" && hours < 12) hours += 12;
+    if (period === "AM" && hours === 12) hours = 0;
+
+    return `${hours.toString().padStart(2, "0")}:${minutes}`;
+  };
+
+  const formatDateForInput = (date) => {
+    const parsedDate = new Date(date);
+    const year = parsedDate.getFullYear();
+    const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
+    const day = String(parsedDate.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const editEvent = (event) => {
+    const date = formatDateForInput(event.date);
+
     setIsEditing(true);
     setShowForm(true);
-    setCurrentEvent({ ...event });
+    setCurrentEvent({
+      ...event,
+      date: date,
+    });
   };
 
   const handleOrganizerSubmit = (e) => {
@@ -273,27 +313,6 @@ const ManageAnnouncements = () => {
     });
     setShowOrganizerForm(false);
     setEditingOrganizerIndex(null);
-  };
-
-  const getCategoryColor = (category) => {
-    switch (category) {
-      case "workshop":
-        return "bg-blue-100 text-blue-800";
-      case "seminar":
-        return "bg-purple-100 text-purple-800";
-      case "conference":
-        return "bg-orange-100 text-orange-800";
-      case "networking":
-        return "bg-green-100 text-green-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  // Date formatting helper
-  const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
   return (

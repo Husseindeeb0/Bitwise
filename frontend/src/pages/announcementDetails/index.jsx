@@ -22,24 +22,24 @@ const AnnouncementDetails = () => {
   const [copied, setCopied] = useState(false);
 
   const fetchAnnouncementData = useCallback(async (id) => {
-      try {
-        setLoading(true);
-        const response = await getAnnouncementById(accessToken, id);
+    try {
+      setLoading(true);
+      const response = await getAnnouncementById(accessToken, id);
 
-        // Check if the response contains the expected data
-        if (response.state === "success") {
-          setEvent(response.data);
-        } else {
-          console.error(response.message);
-          setEvent([]);
-        }
-      } catch (error) {
-        console.error("Error fetching announcement:", error);
+      // Check if the response contains the expected data
+      if (response.state === "success") {
+        setEvent(response.data);
+      } else {
+        console.error(response.message);
         setEvent([]);
-      } finally {
-        setLoading(false);
       }
-    }, []);
+    } catch (error) {
+      console.error("Error fetching announcement:", error);
+      setEvent([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     const loadEvent = async () => {
@@ -80,6 +80,16 @@ const AnnouncementDetails = () => {
       day: "numeric",
     };
     return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  const convertTo12HourFormat = (time24) => {
+    if (!time24 || !time24.includes(":")) return "TBA";
+
+    const [hours, minutes] = time24.split(":");
+    const h = parseInt(hours, 10);
+    const ampm = h >= 12 ? "PM" : "AM";
+    const hour = h % 12 || 12;
+    return `${hour}:${minutes} ${ampm}`;
   };
 
   if (!event) {
@@ -280,7 +290,7 @@ const AnnouncementDetails = () => {
                     </div>
                     <div className="ml-3">
                       <p className="text-gray-900 font-medium">Time</p>
-                      <p className="text-gray-600">{event.time || "TBA"}</p>
+                      <p className="text-gray-600">{convertTo12HourFormat(event.time)}</p>
                     </div>
                   </div>
 

@@ -17,7 +17,17 @@ const AnnouncementCard = ({ event, page, editEvent, setIsDeleting }) => {
     }
   };
 
-  // Date formatting helper
+  const convertTo12HourFormat = (time24) => {
+    if (!time24 || !time24.includes(":")) return "";
+
+    const [hours, minutes] = time24.split(":");
+    const h = parseInt(hours, 10);
+    const ampm = h >= 12 ? "PM" : "AM";
+    const hour = h % 12 || 12;
+    return `${hour}:${minutes} ${ampm}`;
+  };
+
+  // Date formatting
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -89,7 +99,8 @@ const AnnouncementCard = ({ event, page, editEvent, setIsDeleting }) => {
               <div className="flex items-center text-gray-700">
                 <FaCalendar size={16} className="mr-2 text-navy-blue" />
                 <span>
-                  {formatDate(event.date)} {event.time && `at ${event.time}`}
+                  {formatDate(event.date)}{" "}
+                  {event.time && `at ${convertTo12HourFormat(event.time)}`}
                 </span>
               </div>
               <div className="flex items-center text-gray-700">
@@ -129,9 +140,7 @@ const AnnouncementCard = ({ event, page, editEvent, setIsDeleting }) => {
                     </div>
                   ))}
                   {event.organizers.length > 3 && (
-                    <span
-                      className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-md text-sm text-navy-blue"
-                    >
+                    <span className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-md text-sm text-navy-blue">
                       +{event.organizers.length - 3} more
                     </span>
                   )}
