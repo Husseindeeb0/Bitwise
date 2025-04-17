@@ -32,14 +32,14 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Layout />}>
           <Route element={<ProtectedRoutes />}>
-            <Route path="/announcements" element={<Announcements />} />
             <Route path="/manageAnnouncements" element={<ManageAnnouncements />} />
-            <Route path="/announcementDetails" element={<AnnouncementDetails />} />
-            <Route path="/registrationForm" element={<RegistrationForm />} />
             <Route path="/manageAchievements" element={<ManageAchievements />} />
             <Route path="/manageAdmins" element={<ManageAdmins />} />
           </Route>
           <Route index element={<Home />} />
+          <Route path="/announcements" element={<Announcements />} />
+          <Route path="/announcementDetails" element={<AnnouncementDetails />} />
+          <Route path="/registrationForm" element={<RegistrationForm />} />
         </Route>
       </Routes>
     </HashRouter>

@@ -1,7 +1,7 @@
 const getLatestAnnouncement = async (accessToken) => {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/announcements/getAnnouncements`,
+      `${import.meta.env.VITE_API_URL}/announcements/getLatestAnnouncement`,
       {
         method: "GET",
         headers: {

@@ -1,6 +1,8 @@
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "./style.css";
+import LatestAnnouncementCard from "../../components/LatestAnnouncementCard";
 
 const Home = () => {
   // Refs for sections that should animate on scroll
@@ -84,7 +86,7 @@ const Home = () => {
       {/* Defining Bitwise Section */}
       <section
         ref={section1Ref}
-        className="flex flex-col items-center justify-center h-screen text-center px-6 backdrop-blur-lg  bg-cover bg-center bg-no-repeat"
+        className="flex flex-col items-center justify-center min-h-screen text-center px-6 py-16 backdrop-blur-lg bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(/background.jpg)` }}
       >
         <motion.h1
@@ -98,37 +100,41 @@ const Home = () => {
             <span className="text-navy-blue"> Bitwise!</span>
           </span>
         </motion.h1>
+
+        {/* Add Latest Announcement Card */}
+        <LatestAnnouncementCard />
+
+        {/* Button to view all announcements */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={section1InView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.3, duration: 0.8 }}
-          className="mt-4 text-lg md:text-xl max-w-2xl"
+          initial={{ opacity: 0 }}
+          animate={section1InView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.8, duration: 0.6 }}
+          className="mt-8"
         >
-          <p className="text-lg sm:text-xl md:text-2xl text-gray-700 font-semibold">
-            At Bitwise, we’re committed to helping you navigate the exciting
-            world of computer science. Whether you’re just starting out or
-            looking to specialize, our club provides the guidance, resources,
-            and support you need to explore the diverse fields of computer
-            science. From software development to data science, artificial
-            intelligence, and beyond, we aim to light your path toward a
-            fulfilling career in tech.
-          </p>
-          <p className="text-lg sm:text-xl md:text-2xl text-gray-700 font-semibold">
-            Join us today and take the first step toward mastering the tech
-            skills of tomorrow!
-          </p>
+          <Link to="/announcements">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-3 bg-navy-blue text-white font-semibold rounded-lg shadow-lg flex items-center gap-2"
+            >
+              <span>View All Announcements</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </motion.button>
+          </Link>
         </motion.div>
-        <motion.button
-          transition={{ duration: 0.5 }}
-          whileHover={{
-            scale: 1.1,
-            boxShadow: "0px 0px 20px rgba(255, 255, 255, 0.5)",
-          }}
-          whileTap={{ scale: 0.95 }}
-          className="mt-6 px-6 py-3 bg-white hover:bg-light-purple text-gray-700 text-lg font-semibold rounded-lg shadow-lg"
-        >
-          Get Started
-        </motion.button>
       </section>
 
       {/* Achievements Section */}
@@ -212,7 +218,7 @@ const Home = () => {
           ))}
         </div>
       </section>
-      
+
       {/* Founders Section */}
       <section ref={section4Ref} className="bg-dark-purple text-white py-16">
         <div className="container mx-auto text-center">
@@ -246,11 +252,10 @@ const Home = () => {
       </section>
 
       {/* Final Call to Action */}
-      <section
-        ref={section5Ref}
-        className="py-16 px-6 text-center"
-      >
-        <h2 className="text-3xl font-bold text-light-purple">Start Learning Today!</h2>
+      <section ref={section5Ref} className="py-16 px-6 text-center">
+        <h2 className="text-3xl font-bold text-light-purple">
+          Start Learning Today!
+        </h2>
         <p className="mt-4 text-lg max-w-2xl mx-auto text-gray-500">
           Don’t waste time guessing what to learn next. Follow a proven roadmap
           and start coding with confidence today!

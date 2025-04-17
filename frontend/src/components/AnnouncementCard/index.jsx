@@ -39,7 +39,7 @@ const AnnouncementCard = ({ event, page, editEvent, setIsDeleting }) => {
           <img
             src={event.mainImage}
             alt={event.title}
-            className="w-full h-full object-cover overflow-hidden max-h-80"
+            className="w-full h-full object-fit overflow-hidden max-h-80"
           />
         </div>
         <div className="md:w-2/3 p-4 flex flex-col">
