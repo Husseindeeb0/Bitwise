@@ -27,6 +27,16 @@ const LatestAnnouncementCard = () => {
     fetchLatestAnnouncement();
   }, []);
 
+  const convertTo12HourFormat = (time24) => {
+    if (!time24 || !time24.includes(":")) return "";
+
+    const [hours, minutes] = time24.split(":");
+    const h = parseInt(hours, 10);
+    const ampm = h >= 12 ? "PM" : "AM";
+    const hour = h % 12 || 12;
+    return `${hour}:${minutes} ${ampm}`;
+  };
+
   if (loading) {
     return (
       <div className="w-full max-w-4xl mx-auto mt-12 p-6 bg-dark-purple/30 rounded-xl shadow-lg backdrop-blur-sm flex justify-center">
@@ -85,7 +95,7 @@ const LatestAnnouncementCard = () => {
 
       <div className="flex flex-col md:flex-row">
         {mainImage && (
-          <div className="md:w-2/5 h-48 md:h-auto">
+          <div>
             <img
               src={mainImage}
               alt={title}
@@ -109,7 +119,7 @@ const LatestAnnouncementCard = () => {
             {time && (
               <div className="flex items-center">
                 <FaClock size={16} className="mr-1" />
-                <span>{time}</span>
+                <span>{convertTo12HourFormat(time)}</span>
               </div>
             )}
 

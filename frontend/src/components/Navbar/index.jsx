@@ -238,22 +238,24 @@ const Navbar = () => {
               </button>
             </div>
 
-            <MobileNavItem
-              to="/"
-              icon={<FaHome />}
-              label="Home"
-              onClick={toggleSidebar}
-            />
+            <div className="w-full">
+              <MobileNavItem
+                to="/"
+                icon={<FaHome />}
+                label="Home"
+                onClick={toggleSidebar}
+              />
 
-            <MobileNavItem
-              to="/announcements"
-              icon={<FaBullhorn />}
-              label="Announcements"
-              onClick={toggleSidebar}
-            />
+              <MobileNavItem
+                to="/announcements"
+                icon={<FaBullhorn />}
+                label="Announcements"
+                onClick={toggleSidebar}
+              />
+            </div>
 
             {role === "admin" || role === "top_admin" ? (
-              <div className="w-full mt-4 border-t border-white/20 pt-6 space-y-2">
+              <div className="w-full mt-6 border-t border-white/20 pt-6 space-y-2">
                 <h3 className="text-sm uppercase font-bold text-white/70 mb-4 px-3">
                   Management
                 </h3>
@@ -283,7 +285,7 @@ const Navbar = () => {
               </div>
             ) : null}
 
-            <div className="mt-auto w-full border-t border-white/20 pt-6 space-y-2">
+            <div className="mt-6 w-full border-t border-white/20 pt-6 space-y-2">
               {!isAuthenticated ? (
                 <>
                   <MobileNavItem
@@ -306,7 +308,7 @@ const Navbar = () => {
                     handleLogout();
                     toggleSidebar();
                   }}
-                  className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-white/10 text-white transition-colors mb-5 group"
+                  className="flex items-center justify-between w-full p-3 rounded-lg hover:bg-white/10 text-white transition-colors group"
                 >
                   <div className="flex items-center gap-3">
                     <FiLogOut />
