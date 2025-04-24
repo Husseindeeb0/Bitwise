@@ -27,27 +27,27 @@ const Footer = () => {
         <div className="text-sm">
           <p className="font-semibold">Contact Us</p>
           <p className="text-gray-300 space-x-2">
-            <span>Email:</span>
+            <span className="font-bold">Email:</span>
             <a
-              href="mailto:support@bitwise.com"
-              className="text-light-purple hover:underline"
+              href="mailto:bitwiseclub.lu@gmail.com"
+              className=" hover:underline"
             >
-              support@bitwise.com
+              bitwiseclub.lu@gmail.com
             </a>
           </p>
           <p className="text-gray-300 space-x-2">
-            <span>Phone:</span>
+            <span className="font-bold">Phone:</span>
             <a
-              href="tel:+123456789"
-              className="text-light-purple hover:underline"
+              href="tel:+96176764155"
+              className="text-gray-200 hover:underline"
             >
-              +123 456 789
+              +961 76 764 155
             </a>
           </p>
         </div>
 
         {/* Newsletter Signup */}
-        <div className="mt-4 md:mt-0">
+        {/* <div className="mt-4 md:mt-0">
           <p className="font-semibold mb-2">Subscribe to Our Newsletter</p>
           <form className="flex">
             <input
@@ -57,35 +57,35 @@ const Footer = () => {
             />
             <button
               type="submit"
-              className="bg-light-purple hover:bg-dark-purple px-4 py-2 rounded-r-lg text-white transition duration-300"
+              className="bg-dark-purple hover:bg-sky-blue px-4 py-2 rounded-r-lg text-white transition duration-300"
             >
               Subscribe
             </button>
           </form>
-        </div>
+        </div> */}
       </div>
       <hr className="my-5" />
 
       <div className="mt-6 px-5 text-center text-sm text-gray-300 flex flex-col gap-5 md:gap-0 md:flex-row items-center">
         <div className="flex items-center justify-between md:justify-normal md:gap-10 w-full">
           {/* Feedback Button */}
-          <Link
+          {/* <Link
             to="/feedback"
             className="bg-light-purple hover:bg-dark-purple px-4 py-2 rounded-lg text-white transition duration-300"
           >
-            Give Feedback
-          </Link>
+            Send Feedback
+          </Link> */}
           {/* Social Media Links */}
           <div className="flex space-x-6 text-xl">
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/bitwise_club?igsh=MW11MXIzNzVIejU5Z"
               target="_blank"
               rel="noopener noreferrer"
             >
               <FaInstagram className="hover:text-pink-500 transition duration-300" />
             </a>
             <a
-              href="https://wa.me/yourwhatsappnumber"
+              href="https://chat.whatsapp.com/BRfuyGdNezzD50dGmLL"
               target="_blank"
               rel="noopener noreferrer"
             >

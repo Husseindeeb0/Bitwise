@@ -192,32 +192,6 @@ const ManageAnnouncements = () => {
     }
   };
 
-  // 3. Function to convert AM/PM time to 24-hour format
-  const convertTo24HourFormat = (time12) => {
-    if (!time12) return "";
-
-    // Handle already 24-hour format
-    if (/^\d{2}:\d{2}$/.test(time12)) {
-      return time12;
-    }
-
-    // Parse time with AM/PM
-    const regex = /(\d+):?\s*(\d+)?\s*(AM|PM)/i;
-    const match = time12.match(regex);
-
-    if (!match) return "";
-
-    let hours = parseInt(match[1], 10);
-    const minutes = match[2] ? match[2].padStart(2, "0") : "00";
-    const period = match[3].toUpperCase();
-
-    // Convert to 24-hour format
-    if (period === "PM" && hours < 12) hours += 12;
-    if (period === "AM" && hours === 12) hours = 0;
-
-    return `${hours.toString().padStart(2, "0")}:${minutes}`;
-  };
-
   const formatDateForInput = (date) => {
     const parsedDate = new Date(date);
     const year = parsedDate.getFullYear();
@@ -323,7 +297,7 @@ const ManageAnnouncements = () => {
           onClick={() => {
             setShowForm(!showForm), showForm ? resetForm() : null;
           }}
-          className="flex items-center gap-2 px-4 py-2 bg-navy-blue text-white rounded-md hover:bg-dark-purple transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-navy-blue text-white rounded-md hover:bg-sky-blue transition-colors"
         >
           {showForm ? <FaTimes size={18} /> : <FaPlus size={18} />}
           {showForm ? "Cancel" : "New Event"}
@@ -465,7 +439,7 @@ const ManageAnnouncements = () => {
               <button
                 type="button"
                 onClick={() => setShowOrganizerForm(!showOrganizerForm)}
-                className="text-sm text-indigo-600 hover:text-indigo-900 flex items-center gap-1"
+                className="text-sm text-navy-blue hover:text-sky-blue flex items-center gap-1"
               >
                 <FaPlus size={16} />
                 {showOrganizerForm ? "Cancel" : "Add Organizer"}
@@ -532,7 +506,7 @@ const ManageAnnouncements = () => {
                   <button
                     type="button" // Changed to button type to prevent form submission
                     onClick={handleOrganizerSubmit} // Direct click handler
-                    className="px-3 py-1 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700"
+                    className="px-3 py-1 bg-navy-blue text-white text-sm rounded-md hover:bg-sky-blue"
                   >
                     {editingOrganizerIndex !== null ? "Update" : "Add"}
                   </button>
@@ -597,7 +571,7 @@ const ManageAnnouncements = () => {
               id="active"
               checked={currentEvent.active}
               onChange={handleCheckboxChange}
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 accent-navy-blue"
             />
             <label
               htmlFor="active"
@@ -614,7 +588,7 @@ const ManageAnnouncements = () => {
                 id="hasRegistration"
                 checked={currentEvent.hasRegistration}
                 onChange={handleRegistrationCheckboxChange}
-                className="h-4 w-4 text-indigo-600 bg-navy-blue focus:ring-indigo-500 border-gray-300 rounded"
+                className="h-4 w-4 text-indigo-600 bg-navy-blue focus:ring-indigo-500 border-gray-300 accent-navy-blue"
               />
               <label
                 htmlFor="hasRegistration"
@@ -649,14 +623,14 @@ const ManageAnnouncements = () => {
             <button
               type="button"
               onClick={resetForm}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              className="px-4 py-2 border border-gray-300 rounded-md text-dark-purple hover:bg-white"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading ? true : false}
-              className="flex items-center gap-2 px-4 py-2 bg-navy-blue text-white rounded-md hover:bg-dark-purple"
+              className="flex items-center gap-2 px-4 py-2 bg-navy-blue text-white rounded-md hover:bg-sky-blue"
             >
               <FaSave size={18} />
               {isEditing ? "Update Event" : "Create Event"}

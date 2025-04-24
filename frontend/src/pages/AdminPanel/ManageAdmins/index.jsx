@@ -109,13 +109,13 @@ const ManageAdmins = () => {
   const UserCard = React.memo(({ user }) => (
     <motion.div
       variants={itemVariants}
-      className="bg-blue-50 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+      className="bg-light/30 border border-gray-200 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
     >
       <div className="p-4 flex justify-between items-center">
         <div>
           <h3 className="font-medium text-gray-800">{user.username}</h3>
-          <p className="text-sm text-gray-500">{user.email}</p>
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-sm text-dark-purple/70">{user.email}</p>
+          <p className="text-xs text-dark-purple/50 mt-1">
             Joined: {new Date(user.createdAt).toLocaleDateString()}
           </p>
         </div>
@@ -124,7 +124,7 @@ const ManageAdmins = () => {
           className={`flex items-center text-white gap-1 px-3 py-2 rounded-md ${
             processingUser === user._id
               ? "bg-light-purple cursor-wait"
-              : "bg-navy-blue hover:bg-dark-purple"
+              : "bg-navy-blue hover:bg-sky-blue"
           }`}
           onClick={() => handleUserPromotion(user._id, "admin")}
           disabled={processingUser === user._id}
@@ -154,7 +154,7 @@ const ManageAdmins = () => {
   const AdminCard = React.memo(({ admin }) => (
     <motion.div
       variants={itemVariants}
-      className="bg-blue-50 border border-blue-100 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+      className="bg-light/30 border border-gray-200 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
     >
       <div className="p-4 flex justify-between items-center">
         <div>
@@ -164,8 +164,8 @@ const ManageAdmins = () => {
               Admin
             </span>
           </div>
-          <p className="text-sm text-gray-500">{admin.email}</p>
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-sm text-dark-purple/70">{admin.email}</p>
+          <p className="text-xs text-dark-purple/50 mt-1">
             Admin since: {new Date(admin.createdAt).toLocaleDateString()}
           </p>
         </div>
@@ -227,7 +227,7 @@ const ManageAdmins = () => {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-dark-purple shadow rounded-lg mb-8 p-6"
+          className="bg-navy-blue shadow rounded-lg mb-8 p-6"
         >
           <h1 className="text-2xl font-bold text-white">Admin Management</h1>
           <p className="mt-1 text-gray-200">

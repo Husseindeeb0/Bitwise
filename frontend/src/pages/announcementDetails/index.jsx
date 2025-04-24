@@ -115,10 +115,10 @@ const AnnouncementDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 mt-20">
+    <div className="min-h-screen mt-20">
       {/* Hero section with full-width image */}
       <div className="relative h-80 md:h-96 lg:h-[500px] w-full overflow-hidden">
-        <div className="absolute inset-0 bg-black/30 z-10"></div>
+        <div className="absolute inset-0 bg-dark-purple/20 z-10"></div>
         <img
           src={event.mainImage || "/api/placeholder/1200/500"}
           alt={event.title}
@@ -130,14 +130,14 @@ const AnnouncementDetails = () => {
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             <button
               onClick={() => navigate(-1)}
-              className="flex items-center gap-2 px-4 py-2 bg-black/40 hover:bg-black/60 text-white rounded-full transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-navy-blue/50 hover:bg-navy-blue/70 text-white rounded-full transition-all"
             >
               <FaChevronLeft /> Back
             </button>
 
             <button
               onClick={copyEventLink}
-              className="flex items-center gap-2 px-4 py-2 bg-black/40 hover:bg-black/60 text-white rounded-full transition-all"
+              className="flex items-center gap-2 px-4 py-2 bg-navy-blue/50 hover:bg-navy-blue/70 text-white rounded-full transition-all"
               title="Copy event link"
             >
               {copied ? (
@@ -154,7 +154,7 @@ const AnnouncementDetails = () => {
         </div>
 
         {/* Category badge and title overlay */}
-        <div className="absolute bottom-0 left-0 right-0 z-20 p-6 bg-gradient-to-t from-black/70 to-transparent">
+        <div className="absolute bottom-0 left-0 right-0 z-20 p-6 bg-gradient-to-t from-sky-blue/70 to-transparent">
           <div className="max-w-5xl mx-auto">
             <div
               className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-3 
@@ -183,12 +183,12 @@ const AnnouncementDetails = () => {
           {/* Left column - Event details */}
           <div className="md:col-span-2">
             {/* Event information card */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+            <div className="bg-light rounded-xl shadow-lg overflow-hidden mb-8">
               <div className="p-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                <h2 className="text-2xl font-bold text-dark-purple mb-4">
                   About this event
                 </h2>
-                <p className="text-gray-700 mb-6 whitespace-pre-line leading-relaxed">
+                <p className="text-dark-purple mb-6 whitespace-pre-line leading-relaxed">
                   {event.description}
                 </p>
 
@@ -201,7 +201,7 @@ const AnnouncementDetails = () => {
                         to={`/registrationForm?formUrl=${encodeURIComponent(
                           event.registrationUrl
                         )}`}
-                        className="block w-full md:w-auto md:inline-block text-center px-6 py-3 bg-navy-blue text-white font-medium rounded-lg hover:bg-dark-purple transition-colors"
+                        className="block w-full md:w-auto md:inline-block text-center px-6 py-3 bg-navy-blue text-white font-medium rounded-lg hover:bg-sky-blue transition-colors"
                       >
                         Register for this event{" "}
                         <FaExternalLinkAlt className="inline ml-2" size={14} />
@@ -215,10 +215,10 @@ const AnnouncementDetails = () => {
                           </div>
                         </div>
                         <div>
-                          <p className="font-medium text-gray-800">
+                          <p className="font-medium text-dark-purple">
                             Registration Closed
                           </p>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-dark-purple">
                             This event is no longer accepting registrations
                           </p>
                         </div>
@@ -231,16 +231,16 @@ const AnnouncementDetails = () => {
 
             {/* Organizers section */}
             {event.organizers && event.organizers.length > 0 && (
-              <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+              <div className="bg-light rounded-xl shadow-lg overflow-hidden mb-8">
                 <div className="p-6">
-                  <h2 className="text-xl font-bold text-gray-800 mb-4">
+                  <h2 className="text-xl font-bold text-dark-purple mb-4">
                     Organizers
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {event.organizers.map((organizer, index) => (
                       <div
                         key={index}
-                        className="flex items-center p-3 bg-gray-50 rounded-lg"
+                        className="flex items-center p-3 bg-white rounded-lg"
                       >
                         <img
                           src={organizer.image}
@@ -248,10 +248,10 @@ const AnnouncementDetails = () => {
                           className="w-12 h-12 rounded-full object-cover"
                         />
                         <div className="ml-3">
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-dark-purple">
                             {organizer.name}
                           </p>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-dark-purple/70">
                             {organizer.role}
                           </p>
                         </div>
@@ -265,9 +265,9 @@ const AnnouncementDetails = () => {
 
           {/* Right column - Event meta information */}
           <div className="md:col-span-1">
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden sticky top-8">
+            <div className="bg-light rounded-xl shadow-lg overflow-hidden sticky top-8">
               <div className="p-6">
-                <h3 className="text-lg font-bold text-gray-800 mb-4">
+                <h3 className="text-lg font-bold text-dark-purple mb-4">
                   Event Details
                 </h3>
 
@@ -278,8 +278,8 @@ const AnnouncementDetails = () => {
                       <FaCalendarAlt className="h-5 w-5 text-navy-blue" />
                     </div>
                     <div className="ml-3">
-                      <p className="text-gray-900 font-medium">Date</p>
-                      <p className="text-gray-600">{formatDate(event.date)}</p>
+                      <p className="text-dark-purple font-medium">Date</p>
+                      <p className="text-dark-purple/70">{formatDate(event.date)}</p>
                     </div>
                   </div>
 
@@ -289,8 +289,8 @@ const AnnouncementDetails = () => {
                       <FaClock className="h-5 w-5 text-navy-blue" />
                     </div>
                     <div className="ml-3">
-                      <p className="text-gray-900 font-medium">Time</p>
-                      <p className="text-gray-600">{convertTo12HourFormat(event.time)}</p>
+                      <p className="text-dark-purple font-medium">Time</p>
+                      <p className="text-dark-purple/70">{convertTo12HourFormat(event.time)}</p>
                     </div>
                   </div>
 
@@ -300,21 +300,21 @@ const AnnouncementDetails = () => {
                       <FaMapMarkerAlt className="h-5 w-5 text-navy-blue" />
                     </div>
                     <div className="ml-3">
-                      <p className="text-gray-900 font-medium">Location</p>
-                      <p className="text-gray-600">{event.location || "TBA"}</p>
+                      <p className="text-dark-purple font-medium">Location</p>
+                      <p className="text-dark-purple/70">{event.location || "TBA"}</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Status Indicator */}
-                <div className="mt-6 pt-4 border-t border-gray-200">
+                <div className="mt-6 pt-4 border-t border-dark-purple">
                   <div className="flex items-center">
                     <div
                       className={`h-3 w-3 rounded-full ${
                         event.active ? "bg-green-500" : "bg-gray-400"
                       }`}
                     ></div>
-                    <p className="ml-2 text-sm text-gray-600">
+                    <p className="ml-2 text-sm text-dark-purple/70">
                       {event.active
                         ? "This event is active"
                         : "This event is inactive"}

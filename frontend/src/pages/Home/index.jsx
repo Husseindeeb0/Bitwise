@@ -93,7 +93,7 @@ const Home = () => {
           initial={{ opacity: 0, y: -50 }}
           animate={section1InView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="relative text-4xl md:text-6xl font-bold text-light-purple overflow-hidden"
+          className="relative text-4xl md:text-6xl font-bold text-dark-purple overflow-hidden"
         >
           <span className="relative z-10">
             Start Your Programming Journey with
@@ -138,7 +138,7 @@ const Home = () => {
       </section>
 
       {/* Achievements Section */}
-      <section ref={section2Ref} className="py-16 px-6 bg-dark-purple">
+      {/* <section ref={section2Ref} className="py-16 px-6 bg-sky-blue">
         <h2 className="text-3xl font-bold text-center text-white">
           Our Achievements
         </h2>
@@ -173,11 +173,11 @@ const Home = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Features Section */}
-      <section ref={section3Ref} className="py-16 px-6 text-center">
-        <h2 className="text-3xl font-bold mb-10 text-light-purple">
+      <section ref={section3Ref} className="py-16 px-6 text-center bg-background1">
+        <h2 className="text-4xl font-bold mb-10 text-dark-purple">
           What You’ll Get with Bitwise
         </h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -220,10 +220,10 @@ const Home = () => {
       </section>
 
       {/* Founders Section */}
-      <section ref={section4Ref} className="bg-dark-purple text-white py-16">
+      <section ref={section4Ref} className="bg-background2 text-white py-16">
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-8">Meet Our Founders</h2>
-          <p className="text-white max-w-2xl mx-auto mb-12">
+          <h2 className="text-4xl font-bold mb-8 text-dark-purple">Meet Our Leaders</h2>
+          <p className="text-dark-purple max-w-2xl mx-auto mb-12">
             Our leadership team is dedicated to driving innovation and growth in
             the tech industry.
           </p>
@@ -235,15 +235,15 @@ const Home = () => {
                 initial={{ opacity: 0, y: 50 }}
                 animate={section4InView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.2 * index, duration: 0.6 }}
-                className="bg-navy-blue rounded-xl p-6 mx-5 shadow-lg shadow-navy-blue hover:shadow-2xl"
+                className="bg-navy-blue rounded-xl p-6 mx-5 shadow-lg shadow-sky-blue hover:shadow-2xl"
               >
                 <img
                   src={founder.image}
                   alt={founder.name}
-                  className="w-32 h-32 mx-auto rounded-full mb-4 border-4 border-light-purple"
+                  className="w-32 h-32 mx-auto rounded-full mb-4 border-4 border-dark-purple"
                 />
                 <h3 className="text-xl font-semibold">{founder.name}</h3>
-                <p className="text-light-purple">{founder.title}</p>
+                <p className="text-dark-purple">{founder.title}</p>
                 <p className="text-gray-300 mt-2">{founder.description}</p>
               </motion.div>
             ))}
@@ -252,8 +252,8 @@ const Home = () => {
       </section>
 
       {/* Final Call to Action */}
-      <section ref={section5Ref} className="py-16 px-6 text-center">
-        <h2 className="text-3xl font-bold text-light-purple">
+      {/* <section ref={section5Ref} className="py-16 px-6 text-center">
+        <h2 className="text-3xl font-bold text-dark-purple">
           Start Learning Today!
         </h2>
         <p className="mt-4 text-lg max-w-2xl mx-auto text-gray-500">
@@ -269,11 +269,11 @@ const Home = () => {
             boxShadow: "0px 0px 20px #3f56a4",
           }}
           whileTap={{ scale: 0.95 }}
-          className="mt-6 px-6 py-3 bg-white text-navy-blue text-lg font-semibold rounded-lg shadow-lg hover:bg-light-purple"
+          className="mt-6 px-6 py-3 bg-white text-navy-blue text-lg font-semibold rounded-lg shadow-lg hover:bg-dark-purple"
         >
           Start Your Learning Journey
         </motion.button>
-      </section>
+      </section> */}
     </div>
   );
 };

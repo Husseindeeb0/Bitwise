@@ -9,6 +9,8 @@ import {
   FaBullhorn,
   FaSignInAlt,
   FaUserPlus,
+  FaChevronDown,
+  FaChevronUp,
 } from "react-icons/fa";
 import { MdManageAccounts } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
@@ -72,11 +74,11 @@ const Navbar = () => {
   const NavItem = ({ to, label, onClick }) => (
     <Link
       to={to}
-      className="group relative flex items-center gap-2 text-navy-blue transition hover:text-dark-purple py-2 px-3"
+      className="group relative flex items-center gap-2 text-dark-purple hover:text-sky-blue transition py-2 px-3"
       onClick={onClick}
     >
       {label}
-      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-dark-purple transition-all duration-300 group-hover:w-full"></span>
+      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-sky-blue transition-all duration-300 group-hover:w-full"></span>
     </Link>
   );
 
@@ -96,7 +98,7 @@ const Navbar = () => {
   );
 
   const NavDropdownItem = ({ to, icon, label }) => (
-    <li className="cursor-pointer flex gap-2 items-center text-navy-blue hover:bg-light p-2 rounded-md">
+    <li className="cursor-pointer flex gap-2 items-center text-navy-blue hover:bg-sky-blue/30 py-3 p-2">
       <Link
         to={to}
         className="flex gap-2 items-center w-full"
@@ -108,10 +110,10 @@ const Navbar = () => {
   );
 
   return (
-    <header className="fixed top-0 left-0 w-full backdrop-blur-3xl bg-white/10 shadow-lg py-2 px-4 flex justify-between items-center z-50">
+    <header className="fixed top-0 left-0 w-full h-20 backdrop-blur-3xl bg-white/10 shadow-lg py-2 px-4 flex justify-between items-center z-50">
       {/* Logo */}
       <Link to="/">
-        <img src="/logo.png" alt="Bitwise" className="w-16" />
+        <img src="/Bitwise_logo.png" alt="Bitwise" className="w-28" />
       </Link>
 
       {/* Large screens Nav */}
@@ -122,29 +124,16 @@ const Navbar = () => {
         {role === "admin" || role === "top_admin" ? (
           <div className="relative" ref={dropDownRef}>
             <button
-              className="px-5 py-2 flex items-center gap-3 text-white bg-gradient-to-r from-navy-blue to-dark-purple rounded-lg hover:shadow-md transition-all duration-300 group"
+              className="px-5 py-2 flex items-center gap-3 text-white bg-gradient-to-r from-navy-blue to-sky-blue rounded-lg hover:shadow-md transition-all duration-300 group"
               onClick={toggleDialog}
             >
               <div className="flex items-center justify-center bg-white/20 rounded-full p-1.5">
                 <MdManageAccounts className="text-lg" />
               </div>
               <span>Management</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className={`h-4 w-4 transition-transform duration-300 ${
-                  isDisplay ? "rotate-180" : "rotate-0"
-                }`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
+              {
+                isDisplay ? <FaChevronUp className="text-sm" /> : <FaChevronDown className="text-sm" />
+              }
             </button>
 
             <AnimatePresence>
@@ -156,12 +145,12 @@ const Navbar = () => {
                   transition={{ duration: 0.2 }}
                   className="absolute top-full right-0 w-72 mt-2 bg-white shadow-xl border border-gray-100 rounded-lg overflow-hidden z-50"
                 >
-                  <div className="bg-navy-blue/10 py-2 px-4 border-b border-gray-100">
-                    <p className="text-sm font-medium text-navy-blue">
+                  <div className="bg-navy-blue py-2 px-4 border-b border-gray-100">
+                    <p className="text-sm font-medium text-white">
                       Management Tools
                     </p>
                   </div>
-                  <ul className="py-2">
+                  <ul className="">
                     {role === "top_admin" && (
                       <NavDropdownItem
                         to="/manageAdmins"
@@ -193,11 +182,11 @@ const Navbar = () => {
           </>
         ) : (
           <button
-            className="group relative flex items-center gap-2 text-navy-blue transition hover:text-dark-purple py-2 px-3"
+            className="group relative flex items-center gap-2 text-dark-purple transition hover:text-sky-blue py-2 px-3"
             onClick={handleLogout}
           >
             <FiLogOut /> Logout
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-dark-purple transition-all duration-300 group-hover:w-full"></span>
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-sky-blue transition-all duration-300 group-hover:w-full"></span>
           </button>
         )}
       </nav>
@@ -228,7 +217,6 @@ const Navbar = () => {
                 onClick={toggleSidebar}
               >
                 <img src="/logo.png" alt="Bitwise" className="w-12 h-12" />
-                Bitwise
               </Link>
               <button
                 onClick={toggleSidebar}

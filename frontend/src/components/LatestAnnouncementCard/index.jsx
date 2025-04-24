@@ -87,7 +87,7 @@ const LatestAnnouncementCard = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="w-full max-w-4xl mx-auto mt-12 bg-dark-purple/30 rounded-xl shadow-lg overflow-hidden backdrop-blur-sm"
+      className="w-full max-w-4xl mx-auto mt-12 bg-light/30 rounded-xl shadow-lg overflow-hidden backdrop-blur-sm"
     >
       <div className="bg-navy-blue text-white py-2 px-4 text-sm font-semibold">
         LATEST {category?.toUpperCase() || "ANNOUNCEMENT"}
@@ -108,24 +108,24 @@ const LatestAnnouncementCard = () => {
         <div className={`p-6 overflow-hidden`}>
           <h3 className="text-2xl font-bold text-navy-blue mb-2">{title}</h3>
 
-          <div className="flex flex-wrap gap-4 my-3 text-sm text-gray-600">
+          <div className="flex flex-wrap gap-4 my-3 text-sm text-dark-purple">
             {date && (
               <div className="flex items-center">
-                <FaCalendar size={16} className="mr-1" />
+                <FaCalendar size={16} className="mr-1 text-navy-blue" />
                 <span>{formatDate(date)}</span>
               </div>
             )}
 
             {time && (
               <div className="flex items-center">
-                <FaClock size={16} className="mr-1" />
+                <FaClock size={16} className="mr-1 text-navy-blue" />
                 <span>{convertTo12HourFormat(time)}</span>
               </div>
             )}
 
             {location && (
               <div className="flex items-center">
-                <FaMapMarkerAlt size={16} className="mr-1" />
+                <FaMapMarkerAlt size={16} className="mr-1 text-navy-blue" />
                 <span>{location}</span>
               </div>
             )}
@@ -146,7 +146,7 @@ const LatestAnnouncementCard = () => {
                       <div className="text-sm">
                         <span className="font-medium">{organizer.name}</span>
                         {organizer.role && (
-                          <span className="text-gray-500 text-xs">
+                          <span className="text-dark-purple text-xs">
                             {" "}
                             · {organizer.role}
                           </span>
@@ -164,7 +164,7 @@ const LatestAnnouncementCard = () => {
             )}
           </div>
 
-          <p className="text-gray-700 mb-4 text-start line-clamp-2">{description}</p>
+          <p className="text-dark-purple mb-4 text-start line-clamp-2">{description}</p>
 
           <div className="flex flex-wrap gap-3 mt-4">
             <Link
@@ -174,7 +174,7 @@ const LatestAnnouncementCard = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-4 py-2 bg-light-purple text-white font-medium rounded-lg"
+                className="px-4 py-2 bg-navy-blue text-white font-medium rounded-lg"
               >
                 View Details
               </motion.button>

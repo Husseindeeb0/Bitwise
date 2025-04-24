@@ -2,10 +2,12 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-light: #e3e3f3;
-  --color-navy-blue: #3f56a4;
-  --color-light-purple: #9ca4cd;
-  --color-dark-purple: #8494c3;
+  --color-light: #e0e0f0;
+  --color-navy-blue: #3a54a5;
+  --color-dark-purple: #121624;
+  --color-sky-blue: #60b2e1;
+  --color-background1: #cbe2f3;
+  --color-background2: #ffffff;
 }
 
 button {

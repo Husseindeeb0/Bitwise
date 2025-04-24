@@ -38,7 +38,7 @@ function Announcements() {
   }, [accessToken]);
 
   return (
-    <div className="mt-30 mb-10 mx-5">
+    <div className="w-full px-10 py-30">
       <div className="grid grid-cols-1 gap-6">
         {loading ? (
           <>
@@ -54,7 +54,7 @@ function Announcements() {
             </div>
           ))
         ) : (
-          <div className="bg-white border border-gray-200 rounded-lg p-6 text-center">
+          <div className="border border-gray-200 rounded-lg p-6 text-center">
             <div className="flex flex-col items-center">
               <FaCalendar size={40} className="text-gray-400 mb-2" />
               <h3 className="text-lg font-medium text-gray-900">

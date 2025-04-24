@@ -33,7 +33,7 @@ const AnnouncementCard = ({ event, page, editEvent, setIsDeleting }) => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
   return (
-    <div className="bg-light-purple border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+    <div className="bg-light border border-gray-200 rounded-lg shadow-sm overflow-hidden">
       <div className="flex flex-col md:flex-row">
         <div className="md:w-1/3">
           <img
@@ -85,25 +85,25 @@ const AnnouncementCard = ({ event, page, editEvent, setIsDeleting }) => {
 
           {/* Title */}
           {event.title && (
-            <h2 className="text-xl font-bold text-gray-900 mt-2">
+            <h2 className="text-xl font-bold text-dark-purple mt-2">
               {event.title}
             </h2>
           )}
 
           {/* Description */}
-          <p className="text-gray-700 mt-1 line-clamp-2">{event.description}</p>
+          <p className="text-dark-purple mt-1 line-clamp-2">{event.description}</p>
 
           {/* Time */}
           {event.time && (
             <div className="mt-3 flex flex-col space-y-2">
-              <div className="flex items-center text-gray-700">
+              <div className="flex items-center text-dark-purple">
                 <FaCalendar size={16} className="mr-2 text-navy-blue" />
                 <span>
                   {formatDate(event.date)}{" "}
                   {event.time && `at ${convertTo12HourFormat(event.time)}`}
                 </span>
               </div>
-              <div className="flex items-center text-gray-700">
+              <div className="flex items-center text-dark-purple">
                 <FaMapMarkerAlt size={16} className="mr-2 text-navy-blue" />
                 <span>{event.location}</span>
               </div>
@@ -114,24 +114,24 @@ const AnnouncementCard = ({ event, page, editEvent, setIsDeleting }) => {
           {event.organizers && event.organizers.length > 0 && (
             <div className="flex justify-between items-end">
               <div className="mt-3">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">
+                <h3 className="text-sm font-medium text-dark-purple mb-2">
                   Organizers
                 </h3>
                 <div className="flex flex-wrap gap-2 line">
                   {event.organizers.slice(0, 3).map((organizer, idx) => (
                     <div
                       key={organizer.id || idx}
-                      className="flex items-center gap-2 bg-gray-50 px-2 py-1 rounded-md"
+                      className="flex items-center gap-2 bg-navy-blue px-2 py-1 rounded-md"
                     >
                       <img
                         src={organizer.image}
                         alt={organizer.name}
                         className="w-6 h-6 rounded-full object-cover"
                       />
-                      <div className="text-sm">
+                      <div className="text-sm text-light">
                         <span className="font-medium">{organizer.name}</span>
                         {organizer.role && (
-                          <span className="text-gray-500 text-xs">
+                          <span className="text-xs">
                             {" "}
                             · {organizer.role}
                           </span>
