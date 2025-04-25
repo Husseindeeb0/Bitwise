@@ -137,6 +137,76 @@ const Home = () => {
         </motion.div>
       </section>
 
+      <section className="bg-background1 py-24 px-8 overflow-hidden">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12">
+          {/* Image container with animations */}
+          <motion.div
+            className="relative rounded-xl w-full lg:w-1/2 shadow-2xl shadow-sky-blue"
+            initial={{ opacity: 0, scale: 0.8, z: -100 }}
+            whileInView={{ opacity: 1, scale: 1, z: 0 }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
+          >
+            <div className="relative overflow-hidden rounded-xl">
+              <img
+                src="/background.jpg"
+                alt="Bitwise Club Members"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-sky-blue/60 to-transparent"></div>
+            </div>
+          </motion.div>
+
+          {/* Content container with animations */}
+          <motion.div
+            className="w-full lg:w-1/2"
+            initial={{ opacity: 0, scale: 0.8, z: -100 }}
+            whileInView={{ opacity: 1, scale: 1, z: 0 }}
+            transition={{ duration: 0.9, delay: 0.2, ease: "easeOut" }}
+          >
+            <div className="bg-white/90 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-sky-blue/20">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-navy-blue to-sky-blue bg-clip-text text-transparent">
+                  Who we are
+                </h2>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+                viewport={{ once: true }}
+              >
+                <p className="text-navy-blue leading-relaxed mb-6">
+                  <span className="font-bold">Bitwise Club</span> was founded in{" "}
+                  <span className="font-bold">2024</span> by Master 1 students
+                  to fuel the growing interest in computer science. Established
+                  with the support of the Student Council, we focus on enhancing{" "}
+                  <span className="font-bold">
+                    practical and theoretical skills
+                  </span>{" "}
+                  for students passionate about the computing world.
+                </p>
+
+                <p className="text-navy-blue leading-relaxed">
+                  We cover multiple domains including{" "}
+                  <span className="font-bold">
+                    programming, cybersecurity, artificial intelligence, and
+                    robotics
+                  </span>{" "}
+                  through <span className="font-bold">hands-on activities</span> and collaborative learning
+                  experiences designed to build <span className="font-bold">real-world expertise.</span>
+                </p>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Achievements Section */}
       {/* <section ref={section2Ref} className="py-16 px-6 bg-sky-blue">
         <h2 className="text-3xl font-bold text-center text-white">
@@ -176,7 +246,10 @@ const Home = () => {
       </section> */}
 
       {/* Features Section */}
-      <section ref={section3Ref} className="py-16 px-6 text-center bg-background1">
+      <section
+        ref={section3Ref}
+        className="py-16 px-6 text-center bg-background2"
+      >
         <h2 className="text-4xl font-bold mb-10 text-dark-purple">
           What You’ll Get with Bitwise
         </h2>
@@ -220,9 +293,11 @@ const Home = () => {
       </section>
 
       {/* Founders Section */}
-      <section ref={section4Ref} className="bg-background2 text-white py-16">
+      <section ref={section4Ref} className="bg-background1 text-white py-16">
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-8 text-dark-purple">Meet Our Leaders</h2>
+          <h2 className="text-4xl font-bold mb-8 text-dark-purple">
+            Meet Our Leaders
+          </h2>
           <p className="text-dark-purple max-w-2xl mx-auto mb-12">
             Our leadership team is dedicated to driving innovation and growth in
             the tech industry.
