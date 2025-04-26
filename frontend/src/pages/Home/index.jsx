@@ -3,8 +3,13 @@ import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./style.css";
 import LatestAnnouncementCard from "../../components/LatestAnnouncementCard";
+import { FaArrowRight, FaQuoteLeft, FaQuoteRight } from "react-icons/fa";
 
 const Home = () => {
+  // SVG dots positions
+  const xPositions = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+  const yPositions = [10, 20, 30, 40, 50];
+
   // Refs for sections that should animate on scroll
   const section1Ref = useRef(null);
   const section2Ref = useRef(null);
@@ -118,33 +123,24 @@ const Home = () => {
               className="px-6 py-3 bg-navy-blue text-white font-semibold rounded-lg shadow-lg flex items-center gap-2"
             >
               <span>View All Announcements</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M5 12h14"></path>
-                <path d="m12 5 7 7-7 7"></path>
-              </svg>
+              <FaArrowRight />
             </motion.button>
           </Link>
         </motion.div>
       </section>
 
-      <section className="bg-background1 py-24 px-8 overflow-hidden">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12">
+      {/* About us Section */}
+      <section
+        ref={section2Ref}
+        className="bg-background1 py-24 px-8 overflow-hidden relative"
+      >
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-around gap-12">
           {/* Image container with animations */}
           <motion.div
-            className="relative rounded-xl w-full lg:w-1/2 shadow-2xl shadow-sky-blue"
+            className="relative rounded-xl w-full lg:w-1/3 shadow-2xl shadow-sky-blue "
             initial={{ opacity: 0, scale: 0.8, z: -100 }}
-            whileInView={{ opacity: 1, scale: 1, z: 0 }}
-            transition={{ duration: 0.9, ease: "easeOut" }}
+            animate={section2InView ? { opacity: 1, z: 0, scale: 1 } : {}}
+            transition={{ delay: 0.2, duration: 0.6 }}
           >
             <div className="relative overflow-hidden rounded-xl">
               <img
@@ -154,33 +150,83 @@ const Home = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-sky-blue/60 to-transparent"></div>
             </div>
+
+            {/* Curvy lines positioned relative to the image */}
+            <svg
+              className="md:w-60 w-48 absolute top-0 -right-14 md:-right-24 text-navy-blue rotate-45"
+              viewBox="0 0 200 60"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <motion.path
+                d="M0 30 Q50 0 100 30 T200 30"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="none"
+                initial={{ pathLength: 0 }}
+                animate={section2InView ? { pathLength: 1 } : {}}
+                transition={{ duration: 2 }}
+              />
+            </svg>
+
+            <svg
+              className="md:w-60 w-48 absolute top-5 -right-10 md:-right-20 text-navy-blue rotate-45"
+              viewBox="0 0 200 60"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <motion.path
+                d="M0 30 Q50 0 100 30 T200 30"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="none"
+                initial={{ pathLength: 0 }}
+                animate={section2InView ? { pathLength: 1 } : {}}
+                transition={{ duration: 2 }}
+              />
+            </svg>
           </motion.div>
 
           {/* Content container with animations */}
           <motion.div
-            className="w-full lg:w-1/2"
+            className="w-full lg:w-1/2 relative mb-10"
             initial={{ opacity: 0, scale: 0.8, z: -100 }}
-            whileInView={{ opacity: 1, scale: 1, z: 0 }}
-            transition={{ duration: 0.9, delay: 0.2, ease: "easeOut" }}
+            animate={section2InView ? { opacity: 1, z: 0, scale: 1 } : {}}
+            transition={{ delay: 0.2, duration: 0.6 }}
           >
+            <svg
+              className="absolute -top-16 md:-top-24 -right-28 md:-right-20 w-96 md:h-auto h-72 text-navy-blue/80 z-20"
+              viewBox="0 0 110 110"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {yPositions.map((cy, rowIndex) =>
+                xPositions.map((cx, colIndex) => (
+                  <motion.circle
+                    key={`${rowIndex}-${colIndex}`}
+                    cx={cx}
+                    cy={cy}
+                    r="1"
+                    fill="currentColor"
+                    initial={{ opacity: 0 }}
+                    animate={section2InView ? { opacity: 1 } : {}}
+                    transition={{
+                      delay: (rowIndex * xPositions.length + colIndex) * 0.1,
+                      duration: 0.3,
+                    }}
+                  />
+                ))
+              )}
+            </svg>
+
             <div className="bg-white/90 backdrop-blur-md rounded-2xl p-8 shadow-xl border border-sky-blue/20">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                viewport={{ once: true }}
-              >
+              <div>
                 <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-navy-blue to-sky-blue bg-clip-text text-transparent">
                   Who we are
                 </h2>
-              </motion.div>
+              </div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.5 }}
-                viewport={{ once: true }}
-              >
+              <div>
                 <p className="text-navy-blue leading-relaxed mb-6">
                   <span className="font-bold">Bitwise Club</span> was founded in{" "}
                   <span className="font-bold">2024</span> by Master 1 students
@@ -198,12 +244,24 @@ const Home = () => {
                     programming, cybersecurity, artificial intelligence, and
                     robotics
                   </span>{" "}
-                  through <span className="font-bold">hands-on activities</span> and collaborative learning
-                  experiences designed to build <span className="font-bold">real-world expertise.</span>
+                  through <span className="font-bold">hands-on activities</span>{" "}
+                  and collaborative learning experiences designed to build{" "}
+                  <span className="font-bold">real-world expertise.</span>
                 </p>
-              </motion.div>
+              </div>
             </div>
           </motion.div>
+
+          <div className="md:absolute bottom-3 left-10 self-start md:left-16 w-72">
+            <FaQuoteLeft className="text-3xl text-navy-blue" />
+            <p className="text-dark-purple ml-5 font-semibold text-sm">
+              <i>
+                The future belongs to those who believe in the beauty of their
+                ideas and the courage to create them.
+              </i>
+            </p>
+            <FaQuoteRight className="text-3xl ml-auto text-navy-blue" />
+          </div>
         </div>
       </section>
 
