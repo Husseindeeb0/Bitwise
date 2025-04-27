@@ -137,7 +137,7 @@ const Home = () => {
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-around gap-12">
           {/* Image container with animations */}
           <motion.div
-            className="relative rounded-xl w-full lg:w-1/3 shadow-2xl shadow-sky-blue "
+            className="relative rounded-xl w-full lg:w-1/3 shadow-2xl shadow-sky-blue mb-20 "
             initial={{ opacity: 0, scale: 0.8, z: -100 }}
             animate={section2InView ? { opacity: 1, z: 0, scale: 1 } : {}}
             transition={{ delay: 0.2, duration: 0.6 }}
@@ -186,10 +186,9 @@ const Home = () => {
               />
             </svg>
           </motion.div>
-
           {/* Content container with animations */}
           <motion.div
-            className="w-full lg:w-1/2 relative mb-10"
+            className="w-full lg:w-1/2 relative"
             initial={{ opacity: 0, scale: 0.8, z: -100 }}
             animate={section2InView ? { opacity: 1, z: 0, scale: 1 } : {}}
             transition={{ delay: 0.2, duration: 0.6 }}
@@ -252,15 +251,38 @@ const Home = () => {
             </div>
           </motion.div>
 
-          <div className="md:absolute bottom-3 left-10 self-start md:left-16 w-72">
-            <FaQuoteLeft className="text-3xl text-navy-blue" />
-            <p className="text-dark-purple ml-5 font-semibold text-sm">
-              <i>
+          <div className="md:absolute bottom-3 left-16 w-96">
+            {/* Decorative line */}
+            <div className="absolute left-1 top-0 bottom-0 w-0.5 h-20 bg-gradient-to-b from-sky-blue to-navy-blue rounded-full opacity-70"></div>
+
+            {/* Quote container */}
+            <div className="ml-10 relative">
+              {/* Quote icon */}
+              <FaQuoteLeft className="text-2xl text-navy-blue absolute -left-4 top-0" />
+
+              {/* Quote text */}
+              <p className="text-dark-purple font-medium text-sm italic leading-relaxed pl-4 pr-3">
                 The future belongs to those who believe in the beauty of their
                 ideas and the courage to create them.
-              </i>
-            </p>
-            <FaQuoteRight className="text-3xl ml-auto text-navy-blue" />
+              </p>
+
+              {/* Bottom quote icon */}
+              <FaQuoteRight className="text-2xl text-navy-blue mt-1 ml-auto" />
+
+              {/* Signature */}
+              <div className="mt-2 flex items-center justify-end">
+                <div className="h-px w-12 bg-navy-blue mr-3"></div>
+                <div
+                  style={{ fontFamily: "'Great Vibes', cursive" }}
+                  className="text-navy-blue text-3xl"
+                >
+                  Bitwise
+                </div>
+              </div>
+            </div>
+
+            {/* Subtle decorative element */}
+            <div className="absolute -bottom-1 right-4 w-20 h-0.5 bg-gradient-to-r from-transparent to-navy-blue rounded-full opacity-60"></div>
           </div>
         </div>
       </section>
