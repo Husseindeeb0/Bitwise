@@ -77,7 +77,6 @@ const LatestAnnouncementCard = () => {
     hasRegistration,
     registrationUrl,
   } = announcement;
-  console.log(announcement);
 
   // If the announcement is not active, don't display it
   if (!active) return null;

@@ -60,13 +60,13 @@ export default function Login() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-navy-blue to-light-purple p-5">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-background1 to-background2 p-5">
       <Navbar />
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-white shadow-xl rounded-2xl p-8 max-w-md w-full text-center"
+        className="bg-light/50 shadow-xl rounded-2xl p-8 max-w-md w-full text-center"
       >
         <h2 className="text-2xl font-bold text-navy-blue mb-5">Welcome Back</h2>
 
@@ -100,8 +100,8 @@ export default function Login() {
           <button
             type="submit"
             className={`w-full ${
-              loading ? "bg-light-purple" : "bg-navy-blue"
-            } text-lg text-white py-2 rounded-lg hover:bg-light-purple transition duration-300`}
+              loading ? "bg-navy-blue/80" : "bg-navy-blue"
+            } text-lg text-white py-2 rounded-lg hover:bg-navy-blue/80 transition duration-300`}
             disabled={loading}
           >
             {loading ? <LoggingLoader /> : "Login"}

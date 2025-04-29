@@ -30,13 +30,17 @@ export default function Signup() {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    http://localhost:5173/#/announcementDetails?id=67f8186e33742f4a96dc96a7
-    try {
+    //localhost:5173/#/announcementDetails?id=67f8186e33742f4a96dc96a7
+    http: try {
       const data = await authenticateUser(userDetails, "signup");
       if (data.status === "failed") {
-        setError(data.message)
-        console.log(data.message)
-      } else if (data.status === "success" && data.accessToken && data.refreshToken){
+        setError(data.message);
+        console.log(data.message);
+      } else if (
+        data.status === "success" &&
+        data.accessToken &&
+        data.refreshToken
+      ) {
         localStorage.setItem("refreshToken", data.refreshToken);
         setAccessToken(data.accessToken);
         setIsAuthenticated(true);
@@ -45,8 +49,8 @@ export default function Signup() {
         sessionStorage.removeItem("redirectAfterLogin");
         navigate(redirectTo);
       } else {
-        setError(data.message)
-        console.log(data.message)
+        setError(data.message);
+        console.log(data.message);
       }
     } catch (error) {
       setError(error.message);
@@ -57,13 +61,13 @@ export default function Signup() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-navy-blue to-light-purple p-5">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-background1 to-background2 p-5">
       <Navbar />
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-white shadow-xl rounded-2xl p-8 max-w-md w-full text-center"
+        className="bg-white/50 shadow-xl rounded-2xl p-8 max-w-md w-full text-center"
       >
         <h2 className="text-2xl font-bold text-navy-blue mb-5">
           Create an Account
@@ -112,13 +116,15 @@ export default function Signup() {
 
           <button
             type="submit"
-            className="w-full bg-navy-blue text-white py-2 rounded-lg hover:bg-light-purple transition duration-300"
+            className={`w-full ${
+              loading ? "bg-navy-blue/80" : "bg-navy-blue"
+            } text-lg text-white py-2 rounded-lg hover:bg-navy-blue/80 transition duration-300`}
             disabled={loading}
           >
             {loading ? <LoggingLoader /> : "Sign Up"}
           </button>
         </form>
-        
+
         {/* Error message section */}
         {error && (
           <motion.div

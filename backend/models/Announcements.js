@@ -1,11 +1,15 @@
 const mongoose = require("mongoose");
-
 // Define a sub-schema for organizers
 const organizerSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    role: { type: String, required: true },
+    expertise: { type: String, required: true },
     image: { type: String, required: true },
+    description: { type: String, required: true },
+    instaLink: { type: String, required: false },
+    linkedinLink: { type: String, required: false },
+    title: { type: String, required: true },
+    startTime: { type: String, required: true },
   },
   { _id: false }
 ); // This prevents creating _id for each organizer

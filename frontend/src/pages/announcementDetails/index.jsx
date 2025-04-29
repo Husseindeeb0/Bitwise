@@ -11,8 +11,10 @@ import {
   FaTimes,
   FaLink,
   FaCheck,
+  FaInfoCircle,
 } from "react-icons/fa";
 import getAnnouncementById from "../../api/getAnnouncementById";
+import SpeakerDetails from "../../components/SpeakerDetails";
 
 const AnnouncementDetails = () => {
   const { accessToken, setLoading } = useMyContext();
@@ -20,6 +22,8 @@ const AnnouncementDetails = () => {
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [selectedSpeaker, setSelectedSpeaker] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchAnnouncementData = useCallback(async (id) => {
     try {
@@ -28,6 +32,17 @@ const AnnouncementDetails = () => {
 
       // Check if the response contains the expected data
       if (response.state === "success") {
+        // Enhance organizers with additional mock data for our new modal
+        if (response.data.organizers && response.data.organizers.length > 0) {
+          response.data.organizers = response.data.organizers.map(organizer => ({
+            ...organizer,
+            bio: organizer.bio || "An experienced professional with extensive knowledge in their field. They have contributed to numerous projects and initiatives in the industry.",
+            expertise: organizer.expertise || ["Technology", "Leadership", "Innovation"],
+            linkedin: organizer.linkedin || "https://linkedin.com",
+            instagram: organizer.instagram || "https://instagram.com",
+            education: organizer.education || "Master's Degree, Computer Science"
+          }));
+        }
         setEvent(response.data);
       } else {
         console.error(response.message);
@@ -39,7 +54,7 @@ const AnnouncementDetails = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [accessToken, setLoading]);
 
   useEffect(() => {
     const loadEvent = async () => {
@@ -47,6 +62,17 @@ const AnnouncementDetails = () => {
       const searchParams = new URLSearchParams(location.search);
       const id = searchParams.get("id");
       if (location.state && location.state.event) {
+        // Enhance organizers with additional mock data
+        if (location.state.event.organizers && location.state.event.organizers.length > 0) {
+          location.state.event.organizers = location.state.event.organizers.map(organizer => ({
+            ...organizer,
+            bio: organizer.bio || "An experienced professional with extensive knowledge in their field. They have contributed to numerous projects and initiatives in the industry.",
+            expertise: organizer.expertise || ["Technology", "Leadership", "Innovation"],
+            linkedin: organizer.linkedin || "https://linkedin.com",
+            instagram: organizer.instagram || "https://instagram.com",
+            education: organizer.education || "Master's Degree, Computer Science"
+          }));
+        }
         setEvent(location.state.event);
         setLoading(false);
       } else {
@@ -55,7 +81,18 @@ const AnnouncementDetails = () => {
       }
     };
     loadEvent();
-  }, [location, fetchAnnouncementData]);
+  }, [location, fetchAnnouncementData, setLoading]);
+
+  // Function to open the speaker modal
+  const openSpeakerModal = (speaker) => {
+    setSelectedSpeaker(speaker);
+    setIsModalOpen(true);
+  };
+
+  // Function to close the speaker modal
+  const closeSpeakerModal = () => {
+    setIsModalOpen(false);
+  };
 
   // Function to copy the current URL to clipboard
   const copyEventLink = () => {
@@ -116,6 +153,14 @@ const AnnouncementDetails = () => {
 
   return (
     <div className="min-h-screen mt-20">
+      {/* Speaker Modal */}
+      <SpeakerDetails 
+        isOpen={isModalOpen} 
+        onClose={closeSpeakerModal} 
+        speaker={selectedSpeaker}
+        convertTo12HourFormat={convertTo12HourFormat}
+      />
+
       {/* Hero section with full-width image */}
       <div className="relative h-80 md:h-96 lg:h-[500px] w-full overflow-hidden">
         <div className="absolute inset-0 bg-dark-purple/20 z-10"></div>
@@ -183,7 +228,7 @@ const AnnouncementDetails = () => {
           {/* Left column - Event details */}
           <div className="md:col-span-2">
             {/* Event information card */}
-            <div className="bg-light rounded-xl shadow-lg overflow-hidden mb-8">
+            <div className="bg-light/50 rounded-xl shadow-lg overflow-hidden mb-8">
               <div className="p-6">
                 <h2 className="text-2xl font-bold text-dark-purple mb-4">
                   About this event
@@ -229,31 +274,45 @@ const AnnouncementDetails = () => {
               </div>
             </div>
 
-            {/* Organizers section */}
+            {/* Speakers section - ENHANCED */}
             {event.organizers && event.organizers.length > 0 && (
-              <div className="bg-light rounded-xl shadow-lg overflow-hidden mb-8">
+              <div className="bg-light/50 rounded-xl shadow-lg overflow-hidden mb-8">
                 <div className="p-6">
-                  <h2 className="text-xl font-bold text-dark-purple mb-4">
-                    Organizers
-                  </h2>
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold capitalize text-dark-purple">
+                      {event.category} Speakers
+                    </h2>
+                    <div className="text-navy-blue/70 text-sm flex items-center gap-1">
+                      <FaInfoCircle size={14} />
+                      <span>Click on speaker for details</span>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {event.organizers.map((organizer, index) => (
                       <div
                         key={index}
-                        className="flex items-center p-3 bg-white rounded-lg"
+                        onClick={() => openSpeakerModal(organizer)}
+                        className="flex items-center p-4 bg-white rounded-lg border border-transparent hover:border-sky-blue hover:shadow-md transition-all cursor-pointer group"
                       >
-                        <img
-                          src={organizer.image}
-                          alt={organizer.name}
-                          className="w-12 h-12 rounded-full object-cover"
-                        />
-                        <div className="ml-3">
-                          <p className="font-medium text-dark-purple">
+                        <div className="relative">
+                          <img
+                            src={organizer.image || "/api/placeholder/100/100"}
+                            alt={organizer.name}
+                            className="w-16 h-16 rounded-full object-cover border-2 border-navy-blue group-hover:border-sky-blue transition-colors"
+                          />
+                          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-navy-blue group-hover:bg-sky-blue text-white rounded-full flex items-center justify-center transition-colors">
+                            <FaInfoCircle size={12} />
+                          </div>
+                        </div>
+                        <div className="ml-4">
+                          <p className="font-medium text-dark-purple group-hover:text-sky-blue transition-colors">
                             {organizer.name}
                           </p>
                           <p className="text-sm text-dark-purple/70">
                             {organizer.role}
                           </p>
+                          <div className="h-0.5 w-8 bg-sky-blue/30 group-hover:bg-sky-blue mt-1 transition-colors"></div>
                         </div>
                       </div>
                     ))}
@@ -265,7 +324,7 @@ const AnnouncementDetails = () => {
 
           {/* Right column - Event meta information */}
           <div className="md:col-span-1">
-            <div className="bg-light rounded-xl shadow-lg overflow-hidden sticky top-8">
+            <div className="bg-light/50 rounded-xl shadow-lg overflow-hidden sticky top-8">
               <div className="p-6">
                 <h3 className="text-lg font-bold text-dark-purple mb-4">
                   Event Details

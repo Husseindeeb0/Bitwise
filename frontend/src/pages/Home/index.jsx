@@ -3,7 +3,15 @@ import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./style.css";
 import LatestAnnouncementCard from "../../components/LatestAnnouncementCard";
-import { FaArrowRight, FaQuoteLeft, FaQuoteRight } from "react-icons/fa";
+import {
+  FaArrowRight,
+  FaQuoteLeft,
+  FaQuoteRight,
+  FaUsers,
+  FaCode,
+  FaBriefcase,
+  FaPhoneAlt,
+} from "react-icons/fa";
 
 const Home = () => {
   // SVG dots positions
@@ -68,21 +76,29 @@ const Home = () => {
   const founders = [
     {
       name: "Hussein Ommies",
-      title: "Co-Founder",
+      title: "Founder",
       image: "hussein.jpg",
-      description: "Passionate about cyber security and building communities.",
+      education: "Information System and Data Intelligence",
+      description:
+        "Passionate about cybersecurity, committed to protecting digital systems, and dedicated to building communities that promote awareness and collaboration in the field.",
+      phone: "+961 76 764 155",
     },
     {
       name: "Joumana",
       title: "Co-Founder",
       image: "joumana.jpg",
-      description: "Ensuring financial growth while supporting innovation.",
+      education: "Computer Science",
+      description: "Passionate about coding and deeply interested in the ever-evolving world of the computer industry.",
+      phone: "+49 176 74849586",
     },
     {
       name: "Hassan Tofayli",
       title: "Co-Founder",
       image: "hasssan.jpg",
-      description: "Loves solving complex problems with elegant code.",
+      education: "Information System and Data Intelligence",
+      description:
+        "Focused on turning raw data into meaningful insights by analyzing patterns, developing strategies driven by decisions.",
+      phone: "+961 81 675 164",
     },
   ];
 
@@ -144,11 +160,11 @@ const Home = () => {
           >
             <div className="relative overflow-hidden rounded-xl">
               <img
-                src="/background.jpg"
+                src="/members.jpg"
                 alt="Bitwise Club Members"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-sky-blue/60 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-sky-blue/40 to-transparent"></div>
             </div>
 
             {/* Curvy lines positioned relative to the image */}
@@ -270,7 +286,7 @@ const Home = () => {
               <FaQuoteRight className="text-2xl text-navy-blue mt-1 ml-auto" />
 
               {/* Signature */}
-              <div className="mt-2 flex items-center justify-end">
+              <div className="mt-2 mr-8 flex items-center justify-end">
                 <div className="h-px w-12 bg-navy-blue mr-3"></div>
                 <div
                   style={{ fontFamily: "'Great Vibes', cursive" }}
@@ -372,10 +388,10 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Founders Section */}
-      <section ref={section4Ref} className="bg-background1 text-white py-16">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-8 text-dark-purple">
+      {/* Leaders Section */}
+      <section ref={section4Ref} className="bg-background1 py-16">
+        <div className="container mx-auto text-center px-4">
+          <h2 className="text-4xl font-bold mb-8 bg-clip-text text-dark-purple">
             Meet Our Leaders
           </h2>
           <p className="text-dark-purple max-w-2xl mx-auto mb-12">
@@ -383,29 +399,177 @@ const Home = () => {
             the tech industry.
           </p>
 
-          <div className="grid gap-8 md:grid-cols-3">
-            {founders.map((founder, index) => (
+          {/* Layout for main founder - takes full width */}
+          <div className="mb-10">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={section4InView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7 }}
+              className="relative max-w-lg mx-auto"
+            >
+              {/* Card Background with gradient border */}
+              <div className="relative bg-navy-blue backdrop-blur-sm rounded-2xl p-6 border border-transparent overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-r from-sky-blue/10 to-navy-blue/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
+
+                {/* Animated border gradient effect */}
+                <div
+                  className="absolute -inset-0.5 bg-gradient-to-r from-sky-blue to-navy-blue rounded-2xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-500"
+                  style={{ zIndex: -1 }}
+                />
+
+                <div className="flex flex-col md:flex-row md:items-center md:text-left">
+                  {/* Leader Initial in Large Circle */}
+                  <div className="md:w-1/3">
+                    <div className="relative mb-4 md:mb-0">
+                      <div className="w-20 h-20 mx-auto rounded-full flex items-center justify-center bg-gradient-to-br from-sky-blue to-navy-blue text-white shadow-lg shadow-dark-purple/20">
+                        <span className="text-3xl font-bold">
+                          {founders[0].name.charAt(0)}
+                        </span>
+                      </div>
+
+                      {/* Icon based on role/title */}
+                      <motion.div
+                        className="absolute -bottom-2 -right-2 md:bottom-0 md:right-8 bg-white text-navy-blue p-2 rounded-full shadow-lg"
+                        whileHover={{
+                          rotate: 360,
+                          transition: { duration: 0.5 },
+                        }}
+                      >
+                        <FaBriefcase size={16} />
+                      </motion.div>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="md:w-2/3 md:pl-6">
+                    <h3 className="text-2xl font-bold mb-1 group-hover:text-sky-blue transition-colors duration-300">
+                      {founders[0].name}
+                    </h3>
+                    <div className="h-1 w-12 mx-auto md:mx-0 mb-2 bg-gradient-to-r from-sky-blue to-navy-blue rounded-full" />
+
+                    {/* Title */}
+                    <p className="text-dark-purple font-medium mb-2">
+                      {founders[0].title}
+                    </p>
+
+                    {/* Position/Education Info */}
+                    <div className="mb-3 py-1.5 px-3 bg-navy-blue/50 rounded-lg border border-sky-blue/20 inline-block">
+                      <p className="text-sky-blue text-sm font-medium">
+                        {founders[0].position}
+                      </p>
+                      <p className="text-white/70 text-xs">
+                        {founders[0].education}
+                      </p>
+                    </div>
+
+                    {/* Description */}
+                    <p className="text-white/80 leading-relaxed text-sm mb-3">
+                      {founders[0].description}
+                    </p>
+
+                    {/* Connect button */}
+                    <motion.a
+                      href={`tel:${founders[0].phone}`}
+                      className="inline-block cursor-pointer px-4 py-1.5 bg-sky-blue text-navy-blue hover:bg-white border border-sky-blue/50 rounded-lg text-sm font-medium transition-all duration-300"
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <div className="flex items-center justify-center gap-2">
+                        <FaPhoneAlt size={12} />
+                        <span>Connect</span>
+                      </div>
+                    </motion.a>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Layout for co-founders - two cards in a row */}
+          <div className="grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
+            {founders.slice(1, 3).map((founder, index) => (
               <motion.div
-                key={index}
+                key={index + 1}
                 initial={{ opacity: 0, y: 50 }}
                 animate={section4InView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.2 * index, duration: 0.6 }}
-                className="bg-navy-blue rounded-xl p-6 mx-5 shadow-lg shadow-sky-blue hover:shadow-2xl"
+                transition={{ delay: 0.3 * (index + 1), duration: 0.7 }}
+                className="relative"
               >
-                <img
-                  src={founder.image}
-                  alt={founder.name}
-                  className="w-32 h-32 mx-auto rounded-full mb-4 border-4 border-dark-purple"
-                />
-                <h3 className="text-xl font-semibold">{founder.name}</h3>
-                <p className="text-dark-purple">{founder.title}</p>
-                <p className="text-gray-300 mt-2">{founder.description}</p>
+                {/* Card Background with gradient border */}
+                <div className="relative bg-navy-blue backdrop-blur-sm rounded-2xl p-5 border border-transparent overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-sky-blue/10 to-navy-blue/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
+
+                  {/* Animated border gradient effect */}
+                  <div
+                    className="absolute -inset-0.5 bg-gradient-to-r from-sky-blue to-navy-blue rounded-2xl blur opacity-20 group-hover:opacity-50 transition-opacity duration-500"
+                    style={{ zIndex: -1 }}
+                  />
+
+                  {/* Leader Initial in Smaller Circle */}
+                  <div className="relative mb-4">
+                    <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center bg-gradient-to-br from-sky-blue to-navy-blue text-white shadow-lg shadow-dark-purple/20">
+                      <span className="text-2xl font-bold">
+                        {founder.name.charAt(0)}
+                      </span>
+                    </div>
+
+                    {/* Icon based on role/title */}
+                    <motion.div
+                      className="absolute -bottom-1 -right-1 bg-white text-navy-blue p-1.5 rounded-full shadow-lg"
+                      whileHover={{
+                        rotate: 360,
+                        transition: { duration: 0.5 },
+                      }}
+                    >
+                      {founder.title.includes("Tech") ||
+                      founder.title.includes("CTO") ? (
+                        <FaCode size={14} />
+                      ) : (
+                        <FaUsers size={14} />
+                      )}
+                    </motion.div>
+                  </div>
+
+                  {/* Content */}
+                  <h3 className="text-xl font-bold mb-1 group-hover:text-sky-blue transition-colors duration-300">
+                    {founder.name}
+                  </h3>
+                  <div className="h-1 w-10 mx-auto mb-2 bg-gradient-to-r from-sky-blue to-navy-blue rounded-full" />
+
+                  {/* Title */}
+                  <p className="text-dark-purple font-medium mb-2 text-sm">
+                    {founder.title}
+                  </p>
+
+                  {/* Position/Education Info - More compact */}
+                  <div className="mb-3 py-1 px-2 bg-navy-blue/50 rounded-lg border border-sky-blue/20 inline-block">
+                    <p className="text-sky-blue text-xs font-medium">
+                      {founder.position}
+                    </p>
+                    <p className="text-white/70 text-xs">{founder.education}</p>
+                  </div>
+
+                  {/* Description - Shorter height */}
+                  <p className="text-white/80 leading-relaxed text-sm line-clamp-3">
+                    {founder.description}
+                  </p>
+
+                  {/* Connect button - Smaller */}
+                  <motion.a
+                    href={`tel:${founder.phone}`}
+                    className="inline-block mt-3 px-4 py-1.5 bg-sky-blue text-navy-blue hover:bg-white border border-sky-blue/50 rounded-lg text-sm font-medium transition-all duration-300"
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="flex items-center justify-center gap-1">
+                      <FaPhoneAlt size={10} />
+                      <span>Connect</span>
+                    </div>
+                  </motion.a>
+                </div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
-
       {/* Final Call to Action */}
       {/* <section ref={section5Ref} className="py-16 px-6 text-center">
         <h2 className="text-3xl font-bold text-dark-purple">

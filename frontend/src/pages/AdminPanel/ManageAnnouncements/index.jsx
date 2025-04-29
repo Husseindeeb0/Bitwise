@@ -42,7 +42,12 @@ const ManageAnnouncements = () => {
   // Organizer form state
   const [currentOrganizer, setCurrentOrganizer] = useState({
     name: "",
-    role: "",
+    expertise: "",
+    description: "",
+    instaLink: "",
+    linkedinLink: "",
+    startTime: "",
+    title: "",
     image: "/api/placeholder/80/80",
   });
   const [showOrganizerForm, setShowOrganizerForm] = useState(false);
@@ -80,11 +85,11 @@ const ManageAnnouncements = () => {
   // Event form handling
   const handleInputChange = (e) => {
     let { name, value } = e.target;
-    
-      setCurrentEvent({
-        ...currentEvent,
-        [name]: value,
-      });
+
+    setCurrentEvent({
+      ...currentEvent,
+      [name]: value,
+    });
   };
 
   const handleCheckboxChange = (e) => {
@@ -282,7 +287,12 @@ const ManageAnnouncements = () => {
     setCurrentOrganizer({
       id: null,
       name: "",
-      role: "",
+      expertise: "",
+      description: "",
+      instaLink: "",
+      linkedinLink: "",
+      startTime: "",
+      title: "",
       image: "/api/placeholder/80/80",
     });
     setShowOrganizerForm(false);
@@ -434,7 +444,7 @@ const ManageAnnouncements = () => {
           <div className="mb-4">
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-medium text-gray-700">
-                Event Organizers
+                Event Speakers
               </label>
               <button
                 type="button"
@@ -461,25 +471,99 @@ const ManageAnnouncements = () => {
                       required={true}
                       onChange={handleOrganizerInputChange}
                       className="w-full px-3 py-2 border border-gray-300 bg-light-purple rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
-                      placeholder="Organizer name"
+                      placeholder="Speaker name"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Role
+                      Area of expertise
                     </label>
                     <input
                       type="text"
-                      name="role"
-                      value={currentOrganizer.role}
+                      name="expertise"
+                      value={currentOrganizer.expertise}
                       required={true}
                       onChange={handleOrganizerInputChange}
                       className="w-full px-3 py-2 border border-gray-300 bg-light-purple rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
-                      placeholder="Organizer role"
+                      placeholder="Speaker expertise"
                     />
                   </div>
                 </div>
-                <div className="mb-3">
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Description
+                  </label>
+                  <textarea
+                    name="description"
+                    value={currentOrganizer.description}
+                    required={true}
+                    onChange={handleOrganizerInputChange}
+                    rows="3"
+                    className="w-full px-3 py-2 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
+                    placeholder="Describe the event"
+                  ></textarea>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      Instagram Link
+                    </label>
+                    <input
+                      type="text"
+                      name="instaLink"
+                      value={currentOrganizer.instaLink}
+                      required={false}
+                      onChange={handleOrganizerInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 bg-light-purple rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
+                      placeholder="Link"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      Linkedin Link
+                    </label>
+                    <input
+                      type="text"
+                      name="linkedinLink"
+                      value={currentOrganizer.linkedinLink}
+                      required={false}
+                      onChange={handleOrganizerInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 bg-light-purple rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
+                      placeholder="Link"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      Start Time
+                    </label>
+                    <input
+                      type="time"
+                      name="startTime"
+                      value={currentOrganizer.startTime}
+                      required={true}
+                      onChange={handleOrganizerInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 bg-light-purple rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
+                      placeholder="Start time"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                      Title
+                    </label>
+                    <input
+                      type="text"
+                      name="title"
+                      value={currentOrganizer.title}
+                      required={true}
+                      onChange={handleOrganizerInputChange}
+                      className="w-full px-3 py-2 border border-gray-300 bg-light-purple rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
+                      placeholder="Title"
+                    />
+                  </div>
+                </div>
+                <div className="my-3">
                   <label className="block text-xs font-medium text-gray-700 mb-1">
                     Profile Image URL
                   </label>
@@ -534,7 +618,7 @@ const ManageAnnouncements = () => {
                             {organizer.name}
                           </p>
                           <p className="text-sm text-gray-500">
-                            {organizer.role}
+                            {organizer.expertise}
                           </p>
                         </div>
                       </div>
@@ -559,7 +643,7 @@ const ManageAnnouncements = () => {
                 </ul>
               ) : (
                 <p className="p-3 text-center text-sm text-gray-500">
-                  No organizers added yet
+                  No Speakers added yet
                 </p>
               )}
             </div>
