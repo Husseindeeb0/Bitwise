@@ -23,13 +23,18 @@ const Layout = () => {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div
+      className="flex flex-col min-h-screen"
+      // style={{ fontFamily: "Bahnschrift, 'DIN Alternate', 'Franklin Gothic Medium', 'Nimbus Sans Narrow', sans-serif-condensed, sans-serif" }}
+      // style={{fontFamily: "Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif"}}
+      style={{fontFamily: "Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', source-sans-pro, sans-serif"}}
+    >
       <Navbar />
       <main className="flex-1 bg-gradient-to-r from-background1 to-background2">
         {!pageLoaded || isLoading ? <Loader /> : <Outlet />}
-        { loading ? <Loader /> : null}
+        {loading ? <Loader /> : null}
+        <Footer />
       </main>
-      <Footer />
     </div>
   );
 };

@@ -3,51 +3,100 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="bg-navy-blue text-white py-8 px-6">
-      <div className="container mx-auto gap-3 flex flex-col md:flex-row justify-between items-start md:items-center">
-        {/* Logo & Description */}
-        <div className="mb-6 md:mb-0 max-w-xs">
-          <img src="/logo.png" alt="Bitwise Logo" className="h-12 mb-2 md:mx-auto" />
-          <p className="text-sm text-gray-300 md:text-center">
-            Bitwise – Your go-to platform for tech solutions & innovation.
-          </p>
+    <footer className="text-white py-5 px-4">
+      <div className="container bg-navy-blue p-5 mx-auto max-w-4xl rounded-2xl">
+        <div className="flex flex-wrap justify-between items-start gap-4">
+          {/* Logo & Description */}
+          <div className="w-full sm:w-auto max-w-xs mb-4 sm:mb-0">
+            <div className="flex items-center space-x-3">
+              <img src="/logo.png" alt="Bitwise Logo" className="h-10" />
+              <p className="text-sm text-gray-300">
+                Bitwise – Your go-to platform for tech solutions & innovation.
+              </p>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div className="flex flex-col space-y-1 text-sm">
+            <Link to="/" className="hover:text-gray-400 underline">
+              Home
+            </Link>
+            <Link to="/announcements" className="hover:text-gray-400 underline">
+              Announcements
+            </Link>
+          </div>
+
+          {/* Contact Info */}
+          <div className="text-sm">
+            <p className="font-semibold mb-1">Contact Us</p>
+            <p className="text-gray-300">
+              <span className="font-bold">Email: </span>
+              <a
+                href="mailto:bitwiseclub.lu@gmail.com"
+                className="hover:underline"
+              >
+                bitwiseclub.lu@gmail.com
+              </a>
+            </p>
+            <p className="text-gray-300">
+              <span className="font-bold">Phone: </span>
+              <a
+                href="tel:+96176764155"
+                className="text-gray-200 hover:underline"
+              >
+                +961 76 764 155
+              </a>
+            </p>
+          </div>
         </div>
 
-        {/* Quick Links */}
-        <div className="flex flex-col space-y-1 md:space-y-1.5 text-sm">
-          <Link to="/" className="hover:text-gray-400 underline">
-            Home
-          </Link>
-          <Link to="/announcements" className="hover:text-gray-400 underline">
-            Announcements
-          </Link>
-        </div>
+        <hr className="my-4 opacity-30" />
 
-        {/* Contact Info */}
-        <div className="text-sm">
-          <p className="font-semibold">Contact Us</p>
-          <p className="text-gray-300 space-x-2">
-            <span className="font-bold">Email:</span>
+        {/* Bottom Section */}
+        <div className="flex flex-wrap justify-between items-center text-sm text-gray-300">
+          {/* Social Media Icons */}
+          <div className="flex space-x-4 text-lg mb-2 sm:mb-0">
             <a
-              href="mailto:bitwiseclub.lu@gmail.com"
-              className=" hover:underline"
+              href="https://www.instagram.com/bitwise_club?igsh=MW11MXIzNzVIejU5Z"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-pink-500 transition duration-300"
             >
-              bitwiseclub.lu@gmail.com
+              <FaInstagram />
             </a>
-          </p>
-          <p className="text-gray-300 space-x-2">
-            <span className="font-bold">Phone:</span>
             <a
-              href="tel:+96176764155"
-              className="text-gray-200 hover:underline"
+              href="https://chat.whatsapp.com/BRfuyGdNezzD50dGmLL"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-green-500 transition duration-300"
             >
-              +961 76 764 155
+              <FaWhatsapp />
             </a>
-          </p>
-        </div>
+            <a
+              href="https://youtube.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-red-500 transition duration-300"
+            >
+              <FaYoutube />
+            </a>
+          </div>
 
-        {/* Newsletter Signup */}
-        {/* <div className="mt-4 md:mt-0">
+          {/* Copyright */}
+          <div>© {new Date().getFullYear()} Bitwise. All rights reserved.</div>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;
+
+{
+  /* Newsletter Signup */
+}
+{
+  /* <div className="mt-4 md:mt-0">
           <p className="font-semibold mb-2">Subscribe to Our Newsletter</p>
           <form className="flex">
             <input
@@ -62,51 +111,17 @@ const Footer = () => {
               Subscribe
             </button>
           </form>
-        </div> */}
-      </div>
-      <hr className="my-5" />
+        </div> */
+}
 
-      <div className="mt-6 px-5 text-center text-sm text-gray-300 flex flex-col gap-5 md:gap-0 md:flex-row items-center">
-        <div className="flex items-center justify-between md:justify-normal md:gap-10 w-full">
-          {/* Feedback Button */}
-          {/* <Link
+{
+  /* Feedback Button */
+}
+{
+  /* <Link
             to="/feedback"
             className="bg-light-purple hover:bg-dark-purple px-4 py-2 rounded-lg text-white transition duration-300"
           >
             Send Feedback
-          </Link> */}
-          {/* Social Media Links */}
-          <div className="flex space-x-6 text-xl">
-            <a
-              href="https://www.instagram.com/bitwise_club?igsh=MW11MXIzNzVIejU5Z"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaInstagram className="hover:text-pink-500 transition duration-300" />
-            </a>
-            <a
-              href="https://chat.whatsapp.com/BRfuyGdNezzD50dGmLL"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaWhatsapp className="hover:text-green-500 transition duration-300" />
-            </a>
-            <a
-              href="https://youtube.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaYoutube className="hover:text-red-500 transition duration-300" />
-            </a>
-          </div>
-        </div>
-        {/* Copyright Section */}
-        <span className="">
-          © {new Date().getFullYear()} Bitwise. All rights reserved.
-        </span>
-      </div>
-    </footer>
-  );
-};
-
-export default Footer;
+          </Link> */
+}

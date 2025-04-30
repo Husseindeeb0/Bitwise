@@ -1,5 +1,4 @@
-import { motion, useInView } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import "./style.css";
 import LatestAnnouncementCard from "../../components/LatestAnnouncementCard";
@@ -17,30 +16,6 @@ const Home = () => {
   // SVG dots positions
   const xPositions = [10, 20, 30, 40, 50, 60, 70, 80, 90];
   const yPositions = [10, 20, 30, 40, 50];
-
-  // Refs for sections that should animate on scroll
-  const section1Ref = useRef(null);
-  const section2Ref = useRef(null);
-  const section3Ref = useRef(null);
-  const section4Ref = useRef(null);
-  const section5Ref = useRef(null);
-
-  // Check when sections come into view
-  const section1InView = useInView(section1Ref, {
-    margin: "-100px 0px",
-  });
-  const section2InView = useInView(section2Ref, {
-    margin: "-100px 0px",
-  });
-  const section3InView = useInView(section3Ref, {
-    margin: "-100px 0px",
-  });
-  const section4InView = useInView(section4Ref, {
-    margin: "-100px 0px",
-  });
-  const section5InView = useInView(section5Ref, {
-    margin: "-100px 0px",
-  });
 
   const achievements = [
     {
@@ -106,19 +81,18 @@ const Home = () => {
     <div className="text-white min-h-screen pt-20">
       {/* Defining Bitwise Section */}
       <section
-        ref={section1Ref}
         className="flex flex-col items-center justify-center min-h-screen text-center px-6 py-16 backdrop-blur-lg bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(/background.jpg)` }}
       >
         <motion.h1
           initial={{ opacity: 0, y: -50 }}
-          animate={section1InView ? { opacity: 1, y: 0 } : {}}
+          whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="relative text-4xl md:text-6xl font-bold text-dark-purple overflow-hidden"
         >
           <span className="relative z-10">
             Start Your Programming Journey with
-            <span className="text-navy-blue"> Bitwise!</span>
+            <span className="text-navy-blue block"> Bitwise!</span>
           </span>
         </motion.h1>
 
@@ -128,8 +102,8 @@ const Home = () => {
         {/* Button to view all announcements */}
         <motion.div
           initial={{ opacity: 0 }}
-          animate={section1InView ? { opacity: 1 } : {}}
-          transition={{ delay: 0.8, duration: 0.6 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
           className="mt-8"
         >
           <Link to="/announcements">
@@ -147,7 +121,6 @@ const Home = () => {
 
       {/* About us Section */}
       <section
-        ref={section2Ref}
         className="bg-background1 py-24 px-8 overflow-hidden relative"
       >
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-around gap-12">
@@ -155,8 +128,8 @@ const Home = () => {
           <motion.div
             className="relative rounded-xl w-full lg:w-1/3 shadow-2xl shadow-sky-blue mb-20 "
             initial={{ opacity: 0, scale: 0.8, z: -100 }}
-            animate={section2InView ? { opacity: 1, z: 0, scale: 1 } : {}}
-            transition={{ delay: 0.2, duration: 0.6 }}
+            whileInView={{ opacity: 1, z: 0, scale: 1 }}
+            transition={{ duration: 0.6 }}
           >
             <div className="relative overflow-hidden rounded-xl">
               <img
@@ -180,7 +153,7 @@ const Home = () => {
                 strokeWidth="2"
                 fill="none"
                 initial={{ pathLength: 0 }}
-                animate={section2InView ? { pathLength: 1 } : {}}
+                whileInView={{ pathLength: 1 }}
                 transition={{ duration: 2 }}
               />
             </svg>
@@ -197,7 +170,7 @@ const Home = () => {
                 strokeWidth="2"
                 fill="none"
                 initial={{ pathLength: 0 }}
-                animate={section2InView ? { pathLength: 1 } : {}}
+                whileInView={{ pathLength: 1 }}
                 transition={{ duration: 2 }}
               />
             </svg>
@@ -206,8 +179,8 @@ const Home = () => {
           <motion.div
             className="w-full lg:w-1/2 relative"
             initial={{ opacity: 0, scale: 0.8, z: -100 }}
-            animate={section2InView ? { opacity: 1, z: 0, scale: 1 } : {}}
-            transition={{ delay: 0.2, duration: 0.6 }}
+            whileInView={{ opacity: 1, z: 0, scale: 1 }}
+            transition={{ duration: 0.6 }}
           >
             <svg
               className="absolute -top-16 md:-top-24 -right-28 md:-right-20 w-96 md:h-auto h-72 text-navy-blue/80 z-20"
@@ -224,10 +197,10 @@ const Home = () => {
                     r="1"
                     fill="currentColor"
                     initial={{ opacity: 0 }}
-                    animate={section2InView ? { opacity: 1 } : {}}
+                    whileInView={{ opacity: 1 }}
                     transition={{
                       delay: (rowIndex * xPositions.length + colIndex) * 0.1,
-                      duration: 0.3,
+                      duration: 0.1,
                     }}
                   />
                 ))
@@ -277,16 +250,16 @@ const Home = () => {
               <FaQuoteLeft className="text-2xl text-navy-blue absolute -left-4 top-0" />
 
               {/* Quote text */}
-              <p className="text-dark-purple font-medium text-sm italic leading-relaxed pl-4 pr-3">
+              <p className="text-dark-purple font-semibold text-sm italic leading-relaxed pl-4 pr-3">
                 The future belongs to those who believe in the beauty of their
                 ideas and the courage to create them.
               </p>
 
               {/* Bottom quote icon */}
-              <FaQuoteRight className="text-2xl text-navy-blue mt-1 ml-auto" />
+              <FaQuoteRight className="text-2xl text-navy-blue mt-1 ml-auto mr-4" />
 
               {/* Signature */}
-              <div className="mt-2 mr-8 flex items-center justify-end">
+              <div className="mt-2 mr-12 flex items-center justify-end">
                 <div className="h-px w-12 bg-navy-blue mr-3"></div>
                 <div
                   style={{ fontFamily: "'Great Vibes', cursive" }}
@@ -298,7 +271,7 @@ const Home = () => {
             </div>
 
             {/* Subtle decorative element */}
-            <div className="absolute -bottom-1 right-4 w-20 h-0.5 bg-gradient-to-r from-transparent to-navy-blue rounded-full opacity-60"></div>
+            <div className="absolute -bottom-1 right-12 w-20 h-0.5 bg-gradient-to-r from-transparent to-navy-blue rounded-full opacity-60"></div>
           </div>
         </div>
       </section>
@@ -343,7 +316,7 @@ const Home = () => {
 
       {/* Features Section */}
       <section
-        ref={section3Ref}
+        // ref={section3Ref}
         className="py-16 px-6 text-center bg-background2"
       >
         <h2 className="text-4xl font-bold mb-10 text-dark-purple">
@@ -368,7 +341,7 @@ const Home = () => {
               emoji: "🎯",
             },
             {
-              title: "AI Coding Assistant",
+              title: "Chatbot Assistant",
               desc: "Ask our AI bot anything about programming to make your coding journey smoother and easier.",
               emoji: "🤖",
             },
@@ -376,7 +349,7 @@ const Home = () => {
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 50 }}
-              animate={section3InView ? { opacity: 1, y: 0 } : {}}
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 * index, duration: 0.6 }}
               className="relative p-6 bg-navy-blue rounded-lg shadow-md"
             >
@@ -389,7 +362,7 @@ const Home = () => {
       </section>
 
       {/* Leaders Section */}
-      <section ref={section4Ref} className="bg-background1 py-16">
+      <section className="bg-background1 py-16">
         <div className="container mx-auto text-center px-4">
           <h2 className="text-4xl font-bold mb-8 bg-clip-text text-dark-purple">
             Meet Our Leaders
@@ -399,12 +372,12 @@ const Home = () => {
             the tech industry.
           </p>
 
-          {/* Layout for main founder - takes full width */}
+          {/* Layout for main founder*/}
           <div className="mb-10">
             <motion.div
               initial={{ opacity: 0, y: 50 }}
-              animate={section4InView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
               className="relative max-w-lg mx-auto"
             >
               {/* Card Background with gradient border */}
@@ -440,7 +413,7 @@ const Home = () => {
                     </div>
                   </div>
 
-                  {/* Content */}
+                  {/* Name */}
                   <div className="md:w-2/3 md:pl-6">
                     <h3 className="text-2xl font-bold mb-1 group-hover:text-sky-blue transition-colors duration-300">
                       {founders[0].name}
@@ -452,11 +425,8 @@ const Home = () => {
                       {founders[0].title}
                     </p>
 
-                    {/* Position/Education Info */}
+                    {/* Education Info */}
                     <div className="mb-3 py-1.5 px-3 bg-navy-blue/50 rounded-lg border border-sky-blue/20 inline-block">
-                      <p className="text-sky-blue text-sm font-medium">
-                        {founders[0].position}
-                      </p>
                       <p className="text-white/70 text-xs">
                         {founders[0].education}
                       </p>
@@ -490,8 +460,8 @@ const Home = () => {
               <motion.div
                 key={index + 1}
                 initial={{ opacity: 0, y: 50 }}
-                animate={section4InView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.3 * (index + 1), duration: 0.7 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 * (index + 1), duration: 0.5 }}
                 className="relative"
               >
                 {/* Card Background with gradient border */}
@@ -529,7 +499,7 @@ const Home = () => {
                     </motion.div>
                   </div>
 
-                  {/* Content */}
+                  {/* Name */}
                   <h3 className="text-xl font-bold mb-1 group-hover:text-sky-blue transition-colors duration-300">
                     {founder.name}
                   </h3>
@@ -540,20 +510,17 @@ const Home = () => {
                     {founder.title}
                   </p>
 
-                  {/* Position/Education Info - More compact */}
+                  {/* Education Info*/}
                   <div className="mb-3 py-1 px-2 bg-navy-blue/50 rounded-lg border border-sky-blue/20 inline-block">
-                    <p className="text-sky-blue text-xs font-medium">
-                      {founder.position}
-                    </p>
                     <p className="text-white/70 text-xs">{founder.education}</p>
                   </div>
 
-                  {/* Description - Shorter height */}
+                  {/* Description*/}
                   <p className="text-white/80 leading-relaxed text-sm line-clamp-3">
                     {founder.description}
                   </p>
 
-                  {/* Connect button - Smaller */}
+                  {/* Connect button*/}
                   <motion.a
                     href={`tel:${founder.phone}`}
                     className="inline-block mt-3 px-4 py-1.5 bg-sky-blue text-navy-blue hover:bg-white border border-sky-blue/50 rounded-lg text-sm font-medium transition-all duration-300"
