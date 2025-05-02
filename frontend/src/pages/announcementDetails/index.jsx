@@ -293,7 +293,7 @@ const AnnouncementDetails = () => {
                       <div
                         key={index}
                         onClick={() => openSpeakerModal(organizer)}
-                        className="flex items-center p-4 bg-white rounded-lg border border-transparent hover:border-sky-blue hover:shadow-md transition-all cursor-pointer group"
+                        className="flex items-center h-20 p-4 bg-white rounded-lg border border-transparent hover:border-sky-blue hover:shadow-md transition-all cursor-pointer group"
                       >
                         <div className="relative">
                           <img
@@ -310,7 +310,7 @@ const AnnouncementDetails = () => {
                             {organizer.name}
                           </p>
                           <p className="text-sm text-dark-purple/70">
-                            {organizer.role}
+                            {organizer.expertise}
                           </p>
                           <div className="h-0.5 w-8 bg-sky-blue/30 group-hover:bg-sky-blue mt-1 transition-colors"></div>
                         </div>

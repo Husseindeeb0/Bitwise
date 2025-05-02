@@ -23,7 +23,7 @@ const SpeakerDetails = ({ isOpen, onClose, speaker, convertTo12HourFormat }) => 
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.95 }}
               transition={{ duration: 0.3, type: "spring", damping: 25 }}
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()} // Prevent triggering event listener onClick in the parent div(bubbles up)
               className="bg-gradient-to-br from-navy-blue to-navy-blue/90 rounded-2xl w-full max-w-2xl overflow-hidden shadow-xl relative"
             >
               {/* Close Button */}
