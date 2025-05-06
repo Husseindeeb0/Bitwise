@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { FaTimes, FaLinkedin, FaInstagram, FaBriefcase, FaGraduationCap, FaQuoteLeft, FaClock } from "react-icons/fa";
+import { FaTimes, FaLinkedin, FaInstagram, FaBriefcase, FaQuoteLeft, FaClock } from "react-icons/fa";
 
 const SpeakerDetails = ({ isOpen, onClose, speaker, convertTo12HourFormat }) => {
   if (!speaker) return null;

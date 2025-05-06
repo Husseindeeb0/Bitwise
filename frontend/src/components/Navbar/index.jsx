@@ -207,8 +207,8 @@ const Navbar = () => {
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed top-0 right-0 h-screen w-3/4 max-w-sm bg-navy-blue p-6 flex flex-col items-start gap-2 text-white text-lg shadow-lg transform backdrop-blur-lg"
+            transition={{ type: "ease"}}
+            className="fixed top-0 right-0 h-screen w-3/4 max-w-sm bg-navy-blue p-6 flex flex-col items-start gap-2 text-white text-lg shadow-lg backdrop-blur-lg"
           >
             <div className="flex justify-between items-center w-full mb-8 border-b border-white/20 pb-6">
               <Link
