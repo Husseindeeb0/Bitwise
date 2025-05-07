@@ -81,13 +81,13 @@ const Home = () => {
     <div className="text-white min-h-screen pt-20">
       {/* Defining Bitwise Section */}
       <section
-        className="flex flex-col items-center justify-center bg-[url('/image1.webp')] min-h-screen text-center px-6 py-16 backdrop-blur-lg bg-cover bg-center bg-no-repeat"
+        className="flex flex-col items-center justify-center bg-[url('/background.webp')] min-h-screen text-center px-6 py-16 bg-cover bg-center bg-no-repeat"
       >
         <motion.h1
           initial={{ opacity: 0, y: -50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative text-4xl bg-navy-blue/90 rounded-lg p-4 md:text-6xl font-bold text-white overflow-hidden"
+          className="relative text-4xl bg-navy-blue/90 rounded-lg p-4 md:text-6xl font-bold text-white"
         >
           <span className="relative z-10">
             Start Your Programming Journey with
