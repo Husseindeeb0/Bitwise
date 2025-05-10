@@ -114,8 +114,8 @@ const AnnouncementCard = ({ event, page, editEvent, setIsDeleting }) => {
           {event.organizers && event.organizers.length > 0 && (
             <div className="flex justify-between items-end">
               <div className="mt-3">
-                <h3 className="text-sm font-medium text-dark-purple mb-2">
-                  Organizers
+                <h3 className="text-sm font-semibold text-dark-purple mb-2">
+                  Speakers
                 </h3>
                 <div className="flex flex-wrap gap-2 line">
                   {event.organizers.slice(0, 3).map((organizer, idx) => (

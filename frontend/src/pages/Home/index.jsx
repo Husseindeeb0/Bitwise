@@ -59,14 +59,6 @@ const Home = () => {
       phone: "+961 76 764 155",
     },
     {
-      name: "Joumana",
-      title: "Co-Founder",
-      image: "joumana.jpg",
-      education: "Computer Science",
-      description: "Passionate about coding and deeply interested in the ever-evolving world of the computer industry.",
-      phone: "+49 176 74849586",
-    },
-    {
       name: "Hassan Tofayli",
       title: "Co-Founder",
       image: "hasssan.jpg",
@@ -80,9 +72,7 @@ const Home = () => {
   return (
     <div className="text-white min-h-screen pt-20">
       {/* Defining Bitwise Section */}
-      <section
-        className="flex flex-col items-center justify-center bg-[url('/background.webp')] min-h-screen text-center px-6 py-16 bg-cover bg-center bg-no-repeat"
-      >
+      <section className="flex flex-col items-center justify-center bg-[url('/background.webp')] min-h-screen text-center px-6 py-16 bg-cover bg-center bg-no-repeat">
         <motion.h1
           initial={{ opacity: 0, y: -50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -119,9 +109,7 @@ const Home = () => {
       </section>
 
       {/* About us Section */}
-      <section
-        className="bg-background1 py-24 px-8 overflow-hidden relative"
-      >
+      <section className="bg-background1 py-24 px-8 overflow-hidden relative">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-around gap-12">
           {/* Image container with animations */}
           <motion.div
@@ -372,164 +360,91 @@ const Home = () => {
           </p>
 
           {/* Layout for main founder*/}
-          <div className="mb-10">
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="relative max-w-lg mx-auto"
-            >
-              {/* Card Background with gradient border */}
-              <div className="relative bg-navy-blue backdrop-blur-sm rounded-2xl p-6 border border-transparent overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-r from-sky-blue/10 to-navy-blue/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
-
-                {/* Animated border gradient effect */}
-                <div
-                  className="absolute -inset-0.5 bg-gradient-to-r from-sky-blue to-navy-blue rounded-2xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-500"
-                  style={{ zIndex: -1 }}
-                />
-
-                <div className="flex flex-col md:flex-row md:items-center md:text-left">
-                  {/* Leader Initial in Large Circle */}
-                  <div className="md:w-1/3">
-                    <div className="relative mb-4 md:mb-0">
-                      <div className="w-20 h-20 mx-auto rounded-full flex items-center justify-center bg-gradient-to-br from-sky-blue to-navy-blue text-white shadow-lg shadow-dark-purple/20">
-                        <span className="text-3xl font-bold">
-                          {founders[0].name.charAt(0)}
-                        </span>
-                      </div>
-
-                      {/* Icon based on role/title */}
-                      <motion.div
-                        className="absolute -bottom-2 -right-2 md:bottom-0 md:right-8 bg-white text-navy-blue p-2 rounded-full shadow-lg"
-                        whileHover={{
-                          rotate: 360,
-                          transition: { duration: 0.5 },
-                        }}
-                      >
-                        <FaBriefcase size={16} />
-                      </motion.div>
-                    </div>
-                  </div>
-
-                  {/* Name */}
-                  <div className="md:w-2/3 md:pl-6">
-                    <h3 className="text-2xl font-bold mb-1 group-hover:text-sky-blue transition-colors duration-300">
-                      {founders[0].name}
-                    </h3>
-                    <div className="h-1 w-12 mx-auto md:mx-0 mb-2 bg-gradient-to-r from-sky-blue to-navy-blue rounded-full" />
-
-                    {/* Title */}
-                    <p className="text-dark-purple font-medium mb-2">
-                      {founders[0].title}
-                    </p>
-
-                    {/* Education Info */}
-                    <div className="mb-3 py-1.5 px-3 bg-navy-blue/50 rounded-lg border border-sky-blue/20 inline-block">
-                      <p className="text-white/70 text-xs">
-                        {founders[0].education}
-                      </p>
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-white/80 leading-relaxed text-sm mb-3">
-                      {founders[0].description}
-                    </p>
-
-                    {/* Connect button */}
-                    <motion.a
-                      href={`tel:${founders[0].phone}`}
-                      className="inline-block cursor-pointer px-4 py-1.5 bg-sky-blue text-navy-blue hover:bg-white border border-sky-blue/50 rounded-lg text-sm font-medium transition-all duration-300"
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <div className="flex items-center justify-center gap-2">
-                        <FaPhoneAlt size={12} />
-                        <span>Connect</span>
-                      </div>
-                    </motion.a>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Layout for co-founders - two cards in a row */}
-          <div className="grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
-            {founders.slice(1, 3).map((founder, index) => (
+          {/* Main container for all founder cards */}
+          <div className="mb-10 grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Map through all founders instead of handling them separately */}
+            {founders.map((founder, index) => (
               <motion.div
-                key={index + 1}
+                key={index}
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * (index + 1), duration: 0.5 }}
-                className="relative"
+                transition={{ delay: 0.1 * index, duration: 0.5 }}
+                className="relative h-full" // Full height to ensure equal sizing
               >
                 {/* Card Background with gradient border */}
-                <div className="relative bg-navy-blue backdrop-blur-sm rounded-2xl p-5 border border-transparent overflow-hidden group">
+                <div className="relative bg-navy-blue backdrop-blur-sm rounded-2xl p-6 border border-transparent overflow-hidden group h-full">
                   <div className="absolute inset-0 bg-gradient-to-r from-sky-blue/10 to-navy-blue/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
 
                   {/* Animated border gradient effect */}
                   <div
-                    className="absolute -inset-0.5 bg-gradient-to-r from-sky-blue to-navy-blue rounded-2xl blur opacity-20 group-hover:opacity-50 transition-opacity duration-500"
+                    className="absolute -inset-0.5 bg-gradient-to-r from-sky-blue to-navy-blue rounded-2xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-500"
                     style={{ zIndex: -1 }}
                   />
 
-                  {/* Leader Initial in Smaller Circle */}
-                  <div className="relative mb-4">
-                    <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center bg-gradient-to-br from-sky-blue to-navy-blue text-white shadow-lg shadow-dark-purple/20">
-                      <span className="text-2xl font-bold">
-                        {founder.name.charAt(0)}
-                      </span>
+                  <div className="flex flex-col md:flex-row md:items-center md:text-left h-full">
+                    {/* Leader Initial in Large Circle */}
+                    <div className="md:w-1/3">
+                      <div className="relative mb-4 md:mb-0">
+                        <div className="w-20 h-20 mx-auto rounded-full flex items-center justify-center bg-gradient-to-br from-sky-blue to-navy-blue text-white shadow-lg shadow-dark-purple/20">
+                          <span className="text-3xl font-bold">
+                            {founder.name.charAt(0)}
+                          </span>
+                        </div>
+
+                        {/* Icon based on role/title */}
+                        <motion.div
+                          className="absolute -bottom-2 -right-2 md:bottom-0 md:right-8 bg-white text-navy-blue p-2 rounded-full shadow-lg"
+                          whileHover={{
+                            rotate: 360,
+                            transition: { duration: 0.5 },
+                          }}
+                        >
+                          {index === 0 ? (
+                            <FaBriefcase size={16} />
+                          ) : (
+                            <FaUsers size={16} />
+                          )}
+                        </motion.div>
+                      </div>
                     </div>
 
-                    {/* Icon based on role/title */}
-                    <motion.div
-                      className="absolute -bottom-1 -right-1 bg-white text-navy-blue p-1.5 rounded-full shadow-lg"
-                      whileHover={{
-                        rotate: 360,
-                        transition: { duration: 0.5 },
-                      }}
-                    >
-                      {founder.title.includes("Tech") ||
-                      founder.title.includes("CTO") ? (
-                        <FaCode size={14} />
-                      ) : (
-                        <FaUsers size={14} />
-                      )}
-                    </motion.div>
-                  </div>
+                    {/* Name and content */}
+                    <div className="md:w-2/3 md:pl-6 flex flex-col">
+                      <h3 className="text-2xl font-bold mb-1 group-hover:text-sky-blue transition-colors duration-300">
+                        {founder.name}
+                      </h3>
+                      <div className="h-1 w-12 mx-auto md:mx-0 mb-2 bg-gradient-to-r from-sky-blue to-navy-blue rounded-full" />
 
-                  {/* Name */}
-                  <h3 className="text-xl font-bold mb-1 group-hover:text-sky-blue transition-colors duration-300">
-                    {founder.name}
-                  </h3>
-                  <div className="h-1 w-10 mx-auto mb-2 bg-gradient-to-r from-sky-blue to-navy-blue rounded-full" />
+                      {/* Title */}
+                      <p className="text-dark-purple font-medium mb-2">
+                        {founder.title}
+                      </p>
 
-                  {/* Title */}
-                  <p className="text-dark-purple font-medium mb-2 text-sm">
-                    {founder.title}
-                  </p>
+                      {/* Education Info */}
+                      <div className="mb-3 py-1.5 px-3 bg-navy-blue/50 rounded-lg border border-sky-blue/20 inline-block">
+                        <p className="text-white/70 text-xs">
+                          {founder.education}
+                        </p>
+                      </div>
 
-                  {/* Education Info*/}
-                  <div className="mb-3 py-1 px-2 bg-navy-blue/50 rounded-lg border border-sky-blue/20 inline-block">
-                    <p className="text-white/70 text-xs">{founder.education}</p>
-                  </div>
+                      {/* Description */}
+                      <p className="text-white/80 leading-relaxed text-sm mb-3 flex-grow">
+                        {founder.description}
+                      </p>
 
-                  {/* Description*/}
-                  <p className="text-white/80 leading-relaxed text-sm line-clamp-3">
-                    {founder.description}
-                  </p>
-
-                  {/* Connect button*/}
-                  <motion.a
-                    href={`tel:${founder.phone}`}
-                    className="inline-block mt-3 px-4 py-1.5 bg-sky-blue text-navy-blue hover:bg-white border border-sky-blue/50 rounded-lg text-sm font-medium transition-all duration-300"
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="flex items-center justify-center gap-1">
-                      <FaPhoneAlt size={10} />
-                      <span>Connect</span>
+                      {/* Connect button - stays at bottom */}
+                      <motion.a
+                        href={`tel:${founder.phone}`}
+                        className="inline-block cursor-pointer px-4 py-1.5 bg-sky-blue text-navy-blue hover:bg-white border border-sky-blue/50 rounded-lg text-sm font-medium transition-all duration-300 mt-auto"
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <div className="flex items-center justify-center gap-2">
+                          <FaPhoneAlt size={12} />
+                          <span>Connect</span>
+                        </div>
+                      </motion.a>
                     </div>
-                  </motion.a>
+                  </div>
                 </div>
               </motion.div>
             ))}

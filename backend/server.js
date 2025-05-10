@@ -17,4 +17,4 @@ app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/announcements", announcementsRoutes);
 
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+app.listen(PORT, "0.0.0.0", () => console.log(`Server started on port ${PORT}`));
