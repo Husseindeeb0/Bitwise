@@ -25,36 +25,48 @@ const AnnouncementDetails = () => {
   const [selectedSpeaker, setSelectedSpeaker] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const fetchAnnouncementData = useCallback(async (id) => {
-    try {
-      setLoading(true);
-      const response = await getAnnouncementById(accessToken, id);
+  const fetchAnnouncementData = useCallback(
+    async (id) => {
+      try {
+        setLoading(true);
+        const response = await getAnnouncementById(accessToken, id);
 
-      // Check if the response contains the expected data
-      if (response.state === "success") {
-        // Enhance organizers with additional mock data for our new modal
-        if (response.data.organizers && response.data.organizers.length > 0) {
-          response.data.organizers = response.data.organizers.map(organizer => ({
-            ...organizer,
-            bio: organizer.bio || "An experienced professional with extensive knowledge in their field. They have contributed to numerous projects and initiatives in the industry.",
-            expertise: organizer.expertise || ["Technology", "Leadership", "Innovation"],
-            linkedin: organizer.linkedin || "https://linkedin.com",
-            instagram: organizer.instagram || "https://instagram.com",
-            education: organizer.education || "Master's Degree, Computer Science"
-          }));
+        // Check if the response contains the expected data
+        if (response.state === "success") {
+          // Enhance organizers with additional mock data for our new modal
+          if (response.data.organizers && response.data.organizers.length > 0) {
+            response.data.organizers = response.data.organizers.map(
+              (organizer) => ({
+                ...organizer,
+                bio:
+                  organizer.bio ||
+                  "An experienced professional with extensive knowledge in their field. They have contributed to numerous projects and initiatives in the industry.",
+                expertise: organizer.expertise || [
+                  "Technology",
+                  "Leadership",
+                  "Innovation",
+                ],
+                linkedin: organizer.linkedin || "https://linkedin.com",
+                instagram: organizer.instagram || "https://instagram.com",
+                education:
+                  organizer.education || "Master's Degree, Computer Science",
+              })
+            );
+          }
+          setEvent(response.data);
+        } else {
+          console.error(response.message);
+          setEvent([]);
         }
-        setEvent(response.data);
-      } else {
-        console.error(response.message);
+      } catch (error) {
+        console.error("Error fetching announcement:", error);
         setEvent([]);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching announcement:", error);
-      setEvent([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [accessToken, setLoading]);
+    },
+    [accessToken, setLoading]
+  );
 
   useEffect(() => {
     const loadEvent = async () => {
@@ -63,15 +75,27 @@ const AnnouncementDetails = () => {
       const id = searchParams.get("id");
       if (location.state && location.state.event) {
         // Enhance organizers with additional mock data
-        if (location.state.event.organizers && location.state.event.organizers.length > 0) {
-          location.state.event.organizers = location.state.event.organizers.map(organizer => ({
-            ...organizer,
-            bio: organizer.bio || "An experienced professional with extensive knowledge in their field. They have contributed to numerous projects and initiatives in the industry.",
-            expertise: organizer.expertise || ["Technology", "Leadership", "Innovation"],
-            linkedin: organizer.linkedin || "https://linkedin.com",
-            instagram: organizer.instagram || "https://instagram.com",
-            education: organizer.education || "Master's Degree, Computer Science"
-          }));
+        if (
+          location.state.event.organizers &&
+          location.state.event.organizers.length > 0
+        ) {
+          location.state.event.organizers = location.state.event.organizers.map(
+            (organizer) => ({
+              ...organizer,
+              bio:
+                organizer.bio ||
+                "An experienced professional with extensive knowledge in their field. They have contributed to numerous projects and initiatives in the industry.",
+              expertise: organizer.expertise || [
+                "Technology",
+                "Leadership",
+                "Innovation",
+              ],
+              linkedin: organizer.linkedin || "https://linkedin.com",
+              instagram: organizer.instagram || "https://instagram.com",
+              education:
+                organizer.education || "Master's Degree, Computer Science",
+            })
+          );
         }
         setEvent(location.state.event);
         setLoading(false);
@@ -154,9 +178,9 @@ const AnnouncementDetails = () => {
   return (
     <div className="min-h-screen mt-20">
       {/* Speaker Modal */}
-      <SpeakerDetails 
-        isOpen={isModalOpen} 
-        onClose={closeSpeakerModal} 
+      <SpeakerDetails
+        isOpen={isModalOpen}
+        onClose={closeSpeakerModal}
         speaker={selectedSpeaker}
         convertTo12HourFormat={convertTo12HourFormat}
       />
@@ -236,6 +260,156 @@ const AnnouncementDetails = () => {
                 <p className="text-dark-purple mb-6 whitespace-pre-line leading-relaxed">
                   {event.description}
                 </p>
+
+                {/* Schedule timeline */}
+                <div className="mt-6 mb-8">
+                  <h3 className="text-xl font-bold text-dark-purple mb-4 flex items-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    Event Schedule
+                  </h3>
+
+                  <div className="space-y-4">
+                    {/* Opening */}
+                    <div className="border-l-4 rounded-lg border-navy-blue pl-4 pb-4">
+                      <div className="flex flex-col md:flex-row md:items-center mb-1">
+                        <span className="bg-navy-blue text-white px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
+                          10:00 AM - 10:15 AM
+                        </span>
+                        <h4 className="font-bold text-dark-purple">Opening</h4>
+                      </div>
+                    </div>
+
+                    {/* Club Accomplishments */}
+                    <div className="border-l-4 rounded-lg border-navy-blue pl-4 pb-4">
+                      <div className="flex flex-col md:flex-row md:items-center mb-1">
+                        <span className="bg-navy-blue text-white px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
+                          10:15 AM - 10:30 AM
+                        </span>
+                        <h4 className="font-bold text-dark-purple">
+                          2024 Club Accomplishments
+                        </h4>
+                      </div>
+                      <p className="text-dark-purple text-sm">
+                      <span className="font-semibold">Presenter:</span> Rania
+                      </p>
+                    </div>
+
+                    {/* Aya Mansour */}
+                    <div className="border-l-4 rounded-lg border-sky-blue pl-4 pb-4">
+                      <div className="flex flex-col md:flex-row md:items-center mb-1">
+                        <span className="bg-sky-blue text-white px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
+                          10:30 AM - 11:20 AM
+                        </span>
+                        <h4 className="font-bold text-dark-purple">
+                          Speaker Session
+                        </h4>
+                      </div>
+                      <p className="text-dark-purple text-sm">
+                      <span className="font-semibold">Presenter:</span> Aya Mansour
+                      </p>
+                    </div>
+
+                    {/* Hassan Al Alchek */}
+                    <div className="border-l-4 rounded-lg border-sky-blue pl-4 pb-4">
+                      <div className="flex flex-col md:flex-row md:items-center mb-1">
+                        <span className="bg-sky-blue text-white px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
+                          11:25 AM - 12:15 PM
+                        </span>
+                        <h4 className="font-bold text-dark-purple">
+                          Speaker Session
+                        </h4>
+                      </div>
+                      <p className="text-dark-purple text-sm">
+                      <span className="font-semibold">Presenter:</span> Hassan Al Alchek
+                      </p>
+                    </div>
+
+                    {/* Break */}
+                    <div className="border-l-4 rounded-lg border-light p-4 bg-gray-50 rounded-r-lg">
+                      <div className="flex flex-col md:flex-row md:items-center mb-1">
+                        <span className="bg-light text-dark-purple px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
+                          12:20 PM - 1:00 PM
+                        </span>
+                        <h4 className="font-bold text-dark-purple">Break</h4>
+                      </div>
+                      <p className="text-dark-purple text-sm">
+                        A break to recharge and connect with fellow participants
+                        and speakers — with exciting educational activities
+                        waiting for you all.
+                      </p>
+                    </div>
+
+                    {/* Batoul */}
+                    <div className="border-l-4 rounded-lg border-sky-blue pl-4 pb-4">
+                      <div className="flex flex-col md:flex-row md:items-center mb-1">
+                        <span className="bg-sky-blue text-white px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
+                          1:00 PM - 1:50 PM
+                        </span>
+                        <h4 className="font-bold text-dark-purple">
+                          Speaker Session
+                        </h4>
+                      </div>
+                      <p className="text-dark-purple text-sm">
+                      <span className="font-semibold">Presenter:</span> Batoul Abo Yehya
+                      </p>
+                    </div>
+
+                    {/* Sam */}
+                    <div className="border-l-4 rounded-lg border-sky-blue pl-4 pb-4">
+                      <div className="flex flex-col md:flex-row md:items-center mb-1">
+                        <span className="bg-sky-blue text-white px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
+                          1:55 PM - 2:45 PM
+                        </span>
+                        <h4 className="font-bold text-dark-purple">
+                          Speaker Session
+                        </h4>
+                      </div>
+                      <p className="text-dark-purple text-sm">
+                        <span className="font-semibold">Presenter:</span> Sam Shouman
+                      </p>
+                    </div>
+
+                    {/* Challenge */}
+                    <div className="border-l-4 rounded-lg border-navy-blue pl-4 pb-4">
+                      <div className="flex flex-col md:flex-row md:items-center mb-1">
+                        <span className="bg-navy-blue text-white px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
+                          2:45 PM - 3:10 PM
+                        </span>
+                        <h4 className="font-bold text-dark-purple">
+                          Challenge
+                        </h4>
+                      </div>
+                    </div>
+
+                    {/* Closing */}
+                    <div className="border-l-4 rounded-lg border-navy-blue pl-4">
+                      <div className="flex flex-col md:flex-row md:items-center mb-1">
+                        <span className="bg-navy-blue text-white px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
+                          3:10 PM - 3:30 PM
+                        </span>
+                        <h4 className="font-bold text-dark-purple">Closing</h4>
+                      </div>
+                      <p className="text-dark-purple text-sm">
+                        Closing the event with a group photo to capture the
+                        moment
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <hr />
 
                 {/* Registration section */}
                 {event.hasRegistration && (
@@ -338,7 +512,9 @@ const AnnouncementDetails = () => {
                     </div>
                     <div className="ml-3">
                       <p className="text-dark-purple font-medium">Date</p>
-                      <p className="text-dark-purple/70">{formatDate(event.date)}</p>
+                      <p className="text-dark-purple/70">
+                        {formatDate(event.date)}
+                      </p>
                     </div>
                   </div>
 
@@ -349,7 +525,9 @@ const AnnouncementDetails = () => {
                     </div>
                     <div className="ml-3">
                       <p className="text-dark-purple font-medium">Time</p>
-                      <p className="text-dark-purple/70">{convertTo12HourFormat(event.time)}</p>
+                      <p className="text-dark-purple/70">
+                        {convertTo12HourFormat(event.time)}
+                      </p>
                     </div>
                   </div>
 
@@ -360,7 +538,9 @@ const AnnouncementDetails = () => {
                     </div>
                     <div className="ml-3">
                       <p className="text-dark-purple font-medium">Location</p>
-                      <p className="text-dark-purple/70">{event.location || "TBA"}</p>
+                      <p className="text-dark-purple/70">
+                        {event.location || "TBA"}
+                      </p>
                     </div>
                   </div>
                 </div>

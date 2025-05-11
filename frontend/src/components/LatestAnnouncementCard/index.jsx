@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import getLatestAnnouncement from "../../api/getLatestAnnouncement";
-import { FaCalendar, FaMapMarkerAlt, FaUsers, FaClock } from "react-icons/fa";
+import { FaCalendar, FaMapMarkerAlt, FaClock } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import LoggingLoader from "../LoggingLoader";
 
