@@ -34,6 +34,7 @@ const ManageAnnouncements = () => {
     category: "workshop",
     mainImage: "/api/placeholder/400/220",
     organizers: [],
+    schedule: [],
     active: true,
     hasRegistration: false,
     registrationUrl: "",
@@ -54,6 +55,18 @@ const ManageAnnouncements = () => {
   const [editingOrganizerIndex, setEditingOrganizerIndex] = useState(null);
 
   const [isDeleting, setIsDeleting] = useState(null);
+
+  // Schedule form state
+  const [currentScheduleItem, setCurrentScheduleItem] = useState({
+    startTime: "",
+    endTime: "",
+    title: "",
+    description: "",
+    presenter: "",
+    type: "session",
+  });
+  const [showScheduleForm, setShowScheduleForm] = useState(false);
+  const [editingScheduleIndex, setEditingScheduleIndex] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -278,7 +291,10 @@ const ManageAnnouncements = () => {
       category: "workshop",
       mainImage: "/api/placeholder/400/220",
       organizers: [],
+      schedule: [],
       active: true,
+      hasRegistration: false,
+      registrationUrl: "",
     });
     resetOrganizerForm();
   };
@@ -297,6 +313,53 @@ const ManageAnnouncements = () => {
     });
     setShowOrganizerForm(false);
     setEditingOrganizerIndex(null);
+  };
+
+  const handleScheduleInputChange = (e) => {
+    const { name, value } = e.target;
+    setCurrentScheduleItem((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const addScheduleItem = () => {
+    if (editingScheduleIndex !== null) {
+      const updatedSchedule = [...currentEvent.schedule];
+      updatedSchedule[editingScheduleIndex] = currentScheduleItem;
+      setCurrentEvent((prev) => ({
+        ...prev,
+        schedule: updatedSchedule,
+      }));
+      setEditingScheduleIndex(null);
+    } else {
+      setCurrentEvent((prev) => ({
+        ...prev,
+        schedule: [...prev.schedule, currentScheduleItem],
+      }));
+    }
+    setCurrentScheduleItem({
+      startTime: "",
+      endTime: "",
+      title: "",
+      description: "",
+      presenter: "",
+      type: "session",
+    });
+    setShowScheduleForm(false);
+  };
+
+  const editScheduleItem = (index) => {
+    setCurrentScheduleItem(currentEvent.schedule[index]);
+    setEditingScheduleIndex(index);
+    setShowScheduleForm(true);
+  };
+
+  const removeScheduleItem = (index) => {
+    setCurrentEvent((prev) => ({
+      ...prev,
+      schedule: prev.schedule.filter((_, i) => i !== index),
+    }));
   };
 
   return (
@@ -699,6 +762,212 @@ const ManageAnnouncements = () => {
                 <p className="text-xs text-gray-500 mt-1">
                   Enter the URL where users can register for this event
                 </p>
+              </div>
+            )}
+          </div>
+
+          {/* Schedule Management Section */}
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium text-gray-900">
+                Event Schedule
+              </h3>
+              <button
+                type="button"
+                onClick={() => setShowScheduleForm(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-navy-blue text-white rounded-md hover:bg-navy-blue/90"
+              >
+                <FaPlus size={16} />
+                Add Schedule Item
+              </button>
+            </div>
+
+            {/* Schedule Items List */}
+            {currentEvent.schedule.length > 0 && (
+              <div className="space-y-4">
+                {currentEvent.schedule.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg"
+                  >
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">{item.title}</span>
+                        <span className="text-sm text-gray-500">
+                          ({item.startTime} - {item.endTime})
+                        </span>
+                        {item.type === "break" && (
+                          <span className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full">
+                            Break
+                          </span>
+                        )}
+                      </div>
+                      {item.presenter && (
+                        <p className="text-sm text-gray-600">
+                          Presenter: {item.presenter}
+                        </p>
+                      )}
+                      {item.description && (
+                        <p className="text-sm text-gray-600 mt-1">
+                          {item.description}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => editScheduleItem(index)}
+                        className="text-indigo-600 hover:text-indigo-900"
+                      >
+                        <FaEdit size={16} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeScheduleItem(index)}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        <FaTrash size={16} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Schedule Item Form Modal */}
+            {showScheduleForm && (
+              <div className="fixed inset-0 bg-white/20 backdrop-blur-sm flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg p-6 w-full max-w-md">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-medium text-gray-900">
+                      {editingScheduleIndex !== null
+                        ? "Edit Schedule Item"
+                        : "Add Schedule Item"}
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowScheduleForm(false);
+                        setEditingScheduleIndex(null);
+                        setCurrentScheduleItem({
+                          startTime: "",
+                          endTime: "",
+                          title: "",
+                          description: "",
+                          presenter: "",
+                          type: "session",
+                        });
+                      }}
+                      className="text-gray-400 hover:text-gray-500"
+                    >
+                      <FaTimes size={20} />
+                    </button>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Type
+                      </label>
+                      <select
+                        name="type"
+                        value={currentScheduleItem.type}
+                        onChange={handleScheduleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
+                      >
+                        <option value="session">Session</option>
+                        <option value="break">Break</option>
+                        <option value="opening">Opening</option>
+                        <option value="closing">Closing</option>
+                      </select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Start Time
+                        </label>
+                        <input
+                          type="time"
+                          name="startTime"
+                          value={currentScheduleItem.startTime}
+                          onChange={handleScheduleInputChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          End Time
+                        </label>
+                        <input
+                          type="time"
+                          name="endTime"
+                          value={currentScheduleItem.endTime}
+                          onChange={handleScheduleInputChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Title
+                      </label>
+                      <input
+                        type="text"
+                        name="title"
+                        value={currentScheduleItem.title}
+                        onChange={handleScheduleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
+                        placeholder="Session title"
+                      />
+                    </div>
+
+                    {currentScheduleItem.type === "session" && (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Presenter
+                        </label>
+                        <input
+                          type="text"
+                          name="presenter"
+                          value={currentScheduleItem.presenter}
+                          onChange={handleScheduleInputChange}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
+                          placeholder="Presenter name"
+                        />
+                      </div>
+                    )}
+
+                    <div className="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowScheduleForm(false);
+                          setEditingScheduleIndex(null);
+                          setCurrentScheduleItem({
+                            startTime: "",
+                            endTime: "",
+                            title: "",
+                            description: "",
+                            presenter: "",
+                            type: "session",
+                          });
+                        }}
+                        className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={addScheduleItem}
+                        className="px-4 py-2 bg-navy-blue text-white rounded-md hover:bg-navy-blue/90"
+                      >
+                        {editingScheduleIndex !== null ? "Update" : "Add"} Item
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>

@@ -14,6 +14,18 @@ const organizerSchema = new mongoose.Schema(
   { _id: false }
 ); // This prevents creating _id for each organizer
 
+// Define a sub-schema for schedule items
+const scheduleItemSchema = new mongoose.Schema(
+  {
+    startTime: { type: String, required: true },
+    endTime: { type: String, required: true },
+    title: { type: String, required: true },
+    presenter: { type: String, required: false },
+    type: { type: String, required: true, enum: ["session", "break", "opening", "closing"] }, // To differentiate between sessions and breaks
+  },
+  { _id: false }
+);
+
 const announcementSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
@@ -25,6 +37,10 @@ const announcementSchema = new mongoose.Schema(
     mainImage: { type: String, required: true },
     organizers: {
       type: [organizerSchema],
+      default: [],
+    },
+    schedule: {
+      type: [scheduleItemSchema],
       default: [],
     },
     active: { type: Boolean, required: true, default: false },

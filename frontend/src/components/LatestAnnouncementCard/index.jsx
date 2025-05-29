@@ -98,7 +98,7 @@ const LatestAnnouncementCard = () => {
             <img
               src={mainImage}
               alt={title}
-              className="w-full h-full object-fit overflow-hidden max-h-72"
+              className=" h-full object-fit overflow-hidden w-full md:w-96 max-h-72"
             />
           </div>
         )}

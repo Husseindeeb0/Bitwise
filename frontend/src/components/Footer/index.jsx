@@ -65,7 +65,7 @@ const Footer = () => {
               <FaInstagram />
             </a>
             <a
-              href="https://chat.whatsapp.com/BRfuyGdNezzD50dGmLL"
+              href="https://chat.whatsapp.com/BRfuyGdNezzDtfD50dGmLL"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-green-500 transition duration-300"
@@ -73,7 +73,7 @@ const Footer = () => {
               <FaWhatsapp />
             </a>
             <a
-              href="https://youtube.com"
+              href="https://youtube.com/@bitwise-club-lu?si=QtAiRyBe9uiJwZnB"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-red-500 transition duration-300"

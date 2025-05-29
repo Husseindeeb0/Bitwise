@@ -38,14 +38,8 @@ const AnnouncementDetails = () => {
             response.data.organizers = response.data.organizers.map(
               (organizer) => ({
                 ...organizer,
-                bio:
-                  organizer.bio ||
-                  "An experienced professional with extensive knowledge in their field. They have contributed to numerous projects and initiatives in the industry.",
-                expertise: organizer.expertise || [
-                  "Technology",
-                  "Leadership",
-                  "Innovation",
-                ],
+                bio: organizer.bio,
+                expertise: organizer.expertise,
                 linkedin: organizer.linkedin || "https://linkedin.com",
                 instagram: organizer.instagram || "https://instagram.com",
                 education:
@@ -82,18 +76,11 @@ const AnnouncementDetails = () => {
           location.state.event.organizers = location.state.event.organizers.map(
             (organizer) => ({
               ...organizer,
-              bio:
-                organizer.bio ||
-                "An experienced professional with extensive knowledge in their field. They have contributed to numerous projects and initiatives in the industry.",
-              expertise: organizer.expertise || [
-                "Technology",
-                "Leadership",
-                "Innovation",
-              ],
-              linkedin: organizer.linkedin || "https://linkedin.com",
-              instagram: organizer.instagram || "https://instagram.com",
-              education:
-                organizer.education || "Master's Degree, Computer Science",
+              bio: organizer.bio,
+              expertise: organizer.expertise,
+              linkedin: organizer.linkedinLink,
+              instagram: organizer.instaLink,
+              education: organizer.education || "",
             })
           );
         }
@@ -282,131 +269,44 @@ const AnnouncementDetails = () => {
                   </h3>
 
                   <div className="space-y-4">
-                    {/* Opening */}
-                    <div className="border-l-4 rounded-lg border-navy-blue pl-4 pb-4">
-                      <div className="flex flex-col md:flex-row md:items-center mb-1">
-                        <span className="bg-navy-blue text-white px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
-                          10:00 AM - 10:15 AM
-                        </span>
-                        <h4 className="font-bold text-dark-purple">Opening</h4>
+                    {event.schedule && event.schedule.length > 0 ? (
+                      event.schedule.map((item, index) => (
+                        <div
+                          key={index}
+                          className={`border-l-4 rounded-lg ${
+                            item.type !== "session"
+                              ? "border-light bg-gray-50 p-4 rounded-r-lg"
+                              : "border-navy-blue"
+                          } pl-4 pb-4`}
+                        >
+                          <div className="flex flex-col mb-1">
+                            <span
+                              className={`${
+                                item.type !== "session"
+                                  ? "bg-light text-dark-purple"
+                                  : "bg-navy-blue text-white"
+                              } px-3 py-1 rounded-lg text-sm font-medium mb-2 inline-block w-fit`}
+                            >
+                              {convertTo12HourFormat(item.startTime)} -{" "}
+                              {convertTo12HourFormat(item.endTime)}
+                            </span>
+                            <h4 className="font-bold text-dark-purple mt-1">
+                              {item.title}
+                            </h4>
+                          </div>
+                          {item.presenter && (
+                            <p className="text-dark-purple text-sm mt-1">
+                              <span className="font-semibold">Presenter:</span>{" "}
+                              {item.presenter}
+                            </p>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-4 text-gray-500">
+                        No schedule available for this event.
                       </div>
-                    </div>
-
-                    {/* Club Accomplishments */}
-                    <div className="border-l-4 rounded-lg border-navy-blue pl-4 pb-4">
-                      <div className="flex flex-col md:flex-row md:items-center mb-1">
-                        <span className="bg-navy-blue text-white px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
-                          10:15 AM - 10:30 AM
-                        </span>
-                        <h4 className="font-bold text-dark-purple">
-                          2024 Club Accomplishments
-                        </h4>
-                      </div>
-                      <p className="text-dark-purple text-sm">
-                      <span className="font-semibold">Presenter:</span> Rania
-                      </p>
-                    </div>
-
-                    {/* Aya Mansour */}
-                    <div className="border-l-4 rounded-lg border-sky-blue pl-4 pb-4">
-                      <div className="flex flex-col md:flex-row md:items-center mb-1">
-                        <span className="bg-sky-blue text-white px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
-                          10:30 AM - 11:20 AM
-                        </span>
-                        <h4 className="font-bold text-dark-purple">
-                          Speaker Session
-                        </h4>
-                      </div>
-                      <p className="text-dark-purple text-sm">
-                      <span className="font-semibold">Presenter:</span> Aya Mansour
-                      </p>
-                    </div>
-
-                    {/* Hassan Al Alchek */}
-                    <div className="border-l-4 rounded-lg border-sky-blue pl-4 pb-4">
-                      <div className="flex flex-col md:flex-row md:items-center mb-1">
-                        <span className="bg-sky-blue text-white px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
-                          11:25 AM - 12:15 PM
-                        </span>
-                        <h4 className="font-bold text-dark-purple">
-                          Speaker Session
-                        </h4>
-                      </div>
-                      <p className="text-dark-purple text-sm">
-                      <span className="font-semibold">Presenter:</span> Hassan Al Alchek
-                      </p>
-                    </div>
-
-                    {/* Break */}
-                    <div className="border-l-4 rounded-lg border-light p-4 bg-gray-50 rounded-r-lg">
-                      <div className="flex flex-col md:flex-row md:items-center mb-1">
-                        <span className="bg-light text-dark-purple px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
-                          12:20 PM - 1:00 PM
-                        </span>
-                        <h4 className="font-bold text-dark-purple">Break</h4>
-                      </div>
-                      <p className="text-dark-purple text-sm">
-                        A break to recharge and connect with fellow participants
-                        and speakers — with exciting educational activities
-                        waiting for you all.
-                      </p>
-                    </div>
-
-                    {/* Batoul */}
-                    <div className="border-l-4 rounded-lg border-sky-blue pl-4 pb-4">
-                      <div className="flex flex-col md:flex-row md:items-center mb-1">
-                        <span className="bg-sky-blue text-white px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
-                          1:00 PM - 1:50 PM
-                        </span>
-                        <h4 className="font-bold text-dark-purple">
-                          Speaker Session
-                        </h4>
-                      </div>
-                      <p className="text-dark-purple text-sm">
-                      <span className="font-semibold">Presenter:</span> Batoul Abo Yehya
-                      </p>
-                    </div>
-
-                    {/* Sam */}
-                    <div className="border-l-4 rounded-lg border-sky-blue pl-4 pb-4">
-                      <div className="flex flex-col md:flex-row md:items-center mb-1">
-                        <span className="bg-sky-blue text-white px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
-                          1:55 PM - 2:45 PM
-                        </span>
-                        <h4 className="font-bold text-dark-purple">
-                          Speaker Session
-                        </h4>
-                      </div>
-                      <p className="text-dark-purple text-sm">
-                        <span className="font-semibold">Presenter:</span> Sam Shouman
-                      </p>
-                    </div>
-
-                    {/* Challenge */}
-                    <div className="border-l-4 rounded-lg border-navy-blue pl-4 pb-4">
-                      <div className="flex flex-col md:flex-row md:items-center mb-1">
-                        <span className="bg-navy-blue text-white px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
-                          2:45 PM - 3:10 PM
-                        </span>
-                        <h4 className="font-bold text-dark-purple">
-                          Challenge
-                        </h4>
-                      </div>
-                    </div>
-
-                    {/* Closing */}
-                    <div className="border-l-4 rounded-lg border-navy-blue pl-4">
-                      <div className="flex flex-col md:flex-row md:items-center mb-1">
-                        <span className="bg-navy-blue text-white px-3 py-1 rounded-lg text-sm font-medium md:mr-3 mb-2 md:mb-0 inline-block">
-                          3:10 PM - 3:30 PM
-                        </span>
-                        <h4 className="font-bold text-dark-purple">Closing</h4>
-                      </div>
-                      <p className="text-dark-purple text-sm">
-                        Closing the event with a group photo to capture the
-                        moment
-                      </p>
-                    </div>
+                    )}
                   </div>
                 </div>
                 <hr />
