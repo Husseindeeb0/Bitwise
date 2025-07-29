@@ -434,7 +434,7 @@ const AnnouncementDetails = () => {
                   {/* Location */}
                   <div className="flex items-start">
                     <div className="flex-shrink-0 mt-1">
-                      <FaMapMarkerAlt className="h-5 w-5 text-navy-blue" />
+                      <FaMapMarkerAlt className="h-5 w-5 text-navy-blue font" />
                     </div>
                     <div className="ml-3">
                       <p className="text-dark-purple font-medium">Location</p>
