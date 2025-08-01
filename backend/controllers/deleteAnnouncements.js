@@ -1,5 +1,5 @@
 const Announcement = require("../models/Announcements");
-const imagekit = require("../config/imagekit");
+const imagekit = require("../config/imageKit");
 
 const deleteAnnouncements = async (req, res) => {
   try {

@@ -1,6 +1,6 @@
 const Announcement = require("../models/Announcements");
 const { v4: uuidv4 } = require('uuid');
-const imagekit = require("../config/imagekit");
+const imagekit = require("../config/imageKit");
 
 const addAnnouncements = async (req, res) => {
   try {

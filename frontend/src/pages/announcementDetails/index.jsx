@@ -176,7 +176,7 @@ const AnnouncementDetails = () => {
       <div className="relative h-80 md:h-96 lg:h-[500px] w-full overflow-hidden">
         <div className="absolute inset-0 bg-dark-purple/20 z-10"></div>
         <img
-          src={event.mainImage || "/api/placeholder/1200/500"}
+          src={event.mainImageUrl}
           alt={event.title}
           className="w-full h-full object-cover"
         />
