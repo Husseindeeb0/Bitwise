@@ -37,7 +37,7 @@ const AnnouncementCard = ({ event, page, editEvent, setIsDeleting }) => {
       <div className="flex flex-col md:flex-row">
         <div className="md:w-1/3">
           <img
-            src={event.mainImage}
+            src={event.mainImageUrl}
             alt={event.title}
             className="w-full h-full object-fit overflow-hidden max-h-80"
           />
@@ -124,7 +124,7 @@ const AnnouncementCard = ({ event, page, editEvent, setIsDeleting }) => {
                       className="flex items-center gap-2 bg-navy-blue px-2 py-1 rounded-md"
                     >
                       <img
-                        src={organizer.image}
+                        src={organizer.imageUrl}
                         alt={organizer.name}
                         className="w-6 h-6 rounded-full object-cover"
                       />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   FaTrash,
   FaEdit,
@@ -32,7 +32,7 @@ const ManageAnnouncements = () => {
     time: "",
     location: "",
     category: "workshop",
-    mainImage: "/api/placeholder/400/220",
+    mainImageUrl: "",
     organizers: [],
     schedule: [],
     active: true,
@@ -49,7 +49,7 @@ const ManageAnnouncements = () => {
     linkedinLink: "",
     startTime: "",
     title: "",
-    image: "/api/placeholder/80/80",
+    imageUrl: "",
   });
   const [showOrganizerForm, setShowOrganizerForm] = useState(false);
   const [editingOrganizerIndex, setEditingOrganizerIndex] = useState(null);
@@ -97,12 +97,25 @@ const ManageAnnouncements = () => {
 
   // Event form handling
   const handleInputChange = (e) => {
-    let { name, value } = e.target;
+    let { name, value, files } = e.target;
 
-    setCurrentEvent({
-      ...currentEvent,
-      [name]: value,
-    });
+    if (name === "mainImageUrl") {
+      const file = files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        setCurrentEvent((prev) => ({
+          ...prev,
+          [name]: reader.result,
+        }));
+      };
+    } else {
+      setCurrentEvent((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleCheckboxChange = (e) => {
@@ -123,11 +136,24 @@ const ManageAnnouncements = () => {
 
   // Organizer form handling
   const handleOrganizerInputChange = (e) => {
-    const { name, value } = e.target;
-    setCurrentOrganizer({
-      ...currentOrganizer,
-      [name]: value,
-    });
+    const { name, value, files } = e.target;
+    if (name === "imageUrl") {
+      const file = files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        setCurrentOrganizer((prev) => ({
+          ...prev,
+          [name]: reader.result,
+        }));
+      };
+    } else {
+      setCurrentOrganizer((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   // CRUD operations for announcements
@@ -482,25 +508,26 @@ const ManageAnnouncements = () => {
 
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Main Image URL
+              Choose your Poster Image
             </label>
             <div className="flex items-center gap-3">
               <input
-                type="text"
-                name="mainImage"
-                value={currentEvent.mainImage}
-                required={true}
+                type="file"
+                name="mainImageUrl"
+                accept="image/*"
+                required={!isEditing}
                 onChange={handleInputChange}
-                className="flex-1 w-full px-3 py-2 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
-                placeholder="Image URL for the event"
+                className="flex-1 max-w-56 px-3 py-2 border border-gray-300 bg-white rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue cursor-pointer"
               />
-              <div className="border border-gray-300 rounded-md overflow-hidden">
-                <img
-                  src={currentEvent.mainImage}
-                  alt="Event preview"
-                  className="w-16 h-16 object-cover"
-                />
-              </div>
+              {currentEvent.mainImageUrl && (
+                <div className="border border-gray-300 rounded-md overflow-hidden">
+                  <img
+                    src={currentEvent.mainImageUrl}
+                    alt="Event preview"
+                    className="w-16 h-16 object-cover"
+                  />
+                </div>
+              )}
             </div>
           </div>
 
@@ -632,21 +659,22 @@ const ManageAnnouncements = () => {
                   </label>
                   <div className="flex items-center gap-3">
                     <input
-                      type="text"
-                      name="image"
-                      value={currentOrganizer.image}
+                      type="file"
+                      name="imageUrl"
                       required={true}
                       onChange={handleOrganizerInputChange}
-                      className="flex-1 w-full px-3 py-2 border border-gray-300 bg-light-purple rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
+                      className="flex-1 max-w-56 px-3 py-2 border border-gray-300 bg-light-purple rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
                       placeholder="Profile image URL"
                     />
-                    <div className="border border-gray-300 rounded-full overflow-hidden">
-                      <img
-                        src={currentOrganizer.image}
-                        alt="Organizer preview"
-                        className="w-10 h-10 object-cover"
-                      />
-                    </div>
+                    {currentOrganizer.imageUrl && (
+                      <div className="border border-gray-300 rounded-full overflow-hidden">
+                        <img
+                          src={currentOrganizer.imageUrl}
+                          alt="Organizer preview"
+                          className="w-10 h-10 object-cover"
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex justify-end">
@@ -672,7 +700,7 @@ const ManageAnnouncements = () => {
                     >
                       <div className="flex items-center gap-3">
                         <img
-                          src={organizer.image}
+                          src={organizer.imageUrl}
                           alt={organizer.name}
                           className="w-10 h-10 rounded-full object-cover"
                         />
@@ -1005,6 +1033,7 @@ const ManageAnnouncements = () => {
           ) : announcements.length > 0 ? (
             announcements.map((event) => (
               <div key={event._id}>
+                {console.log(event)}
                 <AnnouncementCard
                   event={event}
                   editEvent={editEvent}

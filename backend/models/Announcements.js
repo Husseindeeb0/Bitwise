@@ -4,7 +4,8 @@ const organizerSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     expertise: { type: String, required: true },
-    image: { type: String, required: true },
+    imageUrl: { type: String, required: true },
+    imageId: { type : String },
     description: { type: String, required: true },
     instaLink: { type: String, required: false },
     linkedinLink: { type: String, required: false },
@@ -34,7 +35,8 @@ const announcementSchema = new mongoose.Schema(
     time: { type: String, required: true },
     location: { type: String, required: true },
     category: { type: String, required: true },
-    mainImage: { type: String, required: true },
+    mainImageUrl: { type: String, required: true },
+    mainImageId: { type : String },
     organizers: {
       type: [organizerSchema],
       default: [],

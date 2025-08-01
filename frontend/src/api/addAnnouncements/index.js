@@ -13,7 +13,7 @@ const addAnnouncements = async (newAnnouncement, accessToken) => {
     );
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({})); // hanlde error with json and different format
+      const errorData = await response.json().catch(() => ({})); // handle error with json and different format
       throw new Error(
         errorData.message || `Failed to fetch announcements: ${response.status}`
       );

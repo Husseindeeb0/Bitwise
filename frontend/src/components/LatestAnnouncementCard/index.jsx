@@ -70,7 +70,7 @@ const LatestAnnouncementCard = () => {
     time,
     date,
     location,
-    mainImage,
+    mainImageUrl,
     organizers,
     active,
     category,
@@ -93,12 +93,12 @@ const LatestAnnouncementCard = () => {
       </div>
 
       <div className="flex flex-col md:flex-row">
-        {mainImage && (
+        {mainImageUrl && (
           <div>
             <img
-              src={mainImage}
+              src={mainImageUrl}
               alt={title}
-              className=" h-full object-fit overflow-hidden w-full md:w-96 max-h-72"
+              className=" h-full object-fit overflow-hidden min-w-80 w-full md:w-96 max-h-72"
             />
           </div>
         )}
