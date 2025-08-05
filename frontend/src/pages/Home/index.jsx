@@ -81,7 +81,7 @@ const Home = () => {
         >
           <span className="relative z-10">
             Start Your Programming Journey with
-            <span className="text-sky-blue block"> Bitwise!</span>
+            <span className="text-sky-blue block"> Bitwise</span>
           </span>
         </motion.h1>
 

@@ -1,5 +1,5 @@
 const getLatestAnnouncement = async (accessToken) => {
-  console.log(import.meta.env.VITE_API_URL);
+  console.log("ENV Variable: ", import.meta.env.VITE_API_URL);
   try {
     const response = await fetch(
       `${import.meta.env.VITE_API_URL}/announcements/getLatestAnnouncement`,
