@@ -1,0 +1,11 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', 'europe-west1-docker.pkg.dev/persuasive-byte-459214-t4/bitwise/frontend:latest',
+      '--build-arg', 'VITE_API_URL=https://backend-service-261191369874.europe-west1.run.app',
+      '.'
+    ]
+
+images:
+  - 'europe-west1-docker.pkg.dev/persuasive-byte-459214-t4/bitwise/frontend:latest'
