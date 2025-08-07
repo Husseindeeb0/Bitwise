@@ -1033,7 +1033,6 @@ const ManageAnnouncements = () => {
           ) : announcements.length > 0 ? (
             announcements.map((event) => (
               <div key={event._id}>
-                {console.log(event)}
                 <AnnouncementCard
                   event={event}
                   editEvent={editEvent}

@@ -1,4 +1,5 @@
 steps:
+  # Build Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'build',
@@ -6,6 +7,24 @@ steps:
       '--build-arg', 'VITE_API_URL=https://backend-service-261191369874.europe-west1.run.app',
       '.'
     ]
+
+  # Push Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push',
+      'europe-west1-docker.pkg.dev/persuasive-byte-459214-t4/bitwise/frontend:latest'
+    ]
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      [
+        'run', 'deploy', 'frontend-service',
+        '--image', 'europe-west1-docker.pkg.dev/persuasive-byte-459214-t4/bitwise/frontend:latest',
+        '--region', 'europe-west1',
+        '--platform', 'managed',
+        '--allow-unauthenticated'
+      ]
 
 images:
   - 'europe-west1-docker.pkg.dev/persuasive-byte-459214-t4/bitwise/frontend:latest'

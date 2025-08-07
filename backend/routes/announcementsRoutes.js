@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { getAnnouncements } = require("../controllers/getAnnouncements");
-const { getAnnouncementById } = require("../controllers/getAnnouncementById");
-const { addAnnouncements } = require("../controllers/addAnnouncements");
-const { editAnnouncements } = require("../controllers/editAnnouncements");
-const { deleteAnnouncements } = require("../controllers/deleteAnnouncements");
-const { getLatestAnnouncement } = require("../controllers/getLatestAnnouncement");
+const {
+  addAnnouncements,
+  editAnnouncements,
+  deleteAnnouncements,
+  getAnnouncements,
+  getAnnouncementById,
+  getLatestAnnouncement,
+} = require("../controllers/announcements.controller");
 const { verifyJWT } = require("../middleware/verifyJWT");
 
 router.get("/getAnnouncements", getAnnouncements);

@@ -1,11 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { signup } = require("../controllers/signup");
-const { login } = require("../controllers/login");
-const { logout } = require("../controllers/logout");
 const { verifyJWT } = require("../middleware/verifyJWT");
-const { refreshToken } = require("../controllers/refreshToken");
-const { getUserRole } = require("../controllers/getUserRole");
+const { getUserRole } = require("../controllers/userRole.controller");
+const { signup, login, logout, refreshToken } = require("../controllers/auth.controller");
 
 // Define routes
 router.post("/signup", signup);

@@ -19,7 +19,6 @@ const ManageAdmins = () => {
     try {
       setLoading(true);
       const response = await getAllUsers(accessToken);
-      console.log(response)
       // Check if the response contains the expected data
       if (response.state === "success" && response.data.users && response.data.admins) {
         const { users = [], admins = [], counts = {} } = response.data;
