@@ -1,6 +1,7 @@
 const allowedOrigins = [
   "https://bitwiseclub.com",
   "https://bitwiseclub-frontend.onrender.com",
+  "https://bitwiseclub-frontend-alt5.onrender.com",
   "http://localhost:5173",
   "http://localhost:3000",
   "https://bitwise0.netlify.app",
