@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useMyContext } from "../../context";
 import {
   FaCalendarAlt,
   FaClock,
@@ -13,60 +12,51 @@ import {
   FaCheck,
   FaInfoCircle,
 } from "react-icons/fa";
-import getAnnouncementById from "../../api/getAnnouncementById";
+import { getAnnouncementById } from "../../features/announcements/announcementsThunks";
 import SpeakerDetails from "../../components/SpeakerDetails";
+import { useDispatch, useSelector } from "react-redux";
 
 const AnnouncementDetails = () => {
-  const { accessToken, setLoading } = useMyContext();
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  const [event, setEvent] = useState(null);
   const [copied, setCopied] = useState(false);
   const [selectedSpeaker, setSelectedSpeaker] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const searchParams = new URLSearchParams(location.search);
+  const id = searchParams.get("id");
+  const [stateEvent, setStateEvent] = useState(null);
+  const announcementById = useSelector((state) => state.announcements.announcementById);
+  let event = stateEvent || announcementById;
 
-  const fetchAnnouncementData = useCallback(
-    async (id) => {
-      try {
-        setLoading(true);
-        const response = await getAnnouncementById(accessToken, id);
+  const fetchAnnouncementData = useCallback(async (id) => {
+    try {
+      const response = await dispatch(getAnnouncementById(id));
 
-        // Check if the response contains the expected data
-        if (response.state === "success") {
-          // Enhance organizers with additional mock data for our new modal
-          if (response.data.organizers && response.data.organizers.length > 0) {
-            response.data.organizers = response.data.organizers.map(
-              (organizer) => ({
-                ...organizer,
-                bio: organizer.bio,
-                expertise: organizer.expertise,
-                linkedin: organizer.linkedin || "https://linkedin.com",
-                instagram: organizer.instagram || "https://instagram.com",
-                education:
-                  organizer.education || "Master's Degree, Computer Science",
-              })
-            );
-          }
-          setEvent(response.data);
-        } else {
-          console.error(response.message);
-          setEvent([]);
-        }
-      } catch (error) {
-        console.error("Error fetching announcement:", error);
-        setEvent([]);
-      } finally {
-        setLoading(false);
+      // Enhance organizers with additional mock data for our new modal
+      if (response.data.organizers && response.data.organizers.length > 0) {
+        response.data.organizers = response.data.organizers.map(
+          (organizer) => ({
+            ...organizer,
+            bio: organizer.bio,
+            expertise: organizer.expertise,
+            linkedin: organizer.linkedin || "https://linkedin.com",
+            instagram: organizer.instagram || "https://instagram.com",
+            education: organizer.education || "Computer Science",
+          })
+        );
+      } else {
+        console.error(response.message);
       }
-    },
-    [accessToken, setLoading]
-  );
+    } catch (error) {
+      console.error("Error fetching announcement:", error);
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     const loadEvent = async () => {
       // First check if the event data is in location state
-      const searchParams = new URLSearchParams(location.search);
-      const id = searchParams.get("id");
+
       if (location.state && location.state.event) {
         // Enhance organizers with additional mock data
         if (
@@ -84,15 +74,14 @@ const AnnouncementDetails = () => {
             })
           );
         }
-        setEvent(location.state.event);
-        setLoading(false);
+        setStateEvent(location.state.event);
       } else {
         // If not in state, fetch it using the ID
         await fetchAnnouncementData(id);
       }
     };
     loadEvent();
-  }, [location, fetchAnnouncementData, setLoading]);
+  }, [location, fetchAnnouncementData]);
 
   // Function to open the speaker modal
   const openSpeakerModal = (speaker) => {

@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { useMyContext } from "../../context";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import logout from "../../api/logout";
+import { logout } from "../../features/auth/authThunks";
+import { useDispatch, useSelector } from "react-redux";
 import {
   FaBars,
   FaHome,
@@ -20,15 +20,10 @@ import { RiAdminFill } from "react-icons/ri";
 import { GiAchievement } from "react-icons/gi";
 
 const Navbar = () => {
-  const role = localStorage.getItem("role");
-  const {
-    isAuthenticated,
-    setIsAuthenticated,
-    setAccessToken,
-    accessToken,
-    setLoading,
-  } = useMyContext();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const userData = useSelector((state) => state.auth.userData);
+  const role = userData?.role;
   const [isOpen, setIsOpen] = useState(false);
   const sidebarRef = useRef(null);
   const dropDownRef = useRef(null);
@@ -39,20 +34,10 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      setLoading(true);
-      const result = await logout(accessToken);
-      if (result?.status === "failed" || !result) {
-        console.log("Logging out failed", result.message);
-      }
+    await dispatch(logout()).unwrap();
+    navigate("/login");
     } catch (error) {
-      console.error("Logout failed:", error);
-    } finally {
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("role");
-      setAccessToken(null);
-      setIsAuthenticated(false);
-      navigate("/login");
-      setLoading(false);
+      console.log("Logout failed:", error)
     }
   };
 
@@ -131,9 +116,11 @@ const Navbar = () => {
                 <MdManageAccounts className="text-lg" />
               </div>
               <span>Management</span>
-              {
-                isDisplay ? <FaChevronUp className="text-sm" /> : <FaChevronDown className="text-sm" />
-              }
+              {isDisplay ? (
+                <FaChevronUp className="text-sm" />
+              ) : (
+                <FaChevronDown className="text-sm" />
+              )}
             </button>
 
             <AnimatePresence>
@@ -175,7 +162,7 @@ const Navbar = () => {
           </div>
         ) : null}
 
-        {!isAuthenticated ? (
+        {!userData ? (
           <>
             <NavItem to="/login" label="Login" />
             <NavItem to="/signup" label="Signup" />
@@ -274,7 +261,7 @@ const Navbar = () => {
             ) : null}
 
             <div className="mt-6 w-full border-t border-white/20 pt-6 space-y-2">
-              {!isAuthenticated ? (
+              {!userData ? (
                 <>
                   <MobileNavItem
                     to="/login"

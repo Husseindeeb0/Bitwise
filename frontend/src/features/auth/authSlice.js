@@ -1,72 +1,82 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { axiosInstance } from "../../lib/axios";
+import { checkAuth, signup, login, logout } from "./authThunks";
 
 const initialState = {
-  loggingIn: false,
-  signingIn: false,
+  userData: null,
+  isAuthenticating: false,
+  error: null,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    checkAuth: async () => {
-      try {
-        // First try verifying current access token
-        const res = await axiosInstance.get("/auth/verifyJWT");
-      } catch (error) {
-        // If verify failed, attempt refresh
-        if (
-          error.response &&
-          (error.response.status === 401 || error.response.status === 403)
-        ) {
-          try {
-            const refreshRes = await axiosInstance.get("/auth/refreshToken");
-            set({ authUser: refreshRes.data });
-          } catch (refreshErr) {
-            console.log("Refresh failed:", refreshErr);
-          }
-        } else {
-          console.log("Error in checkAuth:", error);
-        }
-      }
-    },
-    login: async (userDetails) => {
-      loggingIn = true;
-      try {
-        const res = await axiosInstance.post("/user/getAllUsers", data);
-        return res.data;
-      } catch (error) {
-        console.log(
-          `Error logging in: ${error.data.message}` || "Logging in failed"
-        );
-      }
-      loggingIn = false;
-    },
-    signup: async () => {
-      signingIn = true;
-      try {
-        const res = await axiosInstance.post("/auth/signup", data);
-        return res.data;
-      } catch (error) {
-        console.log(
-          `Error signing in: ${error.data.message}` || "Signing in failed"
-        );
-      }
-      signingIn = false;
-    },
-    logout: async () => {
-      try {
-        const res = await axiosInstance.post("/auth/logout", data);
-        return res.data;
-      } catch (error) {
-        console.log(
-          `Error logging out: ${error.data.message}` || "Logging out failed"
-        );
-      }
+    clearError: (state) => {
+      state.error = null;
     },
   },
-});
+  extraReducers: (builder) => {
+    // checkAuth
+    builder
+      .addCase(checkAuth.pending, (state) => {
+        state.isAuthenticating = true;
+        state.error = null;
+      })
+      .addCase(checkAuth.fulfilled, (state, action) => {
+        state.isAuthenticating = false;
+        state.userData = action.payload;
+      })
+      .addCase(checkAuth.rejected, (state, action) => {
+        state.isAuthenticating = false;
+        state.error = action.payload;
+        state.userData = null;
+      });
 
-export const { login, signup, logout, checkAuth } = authSlice.actions;
+    // signup
+    builder
+      .addCase(signup.pending, (state) => {
+        state.isAuthenticating = true;
+        state.error = null;
+      })
+      .addCase(signup.fulfilled, (state, action) => {
+        state.isAuthenticating = false;
+        state.userData = action.payload;
+      })
+      .addCase(signup.rejected, (state, action) => {
+        state.isAuthenticating = false;
+        state.error = action.payload;
+      });
+
+    // login
+    builder
+      .addCase(login.pending, (state) => {
+        state.isAuthenticating = true;
+        state.error = null;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.isAuthenticating = false;
+        state.userData = action.payload;
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.isAuthenticating = false;
+        state.error = action.payload;
+      });
+
+    // logout
+    builder
+      .addCase(logout.pending, (state) => {
+        state.isAuthenticating = true;
+        state.error = null;
+      })
+      .addCase(logout.fulfilled, (state) => {
+        state.isAuthenticating = false;
+        state.userData = null;
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.isAuthenticating = false;
+        state.error = action.payload;
+      });
+  },
+});
+export const authActions = authSlice.actions;
 export default authSlice.reducer;

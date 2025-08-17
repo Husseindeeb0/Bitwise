@@ -155,7 +155,6 @@ const editAnnouncements = async (req, res) => {
     return res.status(200).json({
       state: "success",
       message: "Announcement updated successfully",
-      data: updated,
     });
   } catch (error) {
     console.error("Error updating announcement:", error);
@@ -169,7 +168,7 @@ const editAnnouncements = async (req, res) => {
 // Delete announcements
 const deleteAnnouncements = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id } = req.params;
 
     if (!id) {
       return res.status(400).json({
@@ -220,7 +219,7 @@ const getAnnouncements = async (req, res) => {
     res.status(200).json({
       state: "success",
       message: "Announcements returned successfully",
-      data: announcements,
+      announcementsData: announcements,
     });
   } catch (error) {
     console.error("Error fetching announcements:", error);
@@ -240,7 +239,7 @@ const getAnnouncementById = async (req, res) => {
     res.status(200).json({
       state: "success",
       message: "Announcement returned successfully",
-      data: announcement,
+      announcementData: announcement,
     });
   } catch (error) {
     console.error("Error fetching announcement:", error);
@@ -260,7 +259,7 @@ const getLatestAnnouncement = async (req, res) => {
     res.status(200).json({
       state: "success",
       message: "Latest Announcement is fetched successfully",
-      data: latestAnnouncement,
+      announcementData: latestAnnouncement,
     });
   } catch (error) {
     console.error(error);

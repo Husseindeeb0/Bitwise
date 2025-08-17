@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const corsOptions = require("./config/corsoptions");
 const connectDB = require("./config/dbconnect");
+const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const announcementsRoutes = require("./routes/announcementsRoutes");
@@ -13,10 +14,13 @@ dotenv.config();
 const app = express();
 connectDB();
 
+// Middlewares
 app.use(cors(corsOptions));
+app.use(cookieParser());
 app.use(express.json({ limit: "5mb" }));
+
+// Routes
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/announcements", announcementsRoutes);
-
 app.listen(PORT, "0.0.0.0", () => console.log(`Server started on port ${PORT}`));

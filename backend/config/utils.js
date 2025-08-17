@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-export const generateAccessToken = async (user, res) => {
+const generateAccessToken = (user, res) => {
   const accessSecret = process.env.ACCESS_SECRET_TOKEN;
   if (!accessSecret) {
     throw new Error(
@@ -26,7 +26,7 @@ export const generateAccessToken = async (user, res) => {
   return accessToken;
 };
 
-export const generateRefreshToken = async (user, res) => {
+const generateRefreshToken = (user, res) => {
   const refreshSecret = process.env.REFRESH_SECRET_TOKEN;
   if (!refreshSecret) {
     throw new Error(
@@ -42,10 +42,14 @@ export const generateRefreshToken = async (user, res) => {
     }
   );
 
-  res.cookie("refreshToken", refreshToken, {
+  res.cookie("refresh_token", refreshToken, {
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     httpOnly: true,
     sameSite: "strict",
     secure: process.env.NODE_ENV !== "development",
   });
+
+  return refreshToken;
 };
+
+module.exports = { generateAccessToken, generateRefreshToken };

@@ -1,54 +1,43 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import AnnouncementCardsLoader from "../../components/AnnouncementCardsLoader";
-import { useMyContext } from "../../context";
-import getAnnouncements from "../../api/getAnnouncements";
+import { getAnnouncements } from "../../features/announcements/announcementsThunks";
 import { FaCalendar } from "react-icons/fa";
 import AnnouncementCard from "../../components/AnnouncementCard";
+import { useDispatch, useSelector } from "react-redux";
 
 function Announcements() {
-  const { accessToken } = useMyContext();
-  const [announcements, setAnnouncements] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.announcements.isLoading);
+  const announcementsData = useSelector(
+    (state) => state.announcements.announcementsData
+  );
 
   const fetchData = async () => {
     try {
-      setLoading(true);
-      const response = await getAnnouncements(accessToken);
-
-      // Check if the response contains the expected data
-      if (response.state === "success") {
-        const sortedData = [...response.data].sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        );
-        setAnnouncements(sortedData);
-      } else {
-        console.error(response.message);
-        setAnnouncements([]);
-      }
+      await dispatch(getAnnouncements());
     } catch (error) {
       console.error("Error fetching announcements:", error);
-      setAnnouncements([]);
-    } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData();
-  }, [accessToken]);
+    if (!announcementsData) {
+      fetchData();
+    }
+  }, [dispatch]);
 
   return (
     <div className="w-full px-10 py-30">
       <div className="grid grid-cols-1 gap-6">
-        {loading ? (
+        {isLoading ? (
           <>
             {/* Show multiple skeleton loaders */}
             {[...Array(3)].map((_, index) => (
               <AnnouncementCardsLoader key={index} />
             ))}
           </>
-        ) : announcements.length > 0 ? (
-          announcements.map((event) => (
+        ) : Array.isArray(announcementsData) && announcementsData.length > 0 ? (
+          announcementsData.map((event) => (
             <div key={event._id}>
               <AnnouncementCard event={event} page="announcements" />
             </div>

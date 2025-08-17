@@ -1,57 +1,38 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { FiUserPlus, FiUserMinus, FiSearch, FiRefreshCw } from "react-icons/fi";
-import getAllUsers from "../../../api/getAllUsers";
-import changeUserRole from "../../../api/changeUserRole";
-import { useMyContext } from "../../../context";
+import { changeUserRole, getAllUsers } from "../../../features/user/userThunks";
+import { useDispatch, useSelector } from "react-redux";
 
 const ManageAdmins = () => {
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.user.isLoading);
+  const users = useSelector((state) => state.user.users);
+  const admins = useSelector((state) => state.user.admins);
   // States for users and admins
-  const [users, setUsers] = useState([]);
-  const [admins, setAdmins] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [userSearch, setUserSearch] = useState("");
   const [adminSearch, setAdminSearch] = useState("");
   const [processingUser, setProcessingUser] = useState(null);
-  const { accessToken } = useMyContext();
 
   const fetchData = async () => {
     try {
-      setLoading(true);
-      const response = await getAllUsers(accessToken);
-      // Check if the response contains the expected data
-      if (response.state === "success" && response.data.users && response.data.admins) {
-        const { users = [], admins = [], counts = {} } = response.data;
-
-        setUsers(users.length > 0 ? users : []);
-        setAdmins(admins.length > 0 ? admins : []);
-      } else {
-        console.error("No valid data received: ", response.message);
-        setUsers([]);
-        setAdmins([]);
-      }
+      await dispatch(getAllUsers());
     } catch (error) {
       console.error("Error fetching users and admins:", error);
-      setUsers([]);
-      setAdmins([]);
-    } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData();
-  }, [accessToken]);
+    if (!users || !admins) {
+      fetchData();
+    }
+  }, [dispatch]);
 
   const handleUserPromotion = async (userId, newRole) => {
     setProcessingUser(userId);
     try {
-      const result = await changeUserRole(accessToken, userId, newRole);
-      if (result.status === "failed") {
-        console.log(result.message);
-      } else {
-        fetchData();
-      }
+      await dispatch(changeUserRole(userId, newRole));
+      fetchData();
     } catch (error) {
       console.error("Error changing role:", error);
     } finally {
@@ -62,12 +43,9 @@ const ManageAdmins = () => {
   // Handler for refreshing data (to be implemented with actual API)
   const handleRefresh = async () => {
     try {
-      setLoading(true);
       await fetchData();
     } catch (error) {
       console.error("Error refreshing data:", error);
-    } finally {
-      setLoading(false); // Ensure loading state is reset even if fetch fails
     }
   };
 
@@ -199,7 +177,7 @@ const ManageAdmins = () => {
     </motion.div>
   ));
 
-  const LoadingCard = () => (
+  const isLoadingCard = () => (
     <div className="space-y-4">
       {[1, 2, 3].map((i) => (
         <div
@@ -240,12 +218,12 @@ const ManageAdmins = () => {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleRefresh}
-              disabled={loading}
+              disabled={isLoading}
               className="flex items-center gap-1 text-sm text-gray-300 transition hover:text-navy-blue"
             >
               <motion.span
-                animate={loading ? { rotate: 360 } : {}}
-                transition={{ repeat: loading ? Infinity : 0, duration: 1 }}
+                animate={isLoading ? { rotate: 360 } : {}}
+                transition={{ repeat: isLoading ? Infinity : 0, duration: 1 }}
               >
                 <FiRefreshCw />
               </motion.span>
@@ -274,8 +252,8 @@ const ManageAdmins = () => {
               </div>
             </div>
 
-            {loading ? (
-              <LoadingCard />
+            {isLoading ? (
+              <isLoadingCard />
             ) : filteredUsers.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -320,8 +298,8 @@ const ManageAdmins = () => {
               </div>
             </div>
 
-            {loading ? (
-              <LoadingCard />
+            {isLoading ? (
+              <isLoadingCard />
             ) : filteredAdmins.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}

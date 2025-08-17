@@ -1,31 +1,29 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../config/utils");
 
 // Signup
 const signup = async (req, res) => {
   const { username, email, password } = req.body;
 
   if (!email || !password || !username) {
-    return res
-      .status(400)
-      .json({ status: "failed", message: "Email and Password are Required" });
+    return res.status(400).json({ message: "Email and Password are Required" });
   }
 
   // Check if email already exists
-  const emailExists = await User.findOne({ email: email }).exec();
+  const emailExists = await User.findOne({ email: email });
   if (emailExists) {
-    return res
-      .status(409)
-      .json({ status: "failed", message: "Email already exists" }); // Conflict
+    return res.status(409).json({ message: "Account Exist" }); // Conflict
   }
 
   // Check if username already exists
-  const userNameExists = await User.findOne({ username: username }).exec();
+  const userNameExists = await User.findOne({ username: username });
   if (userNameExists) {
-    return res
-      .status(409)
-      .json({ status: "failed", message: "Username already exists" });
+    return res.status(409).json({ message: "Username Unavailable" });
   }
 
   try {
@@ -40,84 +38,67 @@ const signup = async (req, res) => {
       role: "user",
     });
 
-    // Generate accessToken
-    const accessToken = jwt.sign(
-      { userId: newUser._id, email: newUser.email, role: newUser.role },
-      process.env.ACCESS_SECRET_TOKEN,
-      { expiresIn: "1h" }
-    );
-
-    // Generate refreshToken
-    const refreshToken = jwt.sign(
-      { userId: newUser._id, email: newUser.email, role: newUser.role },
-      process.env.REFRESH_SECRET_TOKEN,
-      { expiresIn: "7d" }
-    );
+    generateAccessToken(newUser, res);
+    const refreshToken = generateRefreshToken(newUser, res);
 
     // Store refresh token in database
     newUser.refreshToken = refreshToken;
     await newUser.save();
 
+    // create a user data version excluded from password
+    const userWithoutPassword = newUser.toObject();
+    delete userWithoutPassword.password;
+
     res.status(201).json({
-      status: "success",
       message: "User registered successfully",
-      accessToken,
-      refreshToken,
+      userData: userWithoutPassword,
     });
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ status: "failed", message: `Internal server error: ${error}` });
+    console.log("Error in signup controller:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
 // Login
 const login = async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res
-      .status(400)
-      .json({ status: "failed", message: "Email and Password are Required" });
-  }
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email and Password are Required" });
+    }
 
-  // Find user by email
-  const user = await User.findOne({ email: email }).exec();
-  if (!user) {
-    return res
-      .status(401)
-      .json({ status: "failed", message: "Incorrect Email" }); // Unauthorized
-  }
+    // Find user by email
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res.status(401).json({ message: "Incorrect Credentials" }); // Unauthorized
+    }
 
-  // Compare password
-  const matchedPassword = await bcrypt.compare(password, user.password);
-  if (matchedPassword) {
-    // Generate accessToken
-    const accessToken = jwt.sign(
-      { userId: user._id, email: user.email, role: user.role },
-      process.env.ACCESS_SECRET_TOKEN,
-      { expiresIn: "1h" }
-    );
+    // Compare password
+    const matchedPassword = await bcrypt.compare(password, user.password);
+    if (matchedPassword) {
+      generateAccessToken(user, res);
+      const refreshToken = generateRefreshToken(user, res);
 
-    // Generate refreshToken
-    const refreshToken = jwt.sign(
-      { userId: user._id, email: user.email, role: user.role },
-      process.env.REFRESH_SECRET_TOKEN,
-      { expiresIn: "7d" }
-    );
+      // Update refresh token in database
+      user.refreshToken = refreshToken;
+      await user.save();
 
-    // Update refresh token in database
-    user.refreshToken = refreshToken;
-    await user.save();
+      // create a user data version excluded from password
+      const userWithoutPassword = user.toObject();
+      delete userWithoutPassword.password;
 
-    res.status(200).json({
-      status: "success",
-      message: "User logged in successfully",
-      accessToken,
-      refreshToken,
-    });
-  } else {
-    res.status(401).json({ status: "failed", message: "Incorrect Password" });
+      res.status(200).json({
+        message: "User logged in successfully",
+        userData: userWithoutPassword,
+      });
+    } else {
+      res.status(401).json({ message: "Incorrect Credentials" });
+    }
+  } catch (error) {
+    console.log("Error in login controller:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -127,32 +108,31 @@ const logout = async (req, res) => {
 
   try {
     // Find the user with this refresh token
-    const user = await User.findOne({ _id: userId }).exec();
+    const user = await User.findOne({ _id: userId });
     if (!user) {
-      return res
-        .status(403)
-        .json({ status: "failed", message: "User Not Found" });
+      return res.status(403).json({ message: "User Not Found" });
     }
+
+    // Remove tokens from cookies
+    res.cookie("access_token", "", { maxAge: 0 });
+    res.cookie("refresh_token", "", { maxAge: 0 });
 
     // Remove refresh token from the database
     user.refreshToken = null;
     await user.save();
-    res.json({ status: "success", message: "Logged out successfully" });
+    res.json({ message: "Logged out successfully" });
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ status: "failed", message: `Internal server error: ${error}` });
+    console.error("Error in logout controller:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
 // Refresh Token
-const refreshToken = (req, res) => {
-  const refreshToken = req.headers.authorization.split(" ")[1];
+const refreshToken = async (req, res) => {
+  const refreshToken = req.cookies.refresh_token;
 
   if (!refreshToken) {
     return res.status(400).json({
-      status: "failed",
       message: "Refresh token not found",
     });
   }
@@ -160,29 +140,32 @@ const refreshToken = (req, res) => {
   try {
     // Verify the refresh token
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET_TOKEN);
+    const userId = decoded.userId;
+    const user = await User.findOne({ _id: userId }).select("-password");
 
     // Issue a new access token
-    const newAccessToken = jwt.sign(
-      {
-        userId: decoded.userId,
-        email: decoded.email,
-        role: decoded.role,
-      },
-      process.env.ACCESS_SECRET_TOKEN,
-      { expiresIn: "1h" }
-    );
+    generateAccessToken(user, res);
 
     res.json({
-      status: "success",
       accessToken: newAccessToken,
+      userData: user,
     });
   } catch (err) {
-    // More specific error handling
-    return res.status(403).json({
-      status: "failed",
-      message: "Unauthorized: Invalid or expired refresh token",
+    return res.status(500).json({
+      message: "Internal Server Error",
     });
   }
 };
 
-module.exports = { signup, login, logout, refreshToken };
+const checkAuth = async (req, res) => {
+  const userId = req.userId;
+  try {
+    const user = await User.findById({ _id: userId }).select("-password");
+    res.status(200).json({ message: "Token is valid", userData: user });
+  } catch (error) {
+    console.log("Error in check authentication controller:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+module.exports = { signup, login, logout, refreshToken, checkAuth };

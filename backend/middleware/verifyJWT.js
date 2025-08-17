@@ -1,17 +1,15 @@
 const jwt = require("jsonwebtoken");
 
 const verifyJWT = (req, res, next) => {
-  const authHeader = req.headers.authorization;
+  const accessToken = req.cookies.access_token;
 
-  if (!authHeader) {
-    return res.status(401).json({ status: "failed", message: "Unauthorized: No token provided" });
+  if (!accessToken) {
+    return res.status(401).json({ message: "Unauthorized: No token provided" });
   }
 
-  const token = authHeader.split(" ")[1]; // Extract the token from the header
-
-  jwt.verify(token, process.env.ACCESS_SECRET_TOKEN, (error, decoded) => {
+  jwt.verify(accessToken, process.env.ACCESS_SECRET_TOKEN, (error, decoded) => {
     if (error) {
-      return res.status(403).json({ status: "failed", message: `Unauthorized: ${error}` });
+      return res.status(403).json({ message: `Unauthorized: ${error}` });
     }
 
     req.userId = decoded.userId;

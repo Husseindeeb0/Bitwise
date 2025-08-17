@@ -1,28 +1,57 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { axiosInstance } from "../../lib/axios";
+import { getAllUsers, changeUserRole } from "./userThunks";
+
+const initialState = {
+  users: null,
+  admins: null,
+  isLoading: false,
+  error: null,
+};
 
 const userSlice = createSlice({
   name: "user",
+  initialState,
   reducers: {
-    getAllUsers: async () => {
-      try {
-        const res = await axiosInstance.get("/auth/login", data);
-        return res.data;
-      } catch (error) {
-        console.log(
-          `Error getting users: ${error.data.message}` || "getting users failed"
-        );
-      }
-    },
-    changeUserRole: async (userId, newRole) => {
-      try {
-        const res = await axiosInstance.patch("/user/changeUserRole", data);
-        return res.data;
-      } catch (error) {
-        console.log(
-          `Error changing user role: ${error.data.message}` || "changing user role failed"
-        );
-      }
+    clearError: (state) => {
+      state.error = null;
     },
   },
+  extraReducers: (builder) => {
+    // getAllUsers
+    builder
+      .addCase(getAllUsers.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getAllUsers.fulfilled, (state, action) => {
+        state.isAuthenticating = false;
+        state.users = action.payload?.users;
+        state.admins = action.payload?.admins;
+      })
+      .addCase(getAllUsers.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+        state.users = null;
+        state.admins = null;
+        state.counts = null;
+      });
+
+    // changeUserRole
+    builder
+      .addCase(changeUserRole.pending, (state) => {
+        state.isAuthenticating = true;
+        state.error = null;
+      })
+      .addCase(changeUserRole.fulfilled, (state, action) => {
+        state.isAuthenticating = false;
+        state.userData = action.payload;
+      })
+      .addCase(changeUserRole.rejected, (state, action) => {
+        state.isAuthenticating = false;
+        state.error = action.payload;
+      });
+  },
 });
+
+export const userActions = userSlice.actions;
+export default userSlice.reducer;

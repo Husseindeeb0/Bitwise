@@ -15,6 +15,6 @@ router.get("/getAnnouncementById/:id", getAnnouncementById);
 router.get("/getLatestAnnouncement", getLatestAnnouncement);
 router.post("/addAnnouncements", verifyJWT, addAnnouncements);
 router.patch("/editAnnouncements", verifyJWT, editAnnouncements);
-router.delete("/deleteAnnouncements", verifyJWT, deleteAnnouncements);
+router.delete("/deleteAnnouncements/:id", verifyJWT, deleteAnnouncements);
 
 module.exports = router;

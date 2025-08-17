@@ -1,31 +1,32 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import getLatestAnnouncement from "../../api/getLatestAnnouncement";
+import { getLatestAnnouncement } from "../../features/announcements/announcementsThunks";
+import { useDispatch, useSelector } from "react-redux";
 import { FaCalendar, FaMapMarkerAlt, FaClock } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import LoggingLoader from "../LoggingLoader";
 
 // Component to be added within your homepage section
 const LatestAnnouncementCard = () => {
-  const [announcement, setAnnouncement] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.announcements.isLoading);
+  const error = useSelector((state) => state.announcements.error);
+  const latestAnnouncement = useSelector(
+    (state) => state.announcements.latestAnnouncement
+  );
 
   useEffect(() => {
     const fetchLatestAnnouncement = async () => {
       try {
-        const data = await getLatestAnnouncement();
-        setAnnouncement(data.data);
-        setLoading(false);
-      } catch (err) {
-        console.error("Failed to fetch latest announcement:", err);
-        setError("Unable to load the latest announcement");
-        setLoading(false);
+        await dispatch(getLatestAnnouncement()).unwrap();
+      } catch (error) {
+        console.error("Failed to fetch latest announcement:", error);
       }
     };
-
-    fetchLatestAnnouncement();
-  }, []);
+    if (!latestAnnouncement && !error) {
+      fetchLatestAnnouncement();
+    }
+  }, [dispatch]);
 
   const convertTo12HourFormat = (time24) => {
     if (!time24 || !time24.includes(":")) return "";
@@ -37,7 +38,7 @@ const LatestAnnouncementCard = () => {
     return `${hour}:${minutes} ${ampm}`;
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="w-full max-w-4xl mx-auto mt-12 p-6 bg-dark-purple/30 rounded-xl shadow-lg backdrop-blur-sm flex justify-center">
         <LoggingLoader />
@@ -45,8 +46,7 @@ const LatestAnnouncementCard = () => {
     );
   }
 
-  if (error || !announcement) {
-    console.log(error);
+  if (error || !latestAnnouncement) {
     return (
       <div className="w-full max-w-4xl mx-auto mt-12 p-6 bg-dark-purple/30 rounded-xl shadow-lg backdrop-blur-sm flex justify-center">
         <div className="text-red-600">{error}</div>
@@ -76,7 +76,7 @@ const LatestAnnouncementCard = () => {
     category,
     hasRegistration,
     registrationUrl,
-  } = announcement;
+  } = latestAnnouncement;
 
   // If the announcement is not active, don't display it
   if (!active) return null;
@@ -163,12 +163,14 @@ const LatestAnnouncementCard = () => {
             )}
           </div>
 
-          <p className="text-dark-purple mb-4 text-start line-clamp-2">{description}</p>
+          <p className="text-dark-purple mb-4 text-start line-clamp-2">
+            {description}
+          </p>
 
           <div className="flex flex-wrap gap-3 mt-4">
             <Link
-              to={`/announcementDetails?id=${announcement._id}`}
-              state={{ event: announcement }}
+              to={`/announcementDetails?id=${latestAnnouncement._id}`}
+              state={{ event: latestAnnouncement }}
             >
               <motion.button
                 whileHover={{ scale: 1.05 }}

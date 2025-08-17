@@ -1,36 +1,48 @@
 import { Outlet } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Loader from "../components/Loader";
-import { useMyContext } from "../context";
-import useAuthVerification from "../hooks/useAuthVerification";
+import { useSelector, useDispatch } from "react-redux";
+import { authActions } from "../features/auth/authSlice";
+import { announcementsActions } from "../features/announcements/announcementsSlice";
+import { userActions } from "../features/user/userSlice";
+import { useLocation } from "react-router-dom";
 
 const Layout = () => {
-  const { loading } = useMyContext();
-  const [pageLoaded, setPageLoaded] = useState(false);
-  const { isLoading } = useAuthVerification(false);
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.announcements.isLoading);
+  const location = useLocation();
 
   useEffect(() => {
-    if (document.readyState === "complete") {
-      setPageLoaded(true);
-    } else {
-      const handleLoad = () => setPageLoaded(true);
-      window.addEventListener("load", handleLoad);
+    dispatch(authActions.clearError());
+    dispatch(announcementsActions.clearError());
+    dispatch(userActions.clearError());
+  }, [location.pathname, dispatch]);
 
-      return () => window.removeEventListener("load", handleLoad);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (document.readyState === "complete") {
+  //     setPageLoaded(true);
+  //   } else {
+  //     const handleLoad = () => setPageLoaded(true);
+  //     window.addEventListener("load", handleLoad);
+
+  //     return () => window.removeEventListener("load", handleLoad);
+  //   }
+  // }, []);
 
   return (
     <div
       className="flex flex-col min-h-screen"
-      style={{fontFamily: "Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif"}}
+      style={{
+        fontFamily:
+          "Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif",
+      }}
     >
       <Navbar />
       <main className="flex-1 bg-gradient-to-r from-background1 to-background2">
-        {!pageLoaded || isLoading ? <Loader /> : <Outlet />}
-        {loading ? <Loader /> : null}
+        {/* {!pageLoaded || isLoading ? <Loader /> : <Outlet />} */}
+        {loading ? <Loader /> : <Outlet />}
         <Footer />
       </main>
     </div>

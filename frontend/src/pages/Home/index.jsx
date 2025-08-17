@@ -85,7 +85,7 @@ const Home = () => {
           </span>
         </motion.h1>
 
-        {/* Add Latest Announcement Card */}
+        {/* Latest Announcement Card */}
         <LatestAnnouncementCard />
 
         {/* Button to view all announcements */}

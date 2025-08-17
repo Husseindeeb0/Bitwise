@@ -8,21 +8,23 @@ import {
   FaExclamationCircle,
   FaCalendar,
 } from "react-icons/fa";
-import { useMyContext } from "../../../context";
-import getAnnouncements from "../../../api/getAnnouncements";
-import addAnnouncements from "../../../api/addAnnouncements";
-import editAnnouncements from "../../../api/editAnnouncements";
-import deleteAnnouncements from "../../../api/deleteAnnouncement";
+import {
+  getAnnouncements,
+  addAnnouncements,
+  editAnnouncements,
+  deleteAnnouncements,
+} from "../../../features/announcements/announcementsThunks";
 import AnnouncementCardsLoader from "../../../components/AnnouncementCardsLoader";
 import AnnouncementCard from "../../../components/AnnouncementCard";
+import { useDispatch, useSelector } from "react-redux";
 
 const ManageAnnouncements = () => {
-  const { accessToken } = useMyContext();
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.announcements.isLoading);
+  const announcementsData = useSelector(
+    (state) => state.announcements.announcementsData
+  );
 
-  // Sample initial announcements
-  const [announcements, setAnnouncements] = useState([]);
-
-  const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [currentEvent, setCurrentEvent] = useState({
@@ -70,30 +72,17 @@ const ManageAnnouncements = () => {
 
   const fetchData = async () => {
     try {
-      setLoading(true);
-      const response = await getAnnouncements(accessToken);
-
-      // Check if the response contains the expected data
-      if (response.state === "success") {
-        const sortedData = [...response.data].sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-        );
-        setAnnouncements(sortedData);
-      } else {
-        console.error(response.message);
-        setAnnouncements([]);
-      }
+      await dispatch(getAnnouncements());
     } catch (error) {
       console.error("Error fetching announcements:", error);
-      setAnnouncements([]);
-    } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchData();
-  }, [accessToken]);
+    if (!announcementsData) {
+      fetchData();
+    }
+  }, [dispatch]);
 
   // Event form handling
   const handleInputChange = (e) => {
@@ -158,8 +147,7 @@ const ManageAnnouncements = () => {
 
   // CRUD operations for announcements
   const handleEventSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-    setLoading(true);
+    if (e) e.preventDefault(); // Prevent default form submission
 
     if (isEditing) {
       await updateAnnouncements();
@@ -167,7 +155,6 @@ const ManageAnnouncements = () => {
       await newAnnouncements();
     }
     resetForm();
-    setLoading(false);
   };
 
   const newAnnouncements = async () => {
@@ -175,14 +162,9 @@ const ManageAnnouncements = () => {
       const newAnnouncement = {
         ...currentEvent,
       };
-
-      const response = await addAnnouncements(newAnnouncement, accessToken);
-      if (response.state === "success") {
-        await fetchData();
-        resetForm();
-      } else {
-        console.log(response.message);
-      }
+      await dispatch(addAnnouncements(newAnnouncement));
+      await fetchData();
+      resetForm();
     } catch (error) {
       console.error("Error adding event:", error);
     }
@@ -200,16 +182,9 @@ const ManageAnnouncements = () => {
         ...currentEvent,
       };
 
-      const response = await editAnnouncements(
-        updatedAnnouncement,
-        accessToken
-      );
-      if (response.state === "success") {
-        await fetchData();
-        resetForm();
-      } else {
-        console.error("Update failed:", response.message);
-      }
+      await dispatch(editAnnouncements(updatedAnnouncement));
+      await fetchData();
+      resetForm();
     } catch (error) {
       console.error("Error updating event:", error);
     }
@@ -222,13 +197,8 @@ const ManageAnnouncements = () => {
         console.error("Missing event ID for deleting operation");
         return;
       }
-
-      const response = await deleteAnnouncements(id, accessToken);
-      if (response.state === "success") {
-        await fetchData();
-      } else {
-        console.error("delete failed:", response.message);
-      }
+      await dispatch(deleteAnnouncements(id));
+      await fetchData();
     } catch (error) {
       console.error("Error deleting event:", error);
     } finally {
@@ -256,7 +226,7 @@ const ManageAnnouncements = () => {
   };
 
   const handleOrganizerSubmit = (e) => {
-    if (e) e.preventDefault(); // Prevent default form submission if event exists
+    if (e) e.preventDefault();
 
     if (!currentOrganizer.name) {
       return;
@@ -1010,7 +980,7 @@ const ManageAnnouncements = () => {
             </button>
             <button
               type="submit"
-              disabled={loading ? true : false}
+              disabled={isLoading ? true : false}
               className="flex items-center gap-2 px-4 py-2 bg-navy-blue text-white rounded-md hover:bg-sky-blue"
             >
               <FaSave size={18} />
@@ -1020,18 +990,19 @@ const ManageAnnouncements = () => {
         </form>
       )}
 
-      {/* Announcements list with skeleton loading */}
+      {/* Announcements list with skeleton isLoading */}
       <div>
         <div className="grid grid-cols-1 gap-6">
-          {loading ? (
+          {isLoading ? (
             <>
               {/* Show multiple skeleton loaders */}
               {[...Array(3)].map((_, index) => (
                 <AnnouncementCardsLoader key={index} />
               ))}
             </>
-          ) : announcements.length > 0 ? (
-            announcements.map((event) => (
+          ) : Array.isArray(announcementsData) &&
+            announcementsData.length > 0 ? (
+            announcementsData.map((event) => (
               <div key={event._id}>
                 <AnnouncementCard
                   event={event}

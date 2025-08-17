@@ -1,23 +1,23 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { FaUser, FaLock, FaEnvelope } from "react-icons/fa";
 import Navbar from "../../components/Navbar";
-import authenticateUser from "../../api/authenticateUser";
-import { useMyContext } from "../../context";
+import { signup } from "../../features/auth/authThunks";
 import LoggingLoader from "../../components/LoggingLoader";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../../features/auth/authSlice";
 
 export default function Signup() {
-  const { setAccessToken, setIsAuthenticated } = useMyContext();
+  const dispatch = useDispatch();
+  const isAuthenticating = useSelector((state) => state.auth.isAuthenticating);
+  const error = useSelector((state) => state.auth.error);
+
   const [userDetails, setUserDetails] = useState({
     username: "",
     email: "",
     password: "",
   });
-  const navigate = useNavigate();
-
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setUserDetails({
@@ -28,35 +28,13 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-    setLoading(true);
-    //localhost:5173/#/announcementDetails?id=67f8186e33742f4a96dc96a7
-    http: try {
-      const data = await authenticateUser(userDetails, "signup");
-      if (data.status === "failed") {
-        setError(data.message);
-        console.log(data.message);
-      } else if (
-        data.status === "success" &&
-        data.accessToken &&
-        data.refreshToken
-      ) {
-        localStorage.setItem("refreshToken", data.refreshToken);
-        setAccessToken(data.accessToken);
-        setIsAuthenticated(true);
-        // After successful login, redirect the user to the desired page
-        const redirectTo = sessionStorage.getItem("redirectAfterLogin") || "/";
-        sessionStorage.removeItem("redirectAfterLogin");
-        navigate(redirectTo);
-      } else {
-        setError(data.message);
-        console.log(data.message);
-      }
+    dispatch(authActions.clearError());
+    try {
+      await dispatch(signup(userDetails)).unwrap();
     } catch (error) {
-      setError(error.message);
+      console.log("Sign up failed:", error);
     } finally {
       setUserDetails({ username: "", email: "", password: "" });
-      setLoading(false);
     }
   };
 
@@ -117,11 +95,11 @@ export default function Signup() {
           <button
             type="submit"
             className={`w-full ${
-              loading ? "bg-navy-blue/80" : "bg-navy-blue"
+              isAuthenticating ? "bg-navy-blue/80" : "bg-navy-blue"
             } text-lg text-white py-2 rounded-lg hover:bg-navy-blue/80 transition duration-300`}
-            disabled={loading}
+            disabled={isAuthenticating}
           >
-            {loading ? <LoggingLoader /> : "Sign Up"}
+            {isAuthenticating ? <LoggingLoader /> : "Sign Up"}
           </button>
         </form>
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { useMyContext } from "../../context";
 import { useLocation } from "react-router-dom";
 import { FaExclamationCircle, FaClipboard, FaCheck } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 const FormSkeletonLoader = () => {
   return (
@@ -47,10 +47,9 @@ const FormSkeletonLoader = () => {
 
 const RegistrationForm = () => {
   const location = useLocation();
-  const { setLoading } = useMyContext();
   const [formUrl, setFormUrl] = useState(null);
+  const isLoading = useSelector((state) => state.announcements.isLoading);
   const [error, setError] = useState(null);
-  const [iframeLoading, setIframeLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const iframeRef = useRef(null);
 
@@ -62,25 +61,22 @@ const RegistrationForm = () => {
     // Validate URL
     if (!url) {
       setError("No registration form URL provided");
-      setLoading(false);
       return;
     }
 
     // Check if it's a valid Google Forms URL
     if (!url.includes("docs.google.com/forms") && !url.includes("forms.gle")) {
       setError("Invalid form URL. Only Google Forms are supported.");
-      setLoading(false);
       return;
     }
 
     // Set the form URL
     setFormUrl(url);
-    setLoading(false);
   }, [location]);
 
   // Handle iframe load event
   const handleIframeLoad = () => {
-    setIframeLoading(false);
+    setisLoading(false);
   };
 
   // Copy form URL to clipboard
@@ -149,7 +145,7 @@ const RegistrationForm = () => {
           {/* Form container */}
           <div className="p-1 bg-gray-100">
             <div className="bg-white h-screen md:h-[800px] relative">
-              {iframeLoading && (
+              {isLoading && (
                 <div className="absolute inset-0 bg-white overflow-auto">
                   <FormSkeletonLoader />
                 </div>
