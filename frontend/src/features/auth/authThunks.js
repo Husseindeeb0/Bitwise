@@ -53,6 +53,7 @@ export const signup = createAsyncThunk(
   async (userDetails, thunkAPI) => {
     try {
       const res = await signupAPI(userDetails);
+      localStorage.setItem("isAuthenticated", true);
       return res.data.userData;
     } catch (error) {
       console.log(`Error in signup thunk: ${error}`);
@@ -75,6 +76,7 @@ export const login = createAsyncThunk(
   async (userDetails, thunkAPI) => {
     try {
       const res = await loginAPI(userDetails);
+      localStorage.setItem("isAuthenticated", true);
       return res.data.userData;
     } catch (error) {
       console.log(`Error in login thunk: ${error}`);
@@ -95,6 +97,7 @@ export const login = createAsyncThunk(
 export const logout = createAsyncThunk("/auth/logout", async (_, thunkAPI) => {
   try {
     const res = await logoutAPI();
+    localStorage.removeItem("isAuthenticated");
     return res.data;
   } catch (error) {
     console.log(`Error in logout thunk: ${error}`);

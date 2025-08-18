@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { FaExclamationCircle, FaClipboard, FaCheck } from "react-icons/fa";
-import { useSelector } from "react-redux";
 
 const FormSkeletonLoader = () => {
   return (
@@ -48,12 +47,13 @@ const FormSkeletonLoader = () => {
 const RegistrationForm = () => {
   const location = useLocation();
   const [formUrl, setFormUrl] = useState(null);
-  const isLoading = useSelector((state) => state.announcements.isLoading);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
   const iframeRef = useRef(null);
 
   useEffect(() => {
+    setIsLoading(true);
     // Get URL from query parameters
     const params = new URLSearchParams(location.search);
     const url = params.get("formUrl");
@@ -76,7 +76,7 @@ const RegistrationForm = () => {
 
   // Handle iframe load event
   const handleIframeLoad = () => {
-    setisLoading(false);
+    setIsLoading(false);
   };
 
   // Copy form URL to clipboard

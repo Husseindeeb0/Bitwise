@@ -18,10 +18,11 @@ function App() {
   const userData = useSelector((state) => state.auth.userData);
 
   useEffect(() => {
-    if (userData) {
+    const isAuthenticated = localStorage.getItem("isAuthenticated");
+    if (isAuthenticated) {
       dispatch(checkAuth());
     }
-  }, [dispatch, userData]);
+  }, [dispatch]);
 
   return (
     <HashRouter>

@@ -120,7 +120,7 @@ const Home = () => {
           >
             <div className="relative overflow-hidden rounded-xl">
               <img
-                src="/members.jpg"
+                src="/club_members.jpg"
                 alt="Bitwise Club Members"
                 className="w-full h-full object-cover"
               />

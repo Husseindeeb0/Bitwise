@@ -11,7 +11,7 @@ import { useLocation } from "react-router-dom";
 
 const Layout = () => {
   const dispatch = useDispatch();
-  const loading = useSelector((state) => state.announcements.isLoading);
+  const isAuthenticating = useSelector((state) => state.auth.isAuthenticating);
   const location = useLocation();
 
   useEffect(() => {
@@ -19,17 +19,6 @@ const Layout = () => {
     dispatch(announcementsActions.clearError());
     dispatch(userActions.clearError());
   }, [location.pathname, dispatch]);
-
-  // useEffect(() => {
-  //   if (document.readyState === "complete") {
-  //     setPageLoaded(true);
-  //   } else {
-  //     const handleLoad = () => setPageLoaded(true);
-  //     window.addEventListener("load", handleLoad);
-
-  //     return () => window.removeEventListener("load", handleLoad);
-  //   }
-  // }, []);
 
   return (
     <div
@@ -41,8 +30,7 @@ const Layout = () => {
     >
       <Navbar />
       <main className="flex-1 bg-gradient-to-r from-background1 to-background2">
-        {/* {!pageLoaded || isLoading ? <Loader /> : <Outlet />} */}
-        {loading ? <Loader /> : <Outlet />}
+        {isAuthenticating ? <Loader /> : <Outlet />}
         <Footer />
       </main>
     </div>
