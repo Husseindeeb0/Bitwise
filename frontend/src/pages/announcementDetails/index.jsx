@@ -15,6 +15,7 @@ import {
 import { getAnnouncementById } from "../../features/announcements/announcementsThunks";
 import SpeakerDetails from "../../components/SpeakerDetails";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "@dr.pogodin/react-helmet";
 
 const AnnouncementDetails = () => {
   const dispatch = useDispatch();
@@ -26,32 +27,37 @@ const AnnouncementDetails = () => {
   const searchParams = new URLSearchParams(location.search);
   const id = searchParams.get("id");
   const [stateEvent, setStateEvent] = useState(null);
-  const announcementById = useSelector((state) => state.announcements.announcementById);
+  const announcementById = useSelector(
+    (state) => state.announcements.announcementById
+  );
   let event = stateEvent || announcementById;
 
-  const fetchAnnouncementData = useCallback(async (id) => {
-    try {
-      const response = await dispatch(getAnnouncementById(id));
+  const fetchAnnouncementData = useCallback(
+    async (id) => {
+      try {
+        const response = await dispatch(getAnnouncementById(id));
 
-      // Enhance organizers with additional mock data for our new modal
-      if (response.data.organizers && response.data.organizers.length > 0) {
-        response.data.organizers = response.data.organizers.map(
-          (organizer) => ({
-            ...organizer,
-            bio: organizer.bio,
-            expertise: organizer.expertise,
-            linkedin: organizer.linkedin || "https://linkedin.com",
-            instagram: organizer.instagram || "https://instagram.com",
-            education: organizer.education || "Computer Science",
-          })
-        );
-      } else {
-        console.error(response.message);
+        // Enhance organizers with additional mock data for our new modal
+        if (response.data.organizers && response.data.organizers.length > 0) {
+          response.data.organizers = response.data.organizers.map(
+            (organizer) => ({
+              ...organizer,
+              bio: organizer.bio,
+              expertise: organizer.expertise,
+              linkedin: organizer.linkedin || "https://linkedin.com",
+              instagram: organizer.instagram || "https://instagram.com",
+              education: organizer.education || "Computer Science",
+            })
+          );
+        } else {
+          console.error(response.message);
+        }
+      } catch (error) {
+        console.error("Error fetching announcement:", error);
       }
-    } catch (error) {
-      console.error("Error fetching announcement:", error);
-    }
-  }, [dispatch]);
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     const loadEvent = async () => {
@@ -153,6 +159,43 @@ const AnnouncementDetails = () => {
 
   return (
     <div className="min-h-screen mt-20">
+      {/* Meta tags for SEO + social */}
+      <Helmet>
+        {/* Title & Description */}
+        <title>
+          {event.title}
+        </title>
+        <meta
+          name="description"
+          content={event.description}
+        />
+
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content={event.title}
+        />
+        <meta
+          property="og:description"
+          content={event.description}
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://bitwiseclub.com/" />
+        <meta property="og:image" content="https://bitwiseclub.com/logo.png" />
+
+        {/* Twitter (X) */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content={event.title}
+        />
+        <meta
+          name="twitter:description"
+          content={event.description}
+        />
+        <meta name="twitter:image" content="https://bitwiseclub.com/logo.png" />
+        <meta name="twitter:creator" content="@BitwiseClub" />
+      </Helmet>
       {/* Speaker Modal */}
       <SpeakerDetails
         isOpen={isModalOpen}

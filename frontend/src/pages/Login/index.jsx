@@ -7,6 +7,7 @@ import { login } from "../../features/auth/authThunks";
 import LoggingLoader from "../../components/LoggingLoader";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../../features/auth/authSlice";
+import { Helmet } from "@dr.pogodin/react-helmet";
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -39,6 +40,35 @@ export default function Login() {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-background1 to-background2 p-5">
+      {/* Meta tags for SEO + social */}
+      <Helmet>
+        {/* Title & Description */}
+        <title>Login</title>
+        <meta
+          name="description"
+          content="Access your BitwiseClub account to stay updated on programming events, announcements, and personalized content to continue your learning journey."
+        />
+
+        {/* Open Graph */}
+        <meta property="og:title" content="Login – BitwiseClub" />
+        <meta
+          property="og:description"
+          content="Access your BitwiseClub account to stay updated on programming events, announcements, and personalized content to continue your learning journey."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://bitwiseclub.com/" />
+        <meta property="og:image" content="https://bitwiseclub.com/logo.png" />
+
+        {/* Twitter (X) */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Login - BitwiseClub" />
+        <meta
+          name="twitter:description"
+          content="Access your BitwiseClub account to stay updated on programming events, announcements, and personalized content to continue your learning journey."
+        />
+        <meta name="twitter:image" content="https://bitwiseclub.com/logo.png" />
+        <meta name="twitter:creator" content="@BitwiseClub" />
+      </Helmet>
       <Navbar />
       <motion.div
         initial={{ opacity: 0, y: -50 }}

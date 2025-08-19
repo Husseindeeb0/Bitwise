@@ -4,6 +4,7 @@ import { getAnnouncements } from "../../features/announcements/announcementsThun
 import { FaCalendar } from "react-icons/fa";
 import AnnouncementCard from "../../components/AnnouncementCard";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "@dr.pogodin/react-helmet";
 
 function Announcements() {
   const dispatch = useDispatch();
@@ -28,6 +29,41 @@ function Announcements() {
 
   return (
     <div className="w-full px-10 py-30">
+      {/* Meta tags for SEO + social */}
+      <Helmet>
+        {/* Title & Description */}
+        <title>Announcements</title>
+        <meta
+          name="description"
+          content="Check out the latest announcements on BitwiseClub! Stay updated on events, workshops, and programming insights that can accelerate your coding journey and help you grow."
+        />
+
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content="Announcements – Stay Updated on Life Changing Programming Events"
+        />
+        <meta
+          property="og:description"
+          content="Check out the latest announcements on BitwiseClub! Stay updated on events, workshops, and programming insights that can accelerate your coding journey and help you grow."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://bitwiseclub.com/" />
+        <meta property="og:image" content="https://bitwiseclub.com/logo.png" />
+
+        {/* Twitter (X) */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="Announcements – Stay Updated on Life Changing Programming Events"
+        />
+        <meta
+          name="twitter:description"
+          content="Check out the latest announcements on BitwiseClub! Stay updated on events, workshops, and programming insights that can accelerate your coding journey and help you grow."
+        />
+        <meta name="twitter:image" content="https://bitwiseclub.com/logo.png" />
+        <meta name="twitter:creator" content="@BitwiseClub" />
+      </Helmet>
       <div className="grid grid-cols-1 gap-6">
         {isLoading ? (
           <>

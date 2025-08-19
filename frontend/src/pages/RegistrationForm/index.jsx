@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { FaExclamationCircle, FaClipboard, FaCheck } from "react-icons/fa";
+import { Helmet } from "@dr.pogodin/react-helmet";
 
 const FormSkeletonLoader = () => {
   return (
@@ -116,6 +117,41 @@ const RegistrationForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 mt-20">
+      {/* Meta tags for SEO + social */}
+      <Helmet>
+        {/* Title & Description */}
+        <title>Registration Form</title>
+        <meta
+          name="description"
+          content="Join BitwiseClub's event. Register now to secure your spot and don’t miss life changing programming insights and opportunities!"
+        />
+
+        {/* Open Graph */}
+        <meta
+          property="og:title"
+          content="Register Now – Secure Your Spot Before Time Runs Out!"
+        />
+        <meta
+          property="og:description"
+          content="Join BitwiseClub's event. Register now to secure your spot and don’t miss life changing programming insights and opportunities!"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://bitwiseclub.com/" />
+        <meta property="og:image" content="https://bitwiseclub.com/logo.png" />
+
+        {/* Twitter (X) */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content="Register Now – Secure Your Spot Before Time Runs Out!"
+        />
+        <meta
+          name="twitter:description"
+          content="Join BitwiseClub's event. Register now to secure your spot and don’t miss life changing programming insights and opportunities!"
+        />
+        <meta name="twitter:image" content="https://bitwiseclub.com/logo.png" />
+        <meta name="twitter:creator" content="@BitwiseClub" />
+      </Helmet>
       <div className="max-w-5xl mx-auto">
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           {/* Header section */}
