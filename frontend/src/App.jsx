@@ -1,4 +1,4 @@
-import { HashRouter, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import Home from "./pages/Home";
 import Announcements from "./pages/Announcements";
@@ -25,7 +25,7 @@ function App() {
   }, [dispatch]);
 
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Routes>
         <Route
           path="/signup"
@@ -52,7 +52,6 @@ function App() {
             path="/manageAdmins"
             element={userData ? <ManageAdmins /> : <Navigate to="/login" />}
           />
-          {/* </Route> */}
           <Route index element={<Home />} />
           <Route path="/announcements" element={<Announcements />} />
           <Route
@@ -62,7 +61,7 @@ function App() {
           <Route path="/registrationForm" element={<RegistrationForm />} />
         </Route>
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 

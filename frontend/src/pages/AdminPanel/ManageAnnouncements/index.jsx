@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 const ManageAnnouncements = () => {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.announcements.isLoading);
+  const error = useSelector((state) => state.announcements.error);
   const announcementsData = useSelector(
     (state) => state.announcements.announcementsData
   );
@@ -72,14 +73,14 @@ const ManageAnnouncements = () => {
 
   const fetchData = async () => {
     try {
-      await dispatch(getAnnouncements());
+      await dispatch(getAnnouncements()).unwrap();
     } catch (error) {
       console.error("Error fetching announcements:", error);
     }
   };
 
   useEffect(() => {
-    if (!announcementsData) {
+    if (!announcementsData && !error) {
       fetchData();
     }
   }, [dispatch]);
@@ -162,7 +163,7 @@ const ManageAnnouncements = () => {
       const newAnnouncement = {
         ...currentEvent,
       };
-      await dispatch(addAnnouncements(newAnnouncement));
+      await dispatch(addAnnouncements(newAnnouncement)).unwrap();
       await fetchData();
       resetForm();
     } catch (error) {
@@ -182,7 +183,7 @@ const ManageAnnouncements = () => {
         ...currentEvent,
       };
 
-      await dispatch(editAnnouncements(updatedAnnouncement));
+      await dispatch(editAnnouncements(updatedAnnouncement)).unwrap();
       await fetchData();
       resetForm();
     } catch (error) {
@@ -197,7 +198,7 @@ const ManageAnnouncements = () => {
         console.error("Missing event ID for deleting operation");
         return;
       }
-      await dispatch(deleteAnnouncements(id));
+      await dispatch(deleteAnnouncements(id)).unwrap();
       await fetchData();
     } catch (error) {
       console.error("Error deleting event:", error);

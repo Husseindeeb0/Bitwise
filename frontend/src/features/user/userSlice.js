@@ -2,8 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import { getAllUsers, changeUserRole } from "./userThunks";
 
 const initialState = {
-  users: null,
-  admins: null,
+  users: [],
+  admins: [],
   isLoading: false,
   error: null,
 };
@@ -24,7 +24,7 @@ const userSlice = createSlice({
         state.error = null;
       })
       .addCase(getAllUsers.fulfilled, (state, action) => {
-        state.isAuthenticating = false;
+        state.isLoading = false;
         state.users = action.payload?.users;
         state.admins = action.payload?.admins;
       })
@@ -33,7 +33,6 @@ const userSlice = createSlice({
         state.error = action.payload;
         state.users = null;
         state.admins = null;
-        state.counts = null;
       });
 
     // changeUserRole

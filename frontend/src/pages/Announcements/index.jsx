@@ -9,20 +9,21 @@ import { Helmet } from "@dr.pogodin/react-helmet";
 function Announcements() {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.announcements.isLoading);
+  const error = useSelector((state) => state.announcements.error);
   const announcementsData = useSelector(
     (state) => state.announcements.announcementsData
   );
 
   const fetchData = async () => {
     try {
-      await dispatch(getAnnouncements());
+      await dispatch(getAnnouncements()).unwrap();
     } catch (error) {
       console.error("Error fetching announcements:", error);
     }
   };
 
   useEffect(() => {
-    if (!announcementsData) {
+    if (!announcementsData && !error) {
       fetchData();
     }
   }, [dispatch]);

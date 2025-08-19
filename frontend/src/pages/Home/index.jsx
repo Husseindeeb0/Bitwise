@@ -7,7 +7,6 @@ import {
   FaQuoteLeft,
   FaQuoteRight,
   FaUsers,
-  FaCode,
   FaBriefcase,
   FaPhoneAlt,
 } from "react-icons/fa";

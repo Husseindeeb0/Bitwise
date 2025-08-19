@@ -6,7 +6,7 @@ export const getAllUsers = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const res = await getAllUsersAPI();
-      return res.data;
+      return res.data.data;
     } catch (error) {
       console.log(`Error in get users thunk: ${error}`);
       if (

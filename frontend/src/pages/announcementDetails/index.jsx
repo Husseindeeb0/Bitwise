@@ -35,7 +35,7 @@ const AnnouncementDetails = () => {
   const fetchAnnouncementData = useCallback(
     async (id) => {
       try {
-        const response = await dispatch(getAnnouncementById(id));
+        const response = await dispatch(getAnnouncementById(id)).unwrap();
 
         // Enhance organizers with additional mock data for our new modal
         if (response.data.organizers && response.data.organizers.length > 0) {

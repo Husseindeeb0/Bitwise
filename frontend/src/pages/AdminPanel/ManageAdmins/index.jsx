@@ -9,6 +9,7 @@ const ManageAdmins = () => {
   const isLoading = useSelector((state) => state.user.isLoading);
   const users = useSelector((state) => state.user.users);
   const admins = useSelector((state) => state.user.admins);
+  const error = useSelector((state) => state.user.error);
   // States for users and admins
   const [userSearch, setUserSearch] = useState("");
   const [adminSearch, setAdminSearch] = useState("");
@@ -16,14 +17,14 @@ const ManageAdmins = () => {
 
   const fetchData = async () => {
     try {
-      await dispatch(getAllUsers());
+      await dispatch(getAllUsers()).unwrap();
     } catch (error) {
       console.error("Error fetching users and admins:", error);
     }
   };
 
   useEffect(() => {
-    if (!users || !admins) {
+    if (Array.isArray(users) && users.length === 0 && !error) {
       fetchData();
     }
   }, [dispatch]);
@@ -51,22 +52,28 @@ const ManageAdmins = () => {
 
   // Filter users and admins based on search
   const filteredUsers = useMemo(() => {
-    return users.filter(
-      (user) =>
-        (user.name &&
-          user.name.toLowerCase().includes(userSearch.toLowerCase())) ||
-        (user.email &&
-          user.email.toLowerCase().includes(userSearch.toLowerCase()))
+    return (
+      Array.isArray(users) &&
+      users.filter(
+        (user) =>
+          (user.name &&
+            user.name.toLowerCase().includes(userSearch.toLowerCase())) ||
+          (user.email &&
+            user.email.toLowerCase().includes(userSearch.toLowerCase()))
+      )
     );
   }, [users, userSearch]);
 
   const filteredAdmins = useMemo(() => {
-    return admins.filter(
-      (admin) =>
-        (admin.name &&
-          admin.name.toLowerCase().includes(adminSearch.toLowerCase())) ||
-        (admin.email &&
-          admin.email.toLowerCase().includes(adminSearch.toLowerCase()))
+    return (
+      Array.isArray(users) &&
+      admins.filter(
+        (admin) =>
+          (admin.name &&
+            admin.name.toLowerCase().includes(adminSearch.toLowerCase())) ||
+          (admin.email &&
+            admin.email.toLowerCase().includes(adminSearch.toLowerCase()))
+      )
     );
   }, [admins, adminSearch]);
 
@@ -177,7 +184,7 @@ const ManageAdmins = () => {
     </motion.div>
   ));
 
-  const isLoadingCard = () => (
+  const IsLoadingCard = () => (
     <div className="space-y-4">
       {[1, 2, 3].map((i) => (
         <div
@@ -253,7 +260,7 @@ const ManageAdmins = () => {
             </div>
 
             {isLoading ? (
-              <isLoadingCard />
+              <IsLoadingCard />
             ) : filteredUsers.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -299,7 +306,7 @@ const ManageAdmins = () => {
             </div>
 
             {isLoading ? (
-              <isLoadingCard />
+              <IsLoadingCard />
             ) : filteredAdmins.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0 }}
