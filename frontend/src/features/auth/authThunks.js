@@ -24,6 +24,7 @@ export const checkAuth = createAsyncThunk(
           const refreshRes = await refreshTokenAPI();
           return refreshRes.data.userData;
         } catch (error) {
+          localStorage.removeItem("isAuthenticated");
           if (
           error.response &&
           error.response.data &&

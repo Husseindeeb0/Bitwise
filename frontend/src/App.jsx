@@ -16,9 +16,9 @@ import { useDispatch, useSelector } from "react-redux";
 function App() {
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.auth.userData);
+  const isAuthenticated = localStorage.getItem("isAuthenticated");
 
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem("isAuthenticated");
     if (isAuthenticated) {
       dispatch(checkAuth());
     }
@@ -39,18 +39,32 @@ function App() {
           <Route
             path="/manageAnnouncements"
             element={
-              userData ? <ManageAnnouncements /> : <Navigate to="/login" />
+              userData || isAuthenticated ? (
+                <ManageAnnouncements />
+              ) : (
+                <Navigate to="/login" />
+              )
             }
           />
           <Route
             path="/manageAchievements"
             element={
-              userData ? <ManageAchievements /> : <Navigate to="/login" />
+              userData || isAuthenticated ? (
+                <ManageAchievements />
+              ) : (
+                <Navigate to="/login" />
+              )
             }
           />
           <Route
             path="/manageAdmins"
-            element={userData ? <ManageAdmins /> : <Navigate to="/login" />}
+            element={
+              userData || isAuthenticated ? (
+                <ManageAdmins />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
           />
           <Route index element={<Home />} />
           <Route path="/announcements" element={<Announcements />} />
