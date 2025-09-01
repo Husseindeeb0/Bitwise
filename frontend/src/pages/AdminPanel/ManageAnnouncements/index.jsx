@@ -70,6 +70,7 @@ const ManageAnnouncements = () => {
   });
   const [showScheduleForm, setShowScheduleForm] = useState(false);
   const [editingScheduleIndex, setEditingScheduleIndex] = useState(null);
+  const [scheduleError, setScheduleError] = useState("");
 
   const fetchData = async () => {
     try {
@@ -318,9 +319,16 @@ const ManageAnnouncements = () => {
       ...prev,
       [name]: value,
     }));
+    if (scheduleError) setScheduleError("");
   };
 
   const addScheduleItem = () => {
+    // Basic validation for required fields
+    const { startTime, endTime, title } = currentScheduleItem;
+    if (!startTime || !endTime || !title) {
+      setScheduleError("Please fill in Start Time, End Time, and Title.");
+      return;
+    }
     if (editingScheduleIndex !== null) {
       const updatedSchedule = [...currentEvent.schedule];
       updatedSchedule[editingScheduleIndex] = currentScheduleItem;
@@ -343,6 +351,7 @@ const ManageAnnouncements = () => {
       presenter: "",
       type: "session",
     });
+    setScheduleError("");
     setShowScheduleForm(false);
   };
 
@@ -864,6 +873,12 @@ const ManageAnnouncements = () => {
                   </div>
 
                   <div className="space-y-4">
+                    {scheduleError && (
+                      <div className="flex items-center gap-2 p-2 text-sm text-red-700 bg-red-50 border border-red-200 rounded">
+                        <FaExclamationCircle />
+                        <span>{scheduleError}</span>
+                      </div>
+                    )}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Type

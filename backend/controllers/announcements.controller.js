@@ -145,6 +145,23 @@ const editAnnouncements = async (req, res) => {
       updatedAnnouncement.mainImageId = updatedImageId;
     }
 
+    // Sanitize schedule items to avoid validation errors
+    if (Array.isArray(updatedAnnouncement.schedule)) {
+      updatedAnnouncement.schedule = updatedAnnouncement.schedule
+        .filter((item) => item && item.startTime && item.endTime && item.title)
+        .map((item) => ({
+          startTime: String(item.startTime),
+          endTime: String(item.endTime),
+          title: String(item.title).trim(),
+          presenter: item.presenter ? String(item.presenter).trim() : undefined,
+          type: item.type ? String(item.type).trim() : "session",
+        }));
+    }
+
+    // Strip immutable identifiers from payload
+    if (updatedAnnouncement._id) delete updatedAnnouncement._id;
+    if (updatedAnnouncement.id) delete updatedAnnouncement.id;
+
     // Update the announcement with new values and return the updated document
     const updated = await Announcement.findByIdAndUpdate(
       announcementId,

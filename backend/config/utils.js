@@ -19,8 +19,8 @@ const generateAccessToken = (user, res) => {
   res.cookie("access_token", accessToken, {
     maxAge: 24 * 60 * 60 * 1000, // 1 days in milliseconds
     httpOnly: true, // Prevents XSS atatcks cross-site scripting attacks
-    sameSite: "strict", // CSRF attacks cross-site request forgery attacks
-    secure: process.env.NODE_ENV !== "development",
+    sameSite: "lax", // CSRF attacks cross-site request forgery attacks
+    secure: process.env.NODE_ENV === "production",
   });
 
   return accessToken;
@@ -45,8 +45,8 @@ const generateRefreshToken = (user, res) => {
   res.cookie("refresh_token", refreshToken, {
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     httpOnly: true,
-    sameSite: "strict",
-    secure: process.env.NODE_ENV !== "development",
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
   });
 
   return refreshToken;

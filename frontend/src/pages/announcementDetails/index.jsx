@@ -160,39 +160,21 @@ const AnnouncementDetails = () => {
   return (
     <div className="min-h-screen mt-20">
       {/* Meta tags for SEO + social */}
+      <title>event.title</title>
       <Helmet>
-        {/* Title & Description */}
-        <title>
-          {event.title}
-        </title>
-        <meta
-          name="description"
-          content={event.description}
-        />
+        <meta name="description" content={event.description} />
 
         {/* Open Graph */}
-        <meta
-          property="og:title"
-          content={event.title}
-        />
-        <meta
-          property="og:description"
-          content={event.description}
-        />
+        <meta property="og:title" content={event.title} />
+        <meta property="og:description" content={event.description} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://bitwiseclub.com/" />
         <meta property="og:image" content="https://bitwiseclub.com/logo.png" />
 
         {/* Twitter (X) */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          name="twitter:title"
-          content={event.title}
-        />
-        <meta
-          name="twitter:description"
-          content={event.description}
-        />
+        <meta name="twitter:title" content={event.title} />
+        <meta name="twitter:description" content={event.description} />
         <meta name="twitter:image" content="https://bitwiseclub.com/logo.png" />
         <meta name="twitter:creator" content="@BitwiseClub" />
       </Helmet>
