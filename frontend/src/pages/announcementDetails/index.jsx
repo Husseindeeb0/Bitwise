@@ -301,8 +301,11 @@ const AnnouncementDetails = () => {
                                   : "bg-navy-blue text-white"
                               } px-3 py-1 rounded-lg text-sm font-medium mb-2 inline-block w-fit`}
                             >
-                              {convertTo12HourFormat(item.startTime)} -{" "}
-                              {convertTo12HourFormat(item.endTime)}
+                              {convertTo12HourFormat(item.startTime)}{" "}
+                              {item.endTime ? `- ${item.endTime}` : ""}
+                              <span>
+                                {item.date ? `On ${formatDate(item.date)}` : ""}
+                              </span>
                             </span>
                             <h4 className="font-bold text-dark-purple mt-1">
                               {item.title}

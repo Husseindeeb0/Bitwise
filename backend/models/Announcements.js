@@ -19,7 +19,8 @@ const organizerSchema = new mongoose.Schema(
 const scheduleItemSchema = new mongoose.Schema(
   {
     startTime: { type: String, required: true },
-    endTime: { type: String, required: true },
+    endTime: { type: String, required: false },
+    date: { type: Date, required: false },
     title: { type: String, required: true },
     presenter: { type: String, required: false },
     type: { type: String, required: true, enum: ["session", "break", "opening", "closing"] }, // To differentiate between sessions and breaks

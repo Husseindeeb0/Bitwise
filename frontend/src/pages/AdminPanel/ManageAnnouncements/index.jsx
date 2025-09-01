@@ -63,6 +63,7 @@ const ManageAnnouncements = () => {
   const [currentScheduleItem, setCurrentScheduleItem] = useState({
     startTime: "",
     endTime: "",
+    date: "",
     title: "",
     description: "",
     presenter: "",
@@ -208,6 +209,7 @@ const ManageAnnouncements = () => {
     }
   };
 
+  // Used when adding date from database into the input in editing situation
   const formatDateForInput = (date) => {
     const parsedDate = new Date(date);
     const year = parsedDate.getFullYear();
@@ -324,11 +326,12 @@ const ManageAnnouncements = () => {
 
   const addScheduleItem = () => {
     // Basic validation for required fields
-    const { startTime, endTime, title } = currentScheduleItem;
-    if (!startTime || !endTime || !title) {
-      setScheduleError("Please fill in Start Time, End Time, and Title.");
+    const { startTime, title, presenter } = currentScheduleItem;
+    if (!startTime || !title || !presenter) {
+      setScheduleError("Please fill in Start Time, Title, and Presenter.");
       return;
     }
+
     if (editingScheduleIndex !== null) {
       const updatedSchedule = [...currentEvent.schedule];
       updatedSchedule[editingScheduleIndex] = currentScheduleItem;
@@ -346,6 +349,7 @@ const ManageAnnouncements = () => {
     setCurrentScheduleItem({
       startTime: "",
       endTime: "",
+      date: "",
       title: "",
       description: "",
       presenter: "",
@@ -356,7 +360,11 @@ const ManageAnnouncements = () => {
   };
 
   const editScheduleItem = (index) => {
-    setCurrentScheduleItem(currentEvent.schedule[index]);
+    const scheduleItem = currentEvent.schedule[index];
+    setCurrentScheduleItem({
+      ...scheduleItem,
+      date: scheduleItem.date ? formatDateForInput(scheduleItem.date) : "",
+    });
     setEditingScheduleIndex(index);
     setShowScheduleForm(true);
   };
@@ -802,7 +810,8 @@ const ManageAnnouncements = () => {
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{item.title}</span>
                         <span className="text-sm text-gray-500">
-                          ({item.startTime} - {item.endTime})
+                          ({item.startTime}{" "}
+                          {item.endTime ? `- ${item.endTime}` : ""})
                         </span>
                         {item.type === "break" && (
                           <span className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full">
@@ -911,7 +920,7 @@ const ManageAnnouncements = () => {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          End Time
+                          End Time(Optional)
                         </label>
                         <input
                           type="time"
@@ -921,6 +930,19 @@ const ManageAnnouncements = () => {
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
                         />
                       </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Date(Optional)
+                      </label>
+                      <input
+                        type="date"
+                        name="date"
+                        value={currentScheduleItem.date}
+                        onChange={handleScheduleInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-navy-blue"
+                      />
                     </div>
 
                     <div>
@@ -962,6 +984,7 @@ const ManageAnnouncements = () => {
                           setCurrentScheduleItem({
                             startTime: "",
                             endTime: "",
+                            date: "",
                             title: "",
                             description: "",
                             presenter: "",
