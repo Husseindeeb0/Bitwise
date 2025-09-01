@@ -20,7 +20,7 @@ const generateAccessToken = (user, res) => {
     maxAge: 24 * 60 * 60 * 1000, // 1 days in milliseconds
     httpOnly: true, // Prevents XSS atatcks cross-site scripting attacks
     sameSite: "lax", // CSRF attacks cross-site request forgery attacks
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV !== "development",
   });
 
   return accessToken;
@@ -46,7 +46,7 @@ const generateRefreshToken = (user, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     httpOnly: true,
     sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV !== "development",
   });
 
   return refreshToken;
