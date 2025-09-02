@@ -4,7 +4,7 @@ import {
   editAnnouncementsAPI,
   deleteAnnouncementsAPI,
   getAnnouncementsAPI,
-  getAnnouncementsByIdAPI,
+  getAnnouncementByIdAPI,
   getLatestAnnouncementAPI,
 } from "./announcementsAPI";
 
@@ -102,11 +102,11 @@ export const getAnnouncements = createAsyncThunk(
 );
 
 export const getAnnouncementById = createAsyncThunk(
-  "/announcements/getAnnouncementsById",
+  "/announcements/getAnnouncementById",
   async (id, thunkAPI) => {
     try {
-      const res = await getAnnouncementsByIdAPI(id);
-      return res.data;
+      const res = await getAnnouncementByIdAPI(id);
+      return res.data.announcementData;
     } catch (error) {
       console.log(`Error in get announcement by Id thunk: ${error}`);
       if (

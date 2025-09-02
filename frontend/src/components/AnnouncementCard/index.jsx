@@ -110,7 +110,7 @@ const AnnouncementCard = ({ event, page, editEvent, setIsDeleting }) => {
             </div>
           )}
 
-          {/* Organizers */}
+          {/* Speakers */}
           {event.organizers && event.organizers.length > 0 && (
             <div className="flex justify-between items-end">
               <div className="mt-3">

@@ -88,7 +88,7 @@ const announcementsSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(getAnnouncementById.fulfilled, (state) => {
+      .addCase(getAnnouncementById.fulfilled, (state, action) => {
         state.isLoading = false;
         state.announcementById = action.payload;
       })

@@ -13,6 +13,7 @@ import {
   FaInfoCircle,
 } from "react-icons/fa";
 import { getAnnouncementById } from "../../features/announcements/announcementsThunks";
+import AnnouncementDetailsLoader from "../../components/AnnouncementDetailsLoader";
 import SpeakerDetails from "../../components/SpeakerDetails";
 import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "@dr.pogodin/react-helmet";
@@ -27,31 +28,15 @@ const AnnouncementDetails = () => {
   const searchParams = new URLSearchParams(location.search);
   const id = searchParams.get("id");
   const [stateEvent, setStateEvent] = useState(null);
-  const announcementById = useSelector(
-    (state) => state.announcements.announcementById
+  const { announcementById, isLoading, error } = useSelector(
+    (state) => state.announcements
   );
   let event = stateEvent || announcementById;
 
   const fetchAnnouncementData = useCallback(
     async (id) => {
       try {
-        const response = await dispatch(getAnnouncementById(id)).unwrap();
-
-        // Enhance organizers with additional mock data for our new modal
-        if (response.data.organizers && response.data.organizers.length > 0) {
-          response.data.organizers = response.data.organizers.map(
-            (organizer) => ({
-              ...organizer,
-              bio: organizer.bio,
-              expertise: organizer.expertise,
-              linkedin: organizer.linkedin || "https://linkedin.com",
-              instagram: organizer.instagram || "https://instagram.com",
-              education: organizer.education || "Computer Science",
-            })
-          );
-        } else {
-          console.error(response.message);
-        }
+        await dispatch(getAnnouncementById(id)).unwrap();
       } catch (error) {
         console.error("Error fetching announcement:", error);
       }
@@ -61,33 +46,17 @@ const AnnouncementDetails = () => {
 
   useEffect(() => {
     const loadEvent = async () => {
-      // First check if the event data is in location state
-
       if (location.state && location.state.event) {
-        // Enhance organizers with additional mock data
-        if (
-          location.state.event.organizers &&
-          location.state.event.organizers.length > 0
-        ) {
-          location.state.event.organizers = location.state.event.organizers.map(
-            (organizer) => ({
-              ...organizer,
-              bio: organizer.bio,
-              expertise: organizer.expertise,
-              linkedin: organizer.linkedinLink,
-              instagram: organizer.instaLink,
-              education: organizer.education || "",
-            })
-          );
-        }
         setStateEvent(location.state.event);
       } else {
         // If not in state, fetch it using the ID
-        await fetchAnnouncementData(id);
+        if (!announcementById && !error) {
+          fetchAnnouncementData(id);
+        }
       }
     };
     loadEvent();
-  }, [location, fetchAnnouncementData]);
+  }, [location, fetchAnnouncementData, dispatch]);
 
   // Function to open the speaker modal
   const openSpeakerModal = (speaker) => {
@@ -135,7 +104,11 @@ const AnnouncementDetails = () => {
     return `${hour}:${minutes} ${ampm}`;
   };
 
-  if (!event) {
+  if (isLoading || (!event && !error)) {
+    return <AnnouncementDetailsLoader />;
+  }
+
+  if (error) {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50 p-4">
         <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
@@ -160,7 +133,7 @@ const AnnouncementDetails = () => {
   return (
     <div className="min-h-screen mt-20">
       {/* Meta tags for SEO + social */}
-      <title>event.title</title>
+      <title>{event.title}</title>
       <Helmet>
         <meta name="description" content={event.description} />
 
@@ -388,7 +361,9 @@ const AnnouncementDetails = () => {
                       >
                         <div className="relative">
                           <img
-                            src={organizer.image || "/api/placeholder/100/100"}
+                            src={
+                              organizer.imageUrl || "/api/placeholder/100/100"
+                            }
                             alt={organizer.name}
                             className="w-16 h-16 rounded-full object-cover border-2 border-navy-blue group-hover:border-sky-blue transition-colors"
                           />

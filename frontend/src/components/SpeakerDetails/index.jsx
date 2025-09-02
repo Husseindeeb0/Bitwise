@@ -58,7 +58,7 @@ const SpeakerDetails = ({
                   <div className="flex-shrink-0">
                     <div className="w-20 h-20 md:w-28 md:h-28 rounded-full overflow-hidden border-4 border-navy-blue shadow-lg shadow-dark-purple/30">
                       <img
-                        src={speaker.image || "/api/placeholder/150/150"}
+                        src={speaker.imageUrl || "/api/placeholder/150/150"}
                         alt={speaker.name}
                         className="w-full h-full object-cover"
                       />
@@ -75,9 +75,9 @@ const SpeakerDetails = ({
 
                     {/* Social Links */}
                     <div className="flex gap-2 justify-center md:justify-start mb-1 md:mb-2">
-                      {speaker.linkedin && (
+                      {speaker.linkedinLink && (
                         <a
-                          href={speaker.linkedin}
+                          href={speaker.linkedinLink}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-white hover:text-sky-blue transition-colors"
@@ -87,9 +87,9 @@ const SpeakerDetails = ({
                           </div>
                         </a>
                       )}
-                      {speaker.instagram && (
+                      {speaker.instaLink && (
                         <a
-                          href={speaker.instagram}
+                          href={speaker.instaLink}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-white hover:text-sky-blue transition-colors"
