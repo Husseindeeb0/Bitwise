@@ -7,11 +7,15 @@ import Layout from "./Layout";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ManageAnnouncements from "./pages/AdminPanel/ManageAnnouncements";
+import ManageCourses from "./pages/AdminPanel/ManageCourses";
 import ManageAchievements from "./pages/AdminPanel/ManageAchievements";
 import RegistrationForm from "./pages/RegistrationForm";
-import AnnouncementDetails from "./pages/announcementDetails";
+import AnnouncementDetails from "./pages/AnnouncementDetails";
 import { checkAuth } from "./features/auth/authThunks";
 import { useDispatch, useSelector } from "react-redux";
+import Courses from "./pages/Courses";
+import CourseDetails from "./pages/CourseDetails";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   const dispatch = useDispatch();
@@ -26,6 +30,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route
           path="/signup"
@@ -41,6 +46,16 @@ function App() {
             element={
               userData || isAuthenticated ? (
                 <ManageAnnouncements />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/manageCourses"
+            element={
+              userData || isAuthenticated ? (
+                <ManageCourses />
               ) : (
                 <Navigate to="/login" />
               )
@@ -73,6 +88,8 @@ function App() {
             element={<AnnouncementDetails />}
           />
           <Route path="/registrationForm" element={<RegistrationForm />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/courseDetails" element={<CourseDetails />} />
         </Route>
       </Routes>
     </BrowserRouter>

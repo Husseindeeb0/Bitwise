@@ -148,7 +148,6 @@ const ManageAnnouncements = () => {
     }
   };
 
-  // CRUD operations for announcements
   const handleEventSubmit = async (e) => {
     if (e) e.preventDefault(); // Prevent default form submission
 

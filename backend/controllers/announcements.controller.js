@@ -46,13 +46,11 @@ const addAnnouncements = async (req, res) => {
     await announcement.save();
 
     return res.status(201).json({
-      state: "success",
       message: "Announcement added successfully",
     });
   } catch (error) {
     console.error("Error adding announcement:", error);
     return res.status(500).json({
-      state: "failed",
       message: "Failed to add announcement",
     });
   }
@@ -67,7 +65,6 @@ const editAnnouncements = async (req, res) => {
 
     if (!announcementId) {
       return res.status(400).json({
-        state: "failed",
         message: "Announcement ID is required",
       });
     }
@@ -76,7 +73,6 @@ const editAnnouncements = async (req, res) => {
 
     if (!announcement) {
       return res.status(404).json({
-        state: "failed",
         message: "Announcement not found",
       });
     }
@@ -87,32 +83,31 @@ const editAnnouncements = async (req, res) => {
         if (
           imageUrl &&
           typeof imageUrl === "string" &&
-          imageUrl.startsWith("http") &&
-          imageUrl === announcement.organizers[i].imageUrl
+          !imageUrl.startsWith("http") &&
+          imageUrl !== announcement.organizers[i].imageUrl
         ) {
-          continue;
-        }
-        const oldId = announcement.organizers?.[i]?.imageId;
+          const oldId = announcement.organizers?.[i]?.imageId;
 
-        try {
-          if (oldId) {
-            await imagekit.deleteFile(oldId);
+          try {
+            if (oldId) {
+              await imagekit.deleteFile(oldId);
+            }
+          } catch (error) {
+            console.log(`Failed to delete file ${oldId}: `, error.message);
           }
-        } catch (error) {
-          console.log(`Failed to delete file ${oldId}: `, error.message);
+
+          const fileName = `image_${uuidv4()}`;
+          const uploadResponse = await imagekit.upload({
+            file: updatedAnnouncement.organizers[i].imageUrl,
+            fileName,
+            useUniqueFileName: true,
+          });
+
+          const updatedImageUrl = uploadResponse.url;
+          const updatedImageId = uploadResponse.fileId;
+          updatedAnnouncement.organizers[i].imageUrl = updatedImageUrl;
+          updatedAnnouncement.organizers[i].imageId = updatedImageId;
         }
-
-        const fileName = `image_${uuidv4()}`;
-        const uploadResponse = await imagekit.upload({
-          file: updatedAnnouncement.organizers[i].imageUrl,
-          fileName,
-          useUniqueFileName: true,
-        });
-
-        const updatedImageUrl = uploadResponse.url;
-        const updatedImageId = uploadResponse.fileId;
-        updatedAnnouncement.organizers[i].imageUrl = updatedImageUrl;
-        updatedAnnouncement.organizers[i].imageId = updatedImageId;
       }
     }
 
@@ -146,20 +141,18 @@ const editAnnouncements = async (req, res) => {
     }
 
     // Update the announcement with new values and return the updated document
-    const updated = await Announcement.findByIdAndUpdate(
+    await Announcement.findByIdAndUpdate(
       announcementId,
       { $set: updatedAnnouncement },
       { new: true, runValidators: true } // new: Return updatedAnnouncement, runValidators: run schema validators
     );
 
     return res.status(200).json({
-      state: "success",
       message: "Announcement updated successfully",
     });
   } catch (error) {
     console.error("Error updating announcement:", error);
     return res.status(500).json({
-      state: "failed",
       message: "Failed to update announcement",
     });
   }
@@ -172,7 +165,6 @@ const deleteAnnouncements = async (req, res) => {
 
     if (!id) {
       return res.status(400).json({
-        state: "failed",
         message: "Announcement ID is required",
       });
     }
@@ -181,7 +173,6 @@ const deleteAnnouncements = async (req, res) => {
 
     if (!announcement) {
       return res.status(404).json({
-        state: "failed",
         message: "Announcement not found",
       });
     }
@@ -199,13 +190,11 @@ const deleteAnnouncements = async (req, res) => {
     await Announcement.findByIdAndDelete(id);
 
     return res.status(200).json({
-      state: "success",
       message: "Announcement deleted successfully",
     });
   } catch (error) {
     console.error("Error deleting announcement:", error);
     return res.status(500).json({
-      state: "failed",
       message: "Failed to delete announcement",
     });
   }
@@ -217,14 +206,12 @@ const getAnnouncements = async (req, res) => {
     const announcements = await Announcement.find().sort({ createdAt: 1 });
 
     res.status(200).json({
-      state: "success",
       message: "Announcements returned successfully",
       announcementsData: announcements,
     });
   } catch (error) {
     console.error("Error fetching announcements:", error);
     res.status(500).json({
-      state: "failed",
       message: "Failed to fetch announcements",
     });
   }
@@ -237,14 +224,12 @@ const getAnnouncementById = async (req, res) => {
     const announcement = await Announcement.findById(id);
 
     res.status(200).json({
-      state: "success",
       message: "Announcement returned successfully",
       announcementData: announcement,
     });
   } catch (error) {
     console.error("Error fetching announcement:", error);
     res.status(500).json({
-      state: "failed",
       message: "Failed to fetch announcement",
     });
   }
@@ -257,14 +242,12 @@ const getLatestAnnouncement = async (req, res) => {
       createdAt: -1,
     });
     res.status(200).json({
-      state: "success",
       message: "Latest Announcement is fetched successfully",
       announcementData: latestAnnouncement,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      state: "failed",
       message: "Failed to fetch latest announcement",
     });
   }

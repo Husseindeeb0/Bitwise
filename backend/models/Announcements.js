@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 // Define a sub-schema for organizers
 const organizerSchema = new mongoose.Schema(
   {
