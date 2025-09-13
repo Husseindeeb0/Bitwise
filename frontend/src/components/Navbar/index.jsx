@@ -11,6 +11,7 @@ import {
   FaUserPlus,
   FaChevronDown,
   FaChevronUp,
+  FaGraduationCap,
 } from "react-icons/fa";
 import { MdManageAccounts } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
@@ -34,10 +35,10 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-    await dispatch(logout()).unwrap();
-    navigate("/login");
+      await dispatch(logout()).unwrap();
+      navigate("/login");
     } catch (error) {
-      console.log("Logout failed:", error)
+      console.log("Logout failed:", error);
     }
   };
 
@@ -105,6 +106,7 @@ const Navbar = () => {
       <nav className="hidden md:flex gap-6 text-navy-blue text-xl font-semibold">
         <NavItem to="/" label="Home" />
         <NavItem to="/announcements" label="Announcements" />
+        <NavItem to="/courses" label="Courses" />
 
         {role === "admin" || role === "top_admin" ? (
           <div className="relative" ref={dropDownRef}>
@@ -149,6 +151,11 @@ const Navbar = () => {
                       to="/manageAnnouncements"
                       icon={<GrAnnounce className="text-navy-blue" />}
                       label="Manage Announcements"
+                    />
+                    <NavDropdownItem
+                      to="/manageCourses"
+                      icon={<FaGraduationCap className="text-navy-blue" />}
+                      label="Manage Courses"
                     />
                     <NavDropdownItem
                       to="/manageAchievements"
@@ -227,6 +234,12 @@ const Navbar = () => {
                 label="Announcements"
                 onClick={toggleSidebar}
               />
+              <MobileNavItem
+                to="/courses"
+                icon={<FaBullhorn />}
+                label="Courses"
+                onClick={toggleSidebar}
+              />
             </div>
 
             {role === "admin" || role === "top_admin" ? (
@@ -248,6 +261,13 @@ const Navbar = () => {
                   to="/manageAnnouncements"
                   icon={<GrAnnounce />}
                   label="Manage Announcements"
+                  onClick={toggleSidebar}
+                />
+
+                <MobileNavItem
+                  to="/manageCourses"
+                  icon={<FaGraduationCap />}
+                  label="Manage Courses"
                   onClick={toggleSidebar}
                 />
 

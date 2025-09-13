@@ -1,191 +1,65 @@
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   FiPlay,
   FiLock,
   FiClock,
   FiUsers,
-  FiStar,
-  FiAward,
   FiCheckCircle,
   FiChevronDown,
   FiChevronUp,
-  FiDownload,
   FiGlobe,
-  FiSmartphone,
   FiPlayCircle,
+  FiX,
 } from "react-icons/fi";
-
-// Dummy course data (expanded)
-const courseData = {
-  id: 1,
-  title: "React for Beginners",
-  category: "State Management",
-  isPopular: false,
-  isBestseller: false,
-  instructor: {
-    name: "John Doe",
-    bio: "Senior Frontend Developer with 8+ years of experience at Google and Microsoft",
-    avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80",
-    courses: 12,
-  },
-  price: 49.99,
-  originalPrice: 89.99, // Optional Data
-  poster:
-    "https://images.unsplash.com/photo-1584697964403-3e44c6f7f3a7?auto=format&fit=crop&w=800&q=80",
-  description:
-    "Learn the fundamentals of React.js, including components, props, state, and hooks. Perfect for beginners looking to enter the world of frontend development.",
-  whatYouWillLearn: [
-    "Build reusable React components",
-    "Manage application state with hooks",
-    "Understand JSX and the virtual DOM",
-    "Handle events and user input",
-    "Create interactive web applications",
-    "Deploy React applications to production",
-  ],
-  skillsGained: [
-    "React basics",
-    "Component-driven development",
-    "State management",
-    "Frontend problem-solving",
-  ],
-  requirements: [
-    "Basic knowledge of HTML, CSS, and JavaScript",
-    "No prior React experience required",
-    "A computer with internet connection",
-  ],
-  hours: 12,
-  lectures: 16,
-  rating: 4.8,
-  difficulty: "Advanced",
-  studentsEnrolled: 2547, // Optional Data
-  lastUpdated: "December 2024",
-  language: "English",
-  sections: [
-    {
-      id: 1,
-      title: "Introduction to React",
-      lectures: [
-        {
-          id: 1,
-          title: "What is React?",
-          duration: "05:30",
-          lecture: "",
-          isPreview: true,
-        },
-        {
-          id: 2,
-          title: "Setting up Development Environment",
-          duration: "12:15",
-          lecture: "",
-          isPreview: true,
-        },
-        {
-          id: 3,
-          title: "Your First React Component",
-          duration: "08:45",
-          lecture: "",
-          isPreview: false,
-        },
-        {
-          id: 4,
-          title: "Understanding JSX",
-          duration: "15:20",
-          lecture: "",
-          isPreview: false,
-        },
-      ],
-    },
-    {
-      id: 2,
-      title: "Components and Props",
-      lectures: [
-        {
-          id: 5,
-          title: "Creating Functional Components",
-          duration: "10:30",
-          lecture: "",
-          isPreview: false,
-        },
-        {
-          id: 6,
-          title: "Props and Data Flow",
-          duration: "14:25",
-          lecture: "",
-          isPreview: false,
-        },
-        {
-          id: 7,
-          title: "Component Composition",
-          duration: "11:40",
-          lecture: "",
-          isPreview: false,
-        },
-        {
-          id: 8,
-          title: "Conditional Rendering",
-          duration: "09:15",
-          lecture: "",
-          isPreview: true,
-        },
-      ],
-    },
-    {
-      id: 3,
-      title: "State Management and Hooks",
-      lectures: [
-        {
-          id: 9,
-          title: "Introduction to useState",
-          duration: "16:30",
-          lecture: "",
-          isPreview: false,
-        },
-        {
-          id: 10,
-          title: "useEffect Hook",
-          duration: "20:15",
-          lecture: "",
-          isPreview: false,
-        },
-        { id: 11, title: "Custom Hooks", duration: "18:45", lecture: "", isPreview: false },
-        {
-          id: 12,
-          title: "useContext for Global State",
-          duration: "25:20",
-          lecture: "",
-          isPreview: false,
-        },
-      ],
-    },
-    {
-      id: 4,
-      title: "Advanced Concepts",
-      lectures: [
-        { id: 13, title: "React Router", duration: "22:30", lecture: "", isPreview: false },
-        { id: 14, title: "Form Handling", duration: "17:25", lecture: "", isPreview: false },
-        {
-          id: 15,
-          title: "API Integration",
-          duration: "19:40",
-          lecture: "",
-          isPreview: false,
-        },
-        {
-          id: 16,
-          title: "Deployment and Production",
-          duration: "13:15",
-          lecture: "",
-          isPreview: false,
-        },
-      ],
-    },
-  ],
-};
+import { useLocation } from "react-router-dom";
+import { getCourseById } from "../../features/courses/coursesThunks";
+import { useDispatch, useSelector } from "react-redux";
 
 const CourseDetails = () => {
   const [expandedSections, setExpandedSections] = useState([1]);
   const [activeTab, setActiveTab] = useState("overview");
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const searchParams = new URLSearchParams(location.search);
+  const id = searchParams.get("id");
+  const [stateCourse, setStateCourse] = useState(null);
+  const { courseById, isLoading, error } = useSelector(
+    (state) => state.courses
+  );
+  let courseData = stateCourse || courseById;
+  const fetchCourseData = useCallback(
+    async (id) => {
+      try {
+        await dispatch(getCourseById(id)).unwrap();
+      } catch (error) {
+        console.error("Error fetching course:", error);
+      }
+    },
+    [dispatch]
+  );
+
+  const handlePlayVideo = () => {
+    setIsVideoPlaying(true);
+  };
+
+  const handleCloseVideo = () => {
+    setIsVideoPlaying(false);
+  };
+
+  useEffect(() => {
+    const loadCourse = async () => {
+      if (location.state?.course) {
+        setStateCourse(location.state.course);
+      } else {
+        // If not in state, fetch it using the ID
+        if (!courseById && !error) {
+          fetchCourseData(id);
+        }
+      }
+    };
+    loadCourse();
+  }, [location, fetchCourseData, dispatch]);
 
   const toggleSection = (sectionId) => {
     setExpandedSections((prev) =>
@@ -195,24 +69,34 @@ const CourseDetails = () => {
     );
   };
 
-  const totalDuration = courseData.sections.reduce((total, section) => {
-    return (
-      total +
-      section.lectures.reduce((sectionTotal, lecture) => {
-        const [minutes, seconds] = lecture.duration.split(":").map(Number);
-        return sectionTotal + minutes + seconds / 60;
-      }, 0)
-    );
-  }, 0);
+  if (isLoading || (!courseData && !error)) {
+    return "Loading...";
+  }
 
-  const formatTotalDuration = (minutes) => {
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = Math.floor(minutes % 60);
-    return `${hours}h ${remainingMinutes}m`;
-  };
+  if (error) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50 p-4">
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full text-center">
+          <div className="text-red-500 text-5xl mx-auto mb-4">!</div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            Course Not Found
+          </h2>
+          <p className="text-gray-600 mb-6">
+            The course you're looking for could not be found.
+          </p>
+          <button
+            onClick={() => navigate(-1)}
+            className="px-6 py-2 bg-navy-blue text-white rounded-md hover:bg-dark-purple transition-colors"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen mt-10">
+    <div className="min-h-screen mt-14">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-navy-blue to-dark-purple text-white">
         <div className="max-w-7xl mx-auto px-4 py-12">
@@ -228,20 +112,23 @@ const CourseDetails = () => {
 
               {/* Course Stats */}
               <div className="flex flex-wrap gap-6 text-sm">
-                <div className="flex items-center space-x-2">
+                {/* Rating feature add later */}
+                {/* <div className="flex items-center space-x-2">
                   <FiStar className="h-5 w-5 text-yellow-400 fill-current" />
                   <span className="font-semibold">{courseData.rating}</span>
                   <span className="text-gray-300">
                     ({courseData.studentsEnrolled} students)
                   </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <FiUsers className="h-5 w-5" />
-                  <span>{courseData.studentsEnrolled} enrolled</span>
-                </div>
+                </div> */}
+                {courseData.studentsEnrolled.length > 0 && (
+                  <div className="flex items-center space-x-2">
+                    <FiUsers className="h-5 w-5" />
+                    <span>{courseData.studentsEnrolled} enrolled</span>
+                  </div>
+                )}
                 <div className="flex items-center space-x-2">
                   <FiClock className="h-5 w-5" />
-                  <span>{formatTotalDuration(totalDuration)} total</span>
+                  <span>{courseData.hours}h total</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <FiGlobe className="h-5 w-5" />
@@ -252,7 +139,7 @@ const CourseDetails = () => {
               {/* Instructor Info */}
               <div className="flex items-center space-x-4 bg-white/10 backdrop-blur-sm rounded-xl p-4">
                 <img
-                  src={courseData.instructor.avatar}
+                  src={courseData.instructor.imageUrl}
                   alt={courseData.instructor.name}
                   className="w-12 h-12 rounded-full"
                 />
@@ -261,7 +148,7 @@ const CourseDetails = () => {
                     Created by {courseData.instructor.name}
                   </p>
                   <p className="text-sm text-gray-300">
-                    Senior Frontend Developer
+                    {courseData.instructor.bio}
                   </p>
                 </div>
               </div>
@@ -271,70 +158,113 @@ const CourseDetails = () => {
             <div className="lg:col-span-1">
               <div className="bg-white rounded-2xl shadow-2xl p-6 text-gray-900 sticky top-6">
                 {/* Video Preview */}
-                <div className="relative mb-6">
-                  <img
-                    src={courseData.poster}
-                    alt={courseData.title}
-                    className="w-full h-48 object-cover rounded-xl"
-                  />
-                  <div className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center">
-                    <FiPlayCircle className="h-16 w-16 text-white hover:scale-110 transition-transform cursor-pointer" />
-                  </div>
-                  <div className="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-sm">
-                    Preview
-                  </div>
-                </div>
+                {(() => {
+                  const previewLecture = courseData.sections
+                    .flatMap((section) => section.lectures)
+                    .find((lecture) => lecture.isPreview);
 
+                  if (!previewLecture) return null;
+
+                  return (
+                    <div className="relative mb-6">
+                      {!isVideoPlaying ? (
+                        <>
+                          <img
+                            src={courseData.posterUrl}
+                            alt={courseData.title}
+                            className="w-full h-48 object-cover rounded-xl"
+                          />
+                          <div className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center">
+                            <FiPlayCircle
+                              className="h-16 w-16 text-white hover:scale-110 transition-transform cursor-pointer"
+                              onClick={handlePlayVideo}
+                            />
+                          </div>
+                          <div className="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-sm">
+                            Preview
+                          </div>
+                        </>
+                      ) : (
+                        <div className="relative">
+                          <div className="absolute w-full h-48 rounded-xl overflow-hidden"></div>
+                          <iframe
+                            className="w-full h-48 rounded-xl"
+                            src={(() => {
+                              // Convert YouTube URL to embed format
+                              const url = previewLecture.lecture;
+                              let videoId = "";
+
+                              if (url.includes("youtu.be/")) {
+                                videoId = url
+                                  .split("youtu.be/")[1]
+                                  .split("?")[0];
+                              } else if (url.includes("youtube.com/watch?v=")) {
+                                videoId = url.split("v=")[1].split("&")[0];
+                              }
+
+                              const startTime = 0;
+                              const endTime = 60;
+
+                              return `https://www.youtube.com/embed/${videoId}?start=${startTime}&end=${endTime}&autoplay=1&controls=0&modestbranding=1&rel=0&showinfo=0&fs=0&disablekb=1`;
+                            })()}
+                            title="Course Preview"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen={false}
+                            onLoad={() => {
+                              setTimeout(() => {
+                                handleCloseVideo();
+                              }, 60 * 1000 + 1000);
+                            }}
+                          />
+                          <button
+                            onClick={handleCloseVideo}
+                            className="absolute top-2 right-2 bg-black/60 text-white p-1 rounded-full hover:bg-black/80 transition-colors"
+                          >
+                            <FiX className="h-4 w-4" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
                 {/* Pricing */}
                 <div className="text-center mb-6">
                   <div className="flex items-center justify-center space-x-3 mb-2">
-                    <span className="text-3xl font-bold text-indigo-600">
-                      ${courseData.price}
-                    </span>
-                    <span className="text-lg text-gray-500 line-through">
-                      ${courseData.originalPrice}
-                    </span>
+                    {courseData.price ? (
+                      <span className="text-3xl font-bold text-indigo-600">
+                        ${courseData.price}
+                      </span>
+                    ) : (
+                      <span className="text-navy-blue font-bold text-xl">
+                        Free Of Charge
+                      </span>
+                    )}
+                    {courseData.originalPrice && (
+                      <span className="text-lg text-gray-500 line-through">
+                        ${courseData.originalPrice}
+                      </span>
+                    )}
                   </div>
-                  <div className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-medium inline-block">
-                    44% off - Limited time!
-                  </div>
+                  {courseData.originalPrice && (
+                    <div className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-medium inline-block">
+                      {(
+                        ((courseData.originalPrice - courseData.price) /
+                          courseData.originalPrice) *
+                        100
+                      ).toFixed(0)}
+                      % off - Limited time!
+                    </div>
+                  )}
                 </div>
-
                 {/* Enroll Button */}
+                {/* ToDO: Increment enrolledStudents on clicking and save user enrollment to his database schema */}
                 <button className="w-full bg-gradient-to-r from-navy-blue to-dark-purple text-white py-4 rounded-xl font-semibold text-lg hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 mb-4">
                   Enroll Now
                 </button>
-
-                <button className="w-full border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:border-indigo-500 hover:text-indigo-600 transition-colors duration-300 mb-6">
+                {/* <button className="w-full border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:border-navy-blue hover:text-navy-blue transition-colors duration-300 mb-6">
                   Add to Wishlist
-                </button>
-
-                {/* Course Includes */}
-                <div className="space-y-3 text-sm">
-                  <h4 className="font-semibold text-gray-900">
-                    This course includes:
-                  </h4>
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-3">
-                      <FiClock className="h-4 w-4 text-gray-500" />
-                      <span>
-                        {formatTotalDuration(totalDuration)} on-demand video
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <FiDownload className="h-4 w-4 text-gray-500" />
-                      <span>Downloadable resources</span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <FiSmartphone className="h-4 w-4 text-gray-500" />
-                      <span>Access on mobile and TV</span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <FiAward className="h-4 w-4 text-gray-500" />
-                      <span>Certificate of completion</span>
-                    </div>
-                  </div>
-                </div>
+                </button> */}
               </div>
             </div>
           </div>
@@ -386,19 +316,21 @@ const CourseDetails = () => {
                 </div>
 
                 {/* Requirements */}
-                <div className="bg-white rounded-2xl shadow-lg p-8">
-                  <h2 className="text-2xl font-bold mb-6 text-gray-900">
-                    Requirements
-                  </h2>
-                  <ul className="space-y-3">
-                    {courseData.requirements.map((req, index) => (
-                      <li key={index} className="flex items-start space-x-3">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span className="text-gray-700">{req}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {courseData.requirements.length > 0 && (
+                  <div className="bg-white rounded-2xl shadow-lg p-8">
+                    <h2 className="text-2xl font-bold mb-6 text-gray-900">
+                      Requirements
+                    </h2>
+                    <ul className="space-y-3">
+                      {courseData.requirements.map((req, index) => (
+                        <li key={index} className="flex items-start space-x-3">
+                          <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
+                          <span className="text-gray-700">{req}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 {/* Skills Gained */}
                 <div className="bg-white rounded-2xl shadow-lg p-8">
@@ -409,7 +341,7 @@ const CourseDetails = () => {
                     {courseData.skillsGained.map((skill, index) => (
                       <span
                         key={index}
-                        className="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-full text-sm font-medium"
+                        className="bg-navy-blue/30 text-navy-blue px-4 py-2 rounded-full text-sm font-medium"
                       >
                         {skill}
                       </span>
@@ -427,8 +359,7 @@ const CourseDetails = () => {
                   </h2>
                   <div className="text-sm text-gray-500">
                     {courseData.sections.length} sections •{" "}
-                    {courseData.lectures} lectures •{" "}
-                    {formatTotalDuration(totalDuration)}
+                    {courseData.lecturesNum} lectures • {courseData.hours}h
                   </div>
                 </div>
 
@@ -509,7 +440,7 @@ const CourseDetails = () => {
               <div className="bg-white rounded-2xl shadow-lg p-8">
                 <div className="flex items-start space-x-6">
                   <img
-                    src={courseData.instructor.avatar}
+                    src={courseData.instructor.imageUrl}
                     alt={courseData.instructor.name}
                     className="w-32 h-32 rounded-full"
                   />
@@ -523,16 +454,12 @@ const CourseDetails = () => {
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                       <div className="text-center">
-                        <p className="font-semibold text-lg">
-                          {courseData.instructor.courses}
-                        </p>
+                        {courseData.instructor.coursesNum && (
+                          <p className="font-semibold text-lg">
+                            {courseData.instructor.coursesNum}
+                          </p>
+                        )}
                         <p className="text-sm text-gray-500">Courses</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="font-semibold text-lg">8+</p>
-                        <p className="text-sm text-gray-500">
-                          Years Experience
-                        </p>
                       </div>
                     </div>
                   </div>
@@ -548,14 +475,16 @@ const CourseDetails = () => {
               <div className="space-y-4">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Skill level</span>
-                  <span className="font-medium">Beginner</span>
+                  <span className="font-medium">{courseData.difficulty}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Students</span>
-                  <span className="font-medium">
-                    {courseData.studentsEnrolled}
-                  </span>
-                </div>
+                {courseData.studentsEnrolled.length > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Students</span>
+                    <span className="font-medium">
+                      {courseData.studentsEnrolled}
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-gray-600">Languages</span>
                   <span className="font-medium">{courseData.language}</span>

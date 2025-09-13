@@ -26,6 +26,7 @@ import {
   deleteCourse,
   getCourses,
 } from "../../../features/courses/coursesThunks";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function ManageCourses() {
@@ -108,7 +109,7 @@ export default function ManageCourses() {
 
   const handleInputChange = (e, nested = null) => {
     const { name, value, type, checked, files } = e.target;
-    
+
     // Handle file inputs
     if (type === "file" && files && files[0]) {
       const file = files[0];
@@ -187,7 +188,7 @@ export default function ManageCourses() {
   const handleLectureChange = (e, sectionIndex, lectureIndex, field) => {
     const { value, type, checked } = e.target;
     const inputValue = type === "checkbox" ? checked : value;
-    
+
     setCourseData((prev) => ({
       ...prev,
       sections: prev.sections.map((section, i) =>
@@ -195,7 +196,9 @@ export default function ManageCourses() {
           ? {
               ...section,
               lectures: section.lectures.map((lecture, j) =>
-                j === lectureIndex ? { ...lecture, [field]: inputValue } : lecture
+                j === lectureIndex
+                  ? { ...lecture, [field]: inputValue }
+                  : lecture
               ),
             }
           : section
@@ -482,6 +485,14 @@ export default function ManageCourses() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex gap-2">
+                          <Link
+                            to={`/courseDetails?id=${course._id}`}
+                            state={{ course }}
+                            className="text-sky-blue hover:text-sky-blue/80 p-2 hover:bg-sky-blue/10 rounded-lg transition-colors"
+                            title="View Course Details"
+                          >
+                            <FaEye />
+                          </Link>
                           <button
                             onClick={() => handleEdit(course)}
                             className="text-navy-blue hover:text-navy-blue/80 p-2 hover:bg-blue-100 rounded-lg transition-colors"

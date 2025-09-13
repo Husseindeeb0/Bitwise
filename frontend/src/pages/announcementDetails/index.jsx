@@ -32,7 +32,6 @@ const AnnouncementDetails = () => {
     (state) => state.announcements
   );
   let event = stateEvent || announcementById;
-
   const fetchAnnouncementData = useCallback(
     async (id) => {
       try {
