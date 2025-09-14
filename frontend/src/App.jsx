@@ -10,7 +10,7 @@ import ManageAnnouncements from "./pages/AdminPanel/ManageAnnouncements";
 import ManageCourses from "./pages/AdminPanel/ManageCourses";
 import ManageAchievements from "./pages/AdminPanel/ManageAchievements";
 import RegistrationForm from "./pages/RegistrationForm";
-import AnnouncementDetails from "./pages/AnnouncementDetails";
+import AnnouncementDetails from "./pages/announcementDetails";
 import { checkAuth } from "./features/auth/authThunks";
 import { useDispatch, useSelector } from "react-redux";
 import Courses from "./pages/Courses";
