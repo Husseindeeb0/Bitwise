@@ -32,9 +32,6 @@ const LoadingSpinner = () => (
     <div className="text-center">
       <AiOutlineLoading3Quarters className="w-12 h-12 text-navy-blue animate-spin mx-auto mb-4" />
       <p className="text-slate-600 text-lg font-medium">Loading courses...</p>
-      <p className="text-slate-500 text-sm mt-2">
-        Please wait while we fetch the latest courses for you
-      </p>
     </div>
   </div>
 );

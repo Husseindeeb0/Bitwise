@@ -10,12 +10,16 @@ import {
   FiGlobe,
   FiPlayCircle,
   FiX,
+  FiMaximize2,
 } from "react-icons/fi";
+
 import { useLocation } from "react-router-dom";
 import { getCourseById } from "../../features/courses/coursesThunks";
 import { useDispatch, useSelector } from "react-redux";
 
 const CourseDetails = () => {
+  const [currentLecture, setCurrentLecture] = useState(null);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState([1]);
   const [activeTab, setActiveTab] = useState("overview");
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
@@ -46,6 +50,53 @@ const CourseDetails = () => {
   const handleCloseVideo = () => {
     setIsVideoPlaying(false);
   };
+
+  const openVideoModal = (lecture) => {
+    setCurrentLecture(lecture);
+    setIsVideoModalOpen(true);
+  };
+
+  const closeVideoModal = () => {
+    setIsVideoModalOpen(false);
+    setCurrentLecture(null);
+  };
+
+  const handleLectureClick = (lecture) => {
+    openVideoModal(lecture);
+  };
+
+  function getEmbedUrl(url) {
+    // YouTube watch link
+    if (url.includes("youtube.com/watch?v=")) {
+      const id = url.split("v=")[1].split("&")[0];
+      console.log(url);
+      return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0`;
+    }
+
+    // YouTube short URL (youtu.be/...)
+    if (url.includes("youtu.be/")) {
+      const id = url.split("youtu.be/")[1].split("?")[0];
+      return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&modestbranding=1&rel=0&end=60`;
+    }
+
+    // Google Drive file link
+    if (url.includes("drive.google.com")) {
+      let fileId = "";
+
+      if (url.includes("/file/d/")) {
+        fileId = url.split("/file/d/")[1].split("/")[0];
+      } else if (url.includes("open?id=")) {
+        fileId = url.split("open?id=")[1].split("&")[0];
+      }
+
+      if (fileId) {
+        return `https://drive.google.com/file/d/${fileId}/preview?autoplay=1&mute=1`;
+      }
+    }
+
+    // fallback: return original url
+    return url;
+  }
 
   useEffect(() => {
     const loadCourse = async () => {
@@ -186,35 +237,17 @@ const CourseDetails = () => {
                         </>
                       ) : (
                         <div className="relative">
-                          <div className="absolute w-full h-48 rounded-xl overflow-hidden"></div>
                           <iframe
                             className="w-full h-48 rounded-xl"
-                            src={(() => {
-                              // Convert YouTube URL to embed format
-                              const url = previewLecture.lecture;
-                              let videoId = "";
-
-                              if (url.includes("youtu.be/")) {
-                                videoId = url
-                                  .split("youtu.be/")[1]
-                                  .split("?")[0];
-                              } else if (url.includes("youtube.com/watch?v=")) {
-                                videoId = url.split("v=")[1].split("&")[0];
-                              }
-
-                              const startTime = 0;
-                              const endTime = 60;
-
-                              return `https://www.youtube.com/embed/${videoId}?start=${startTime}&end=${endTime}&autoplay=1&controls=0&modestbranding=1&rel=0&showinfo=0&fs=0&disablekb=1`;
-                            })()}
+                            src={getEmbedUrl(previewLecture.lecture)}
                             title="Course Preview"
                             frameBorder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen={false}
+                            allowFullScreen
                             onLoad={() => {
                               setTimeout(() => {
                                 handleCloseVideo();
-                              }, 60 * 1000 + 1000);
+                              }, 60 * 1000);
                             }}
                           />
                           <button
@@ -352,7 +385,7 @@ const CourseDetails = () => {
             )}
 
             {activeTab === "curriculum" && (
-              <div className="bg-white rounded-2xl shadow-lg p-8">
+              <div className="bg-white rounded-2xl shadow-lg p-8 max-w-4xl mx-auto">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-gray-900">
                     Course Content
@@ -393,25 +426,36 @@ const CourseDetails = () => {
                           {section.lectures.map((lecture) => (
                             <div
                               key={lecture.id}
-                              className="flex items-center justify-between p-4 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                              className={`flex items-center justify-between p-4 border-b border-gray-100 last:border-b-0 transition-colors ${
+                                lecture.isPreview
+                                  ? "hover:bg-indigo-50 cursor-pointer"
+                                  : "hover:bg-gray-50"
+                              }`}
+                              onClick={() =>
+                                handleLectureClick(lecture)
+                              }
                             >
                               <div className="flex items-center space-x-3">
-                                {lecture.isPreview ? (
-                                  <FiPlay className="h-4 w-4 text-indigo-500" />
+                                {lecture.price ? (
+                                  lecture.isPreview ? (
+                                    <FiPlay className="h-4 w-4 text-indigo-500" />
+                                  ) : (
+                                    <FiLock className="h-4 w-4 text-gray-400" />
+                                  )
                                 ) : (
-                                  <FiLock className="h-4 w-4 text-gray-400" />
+                                  <FiPlay className="h-4 w-4 text-indigo-500" />
                                 )}
                                 <span
                                   className={`text-sm ${
                                     lecture.isPreview
-                                      ? "text-indigo-600"
+                                      ? "text-navy-blue font-medium"
                                       : "text-gray-700"
                                   }`}
                                 >
                                   {lecture.title}
                                 </span>
                                 {lecture.isPreview && (
-                                  <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-medium">
+                                  <span className="bg-blue-100 text-navy-blue px-2 py-1 rounded text-xs font-medium">
                                     Preview
                                   </span>
                                 )}
@@ -420,8 +464,8 @@ const CourseDetails = () => {
                                 <span className="text-sm text-gray-500">
                                   {lecture.duration}
                                 </span>
-                                {lecture.isPreview && (
-                                  <button className="text-indigo-600 hover:text-indigo-700 text-sm font-medium">
+                                {lecture.price && lecture.isPreview && (
+                                  <button className="text-navy-blue hover:text-navy-blue text-sm font-medium transition-colors">
                                     Play
                                   </button>
                                 )}
@@ -432,6 +476,72 @@ const CourseDetails = () => {
                       )}
                     </div>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {/* Video Modal */}
+            {isVideoModalOpen && currentLecture && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-background1/30 backdrop-blur-lg bg-opacity-75">
+                <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 overflow-hidden">
+                  {/* Modal Header */}
+                  <div className="flex items-center justify-between p-4 border-b border-gray-200">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        {currentLecture.title}
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        Duration: {currentLecture.duration}
+                      </p>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={closeVideoModal}
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                      >
+                        <FiX className="h-5 w-5 text-gray-600" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Video Player */}
+                  <div className="relative bg-black h-96">
+                    <iframe
+                      className="w-full h-full rounded-xl"
+                      src={getEmbedUrl(currentLecture.lecture)}
+                      title="Course Preview"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      onLoad={() => {
+                        setTimeout(() => {
+                          handleCloseVideo();
+                        }, 60 * 1000);
+                      }}
+                    />
+                  </div>
+
+                  {/* Video Info */}
+                  <div className="p-4 bg-gray-50">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-gray-600">
+                          Now playing:{" "}
+                          <span className="font-medium">
+                            {currentLecture.title}
+                          </span>
+                        </p>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={closeVideoModal}
+                          className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-medium transition-colors"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
