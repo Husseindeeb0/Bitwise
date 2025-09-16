@@ -15,7 +15,7 @@ import {
 } from "react-icons/fa";
 import { MdManageAccounts } from "react-icons/md";
 import { IoClose } from "react-icons/io5";
-import { FiLogOut, FiArrowUpRight } from "react-icons/fi";
+import { FiLogOut, FiArrowUpRight, FiBookOpen  } from "react-icons/fi";
 import { GrAnnounce } from "react-icons/gr";
 import { RiAdminFill } from "react-icons/ri";
 import { GiAchievement } from "react-icons/gi";
@@ -236,7 +236,7 @@ const Navbar = () => {
               />
               <MobileNavItem
                 to="/courses"
-                icon={<FaBullhorn />}
+                icon={<FiBookOpen />}
                 label="Courses"
                 onClick={toggleSidebar}
               />
