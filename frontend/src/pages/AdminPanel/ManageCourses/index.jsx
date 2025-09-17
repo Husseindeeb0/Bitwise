@@ -20,6 +20,7 @@ import {
   FaChevronUp,
   FaCalendar,
 } from "react-icons/fa";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import {
   addCourse,
   editCourse,
@@ -33,6 +34,7 @@ export default function ManageCourses() {
   const dispatch = useDispatch();
   const courses = useSelector((state) => state.courses.coursesData);
   const error = useSelector((state) => state.courses.error);
+  const isLoading = useSelector((state) => state.courses.isLoading);
   const [showForm, setShowForm] = useState(false);
   const [editingCourse, setEditingCourse] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -337,7 +339,6 @@ export default function ManageCourses() {
     }
     resetForm();
     fetchData();
-    console.log("Course data:", courseData);
   };
 
   const handleEdit = (course) => {
@@ -418,7 +419,7 @@ export default function ManageCourses() {
         </div>
 
         {/* Course List */}
-        {!showForm && courses.length > 0 ? (
+        {!showForm && courses.length > 0 && (
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -513,7 +514,9 @@ export default function ManageCourses() {
               </table>
             </div>
           </div>
-        ) : (
+        )}
+
+        {courses.length === 0 && (
           <div className="bg-white border border-gray-200 rounded-lg p-6 mb-5 text-center">
             <div className="flex flex-col items-center">
               <FaCalendar size={40} className="text-gray-400 mb-2" />
@@ -534,7 +537,6 @@ export default function ManageCourses() {
             </div>
           </div>
         )}
-
         {/* Course Form */}
         {showForm && (
           <div className="bg-white rounded-xl shadow-lg">
@@ -712,14 +714,25 @@ export default function ManageCourses() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Upload Instructor Image
                     </label>
-                    <input
-                      type="file"
-                      name="imageUrl"
-                      onChange={(e) => handleInputChange(e, "instructor")}
-                      className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
-                      accept="image/*"
-                      required
-                    />
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="file"
+                        name="imageUrl"
+                        onChange={(e) => handleInputChange(e, "instructor")}
+                        className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
+                        accept="image/*"
+                        required={!editingCourse}
+                      />
+                      {courseData.posterUrl && (
+                        <div className="border border-gray-300 rounded-md overflow-hidden">
+                          <img
+                            src={courseData.instructor.imageUrl}
+                            alt="Instructor profile preview"
+                            className="w-16 h-16 object-cover"
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -761,14 +774,25 @@ export default function ManageCourses() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Upload Poster Course Image
                     </label>
-                    <input
-                      type="file"
-                      name="posterUrl"
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
-                      accept="image/*"
-                      required
-                    />
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="file"
+                        name="posterUrl"
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
+                        accept="image/*"
+                        required={!editingCourse}
+                      />
+                      {courseData.posterUrl && (
+                        <div className="border border-gray-300 rounded-md overflow-hidden">
+                          <img
+                            src={courseData.posterUrl}
+                            alt="Poster preview"
+                            className="w-16 h-16 object-cover"
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1093,10 +1117,19 @@ export default function ManageCourses() {
               <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
                 <button
                   type="submit"
-                  className="flex-1 bg-gradient-to-r from-navy-blue to-dark-purple text-white px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all duration-300 shadow-lg"
+                  disabled={isLoading}
+                  className={`flex-1 bg-gradient-to-r text-white ${isLoading ? "cursor-not-allowed from-navy-blue/50 to-dark-purple/50" : "from-navy-blue to-dark-purple"} px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all duration-300 shadow-lg`}
                 >
-                  <FaSave />
-                  {editingCourse ? "Update Course" : "Create Course"}
+                  {isLoading ? (
+                    <div>
+                      <AiOutlineLoading3Quarters className="w-7 h-7 animate-spin text-white" />
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <FaSave />
+                      {editingCourse ? "Update Course" : "Create Course"}
+                    </div>
+                  )}
                 </button>
                 <button
                   type="button"

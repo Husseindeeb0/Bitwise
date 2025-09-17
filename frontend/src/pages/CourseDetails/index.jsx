@@ -10,12 +10,13 @@ import {
   FiGlobe,
   FiPlayCircle,
   FiX,
-  FiMaximize2,
 } from "react-icons/fi";
 
 import { useLocation } from "react-router-dom";
 import { getCourseById } from "../../features/courses/coursesThunks";
 import { useDispatch, useSelector } from "react-redux";
+import LectureModal from "../../components/LectureModal";
+import { getEmbedUrl } from "../../helpers/getEmbedUrl";
 
 const CourseDetails = () => {
   const [currentLecture, setCurrentLecture] = useState(null);
@@ -56,47 +57,9 @@ const CourseDetails = () => {
     setIsVideoModalOpen(true);
   };
 
-  const closeVideoModal = () => {
-    setIsVideoModalOpen(false);
-    setCurrentLecture(null);
-  };
-
   const handleLectureClick = (lecture) => {
     openVideoModal(lecture);
   };
-
-  function getEmbedUrl(url) {
-    // YouTube watch link
-    if (url.includes("youtube.com/watch?v=")) {
-      const id = url.split("v=")[1].split("&")[0];
-      console.log(url);
-      return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0`;
-    }
-
-    // YouTube short URL (youtu.be/...)
-    if (url.includes("youtu.be/")) {
-      const id = url.split("youtu.be/")[1].split("?")[0];
-      return `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&modestbranding=1&rel=0&end=60`;
-    }
-
-    // Google Drive file link
-    if (url.includes("drive.google.com")) {
-      let fileId = "";
-
-      if (url.includes("/file/d/")) {
-        fileId = url.split("/file/d/")[1].split("/")[0];
-      } else if (url.includes("open?id=")) {
-        fileId = url.split("open?id=")[1].split("&")[0];
-      }
-
-      if (fileId) {
-        return `https://drive.google.com/file/d/${fileId}/preview?autoplay=1&mute=1`;
-      }
-    }
-
-    // fallback: return original url
-    return url;
-  }
 
   useEffect(() => {
     const loadCourse = async () => {
@@ -431,9 +394,7 @@ const CourseDetails = () => {
                                   ? "hover:bg-indigo-50 cursor-pointer"
                                   : "hover:bg-gray-50"
                               }`}
-                              onClick={() =>
-                                handleLectureClick(lecture)
-                              }
+                              onClick={() => handleLectureClick(lecture)}
                             >
                               <div className="flex items-center space-x-3">
                                 {lecture.price ? (
@@ -482,68 +443,11 @@ const CourseDetails = () => {
 
             {/* Video Modal */}
             {isVideoModalOpen && currentLecture && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-background1/30 backdrop-blur-lg bg-opacity-75">
-                <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 overflow-hidden">
-                  {/* Modal Header */}
-                  <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        {currentLecture.title}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        Duration: {currentLecture.duration}
-                      </p>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={closeVideoModal}
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                      >
-                        <FiX className="h-5 w-5 text-gray-600" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Video Player */}
-                  <div className="relative bg-black h-96">
-                    <iframe
-                      className="w-full h-full rounded-xl"
-                      src={getEmbedUrl(currentLecture.lecture)}
-                      title="Course Preview"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      onLoad={() => {
-                        setTimeout(() => {
-                          handleCloseVideo();
-                        }, 60 * 1000);
-                      }}
-                    />
-                  </div>
-
-                  {/* Video Info */}
-                  <div className="p-4 bg-gray-50">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-gray-600">
-                          Now playing:{" "}
-                          <span className="font-medium">
-                            {currentLecture.title}
-                          </span>
-                        </p>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={closeVideoModal}
-                          className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm font-medium transition-colors"
-                        >
-                          Close
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <LectureModal
+                currentLecture={currentLecture}
+                setCurrentLecture={setCurrentLecture}
+                setIsVideoModalOpen={setIsVideoModalOpen}
+              />
             )}
 
             {activeTab === "instructor" && (

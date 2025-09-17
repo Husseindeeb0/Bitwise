@@ -6,11 +6,11 @@ import {
   AiFillStar,
   AiOutlineTrophy,
   AiOutlineRise,
-  AiOutlineLoading3Quarters,
 } from "react-icons/ai";
+import { FaFilter, FaSearch } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { getCourses } from "../../features/courses/coursesThunks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Helper function for difficulty colors
 const getDifficultyColor = (difficulty) => {
@@ -25,16 +25,6 @@ const getDifficultyColor = (difficulty) => {
       return "text-slate-700 bg-slate-100 border-slate-200";
   }
 };
-
-// Loading Component
-const LoadingSpinner = () => (
-  <div className="min-h-screen flex items-center justify-center">
-    <div className="text-center">
-      <AiOutlineLoading3Quarters className="w-12 h-12 text-navy-blue animate-spin mx-auto mb-4" />
-      <p className="text-slate-600 text-lg font-medium">Loading courses...</p>
-    </div>
-  </div>
-);
 
 // Loading Skeleton Component
 const CourseSkeleton = () => (
@@ -67,9 +57,20 @@ const CourseSkeleton = () => (
 
 const Courses = () => {
   const dispatch = useDispatch();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterCategory, setFilterCategory] = useState("");
   const { coursesData, isLoading, error } = useSelector(
     (state) => state.courses
   );
+  const courses = coursesData || [];
+  const categories = [
+    "Web Development",
+    "Mobile Development",
+    "Data Science",
+    "Machine Learning",
+    "DevOps",
+    "Introduction",
+  ];
 
   const fetchCoursesData = async () => {
     try {
@@ -86,10 +87,14 @@ const Courses = () => {
     }
   }, [dispatch]);
 
-  // Show loading spinner while fetching
-  if (isLoading && (!coursesData || coursesData.length === 0)) {
-    return <LoadingSpinner />;
-  }
+  const filteredCourses = courses.filter((course) => {
+    const matchesSearch = course.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      !filterCategory || course.category === filterCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   // Show error state if there's an error and no data
   if (error && (!coursesData || coursesData.length === 0)) {
@@ -112,8 +117,6 @@ const Courses = () => {
     );
   }
 
-  const courses = coursesData || [];
-
   return (
     <div className="min-h-screen py-16 px-6 mt-12">
       {/* Header Section */}
@@ -132,17 +135,48 @@ const Courses = () => {
         </p>
       </div>
 
+      {/* Search and Filter */}
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-1 relative">
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search courses..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border outline-navy-blue rounded-lg"
+            />
+          </div>
+          <div className="relative">
+            <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              className="pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white min-w-48"
+            >
+              <option value="">All Categories</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+
       {/* Courses Grid */}
       <div className="grid gap-8 lg:grid-cols-3 md:grid-cols-2 max-w-7xl mx-auto">
         {/* Show skeletons while loading additional data */}
         {isLoading &&
           courses.length === 0 &&
-          Array.from({ length: 6 }, (_, index) => (
+          Array.from({ length: 3 }, (_, index) => (
             <CourseSkeleton key={`skeleton-${index}`} />
           ))}
 
         {/* Show actual courses */}
-        {courses.map((course) => (
+        {filteredCourses.map((course) => (
           <div
             key={course.id || course._id}
             className="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border border-slate-200/60 hover:border-indigo-200 hover:-translate-y-2"
@@ -294,14 +328,6 @@ const Courses = () => {
           </div>
         ))}
       </div>
-
-      {/* Show loading indicator if fetching more data */}
-      {isLoading && courses.length > 0 && (
-        <div className="text-center mt-12">
-          <AiOutlineLoading3Quarters className="w-8 h-8 text-navy-blue animate-spin mx-auto mb-2" />
-          <p className="text-slate-600">Loading more courses...</p>
-        </div>
-      )}
     </div>
   );
 };

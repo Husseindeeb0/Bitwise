@@ -238,9 +238,18 @@ const getAnnouncementById = async (req, res) => {
 // Get latest announcement
 const getLatestAnnouncement = async (req, res) => {
   try {
-    const latestAnnouncement = await Announcement.findOne().sort({
+    const latestAnnouncement = await Announcement.findOne({
+      active: true,
+    }).sort({
       createdAt: -1,
     });
+
+    if (!latestAnnouncement) {
+      return res.status(404).json({
+        message: "No active announcements found",
+      });
+    }
+
     res.status(200).json({
       message: "Latest Announcement is fetched successfully",
       announcementData: latestAnnouncement,

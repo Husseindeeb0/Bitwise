@@ -288,7 +288,7 @@ const ManageAnnouncements = () => {
       time: "",
       location: "",
       category: "workshop",
-      mainImage: "/api/placeholder/400/220",
+      mainImage: "",
       organizers: [],
       schedule: [],
       active: true,
@@ -308,7 +308,7 @@ const ManageAnnouncements = () => {
       linkedinLink: "",
       startTime: "",
       title: "",
-      image: "/api/placeholder/80/80",
+      image: "",
     });
     setShowOrganizerForm(false);
     setEditingOrganizerIndex(null);
