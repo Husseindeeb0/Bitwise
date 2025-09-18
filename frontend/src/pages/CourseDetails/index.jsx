@@ -255,9 +255,11 @@ const CourseDetails = () => {
                 </div>
                 {/* Enroll Button */}
                 {/* ToDO: Increment enrolledStudents on clicking and save user enrollment to his database schema */}
-                <button className="w-full bg-gradient-to-r from-navy-blue to-dark-purple text-white py-4 rounded-xl font-semibold text-lg hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 mb-4">
-                  Enroll Now
-                </button>
+                {courseData.price && (
+                  <button className="w-full bg-gradient-to-r from-navy-blue to-dark-purple text-white py-4 rounded-xl font-semibold text-lg hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 mb-4">
+                    Enroll Now
+                  </button>
+                )}
                 {/* <button className="w-full border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:border-navy-blue hover:text-navy-blue transition-colors duration-300 mb-6">
                   Add to Wishlist
                 </button> */}
