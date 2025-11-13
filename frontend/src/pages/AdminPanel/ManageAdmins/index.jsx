@@ -32,7 +32,7 @@ const ManageAdmins = () => {
   const handleUserPromotion = async (userId, newRole) => {
     setProcessingUser(userId);
     try {
-      await dispatch(changeUserRole(userId, newRole));
+      await dispatch(changeUserRole({userId, newRole}));
       fetchData();
     } catch (error) {
       console.error("Error changing role:", error);
