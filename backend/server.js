@@ -16,9 +16,9 @@ const app = express();
 connectDB();
 
 // Middlewares
+app.use(express.json({ limit: "5mb" }));
 app.use(cors(corsOptions));
 app.use(cookieParser());
-app.use(express.json({ limit: "5mb" }));
 
 // Routes
 app.use("/auth", authRoutes);
