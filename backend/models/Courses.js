@@ -35,6 +35,7 @@ const courseSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
     category: { type: String },
+    type: { type: String, required: true, default: 'Course' },
     isPopular: { type: Boolean, default: false },
     isBestseller: { type: Boolean, default: false },
     instructor: { type: instructorSchema, required: true },
