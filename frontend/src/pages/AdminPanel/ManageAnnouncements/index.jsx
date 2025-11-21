@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   FaTrash,
   FaEdit,
@@ -7,16 +7,16 @@ import {
   FaSave,
   FaExclamationCircle,
   FaCalendar,
-} from "react-icons/fa";
+} from 'react-icons/fa';
 import {
   getAnnouncements,
   addAnnouncements,
   editAnnouncements,
   deleteAnnouncements,
-} from "../../../features/announcements/announcementsThunks";
-import AnnouncementCardsLoader from "../../../components/AnnouncementCardsLoader";
-import AnnouncementCard from "../../../components/AnnouncementCard";
-import { useDispatch, useSelector } from "react-redux";
+} from '../../../features/announcements/announcementsThunks';
+import AnnouncementCardsLoader from '../../../components/AnnouncementCardsLoader';
+import AnnouncementCard from '../../../components/AnnouncementCard';
+import { useDispatch, useSelector } from 'react-redux';
 
 const ManageAnnouncements = () => {
   const dispatch = useDispatch();
@@ -29,30 +29,30 @@ const ManageAnnouncements = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [currentEvent, setCurrentEvent] = useState({
-    title: "",
-    description: "",
-    date: "",
-    time: "",
-    location: "",
-    category: "workshop",
-    mainImageUrl: "",
+    title: '',
+    description: '',
+    date: '',
+    time: '',
+    location: '',
+    category: 'workshop',
+    mainImageUrl: '',
     organizers: [],
     schedule: [],
     active: true,
     hasRegistration: false,
-    registrationUrl: "",
+    registrationUrl: '',
   });
 
   // Organizer form state
   const [currentOrganizer, setCurrentOrganizer] = useState({
-    name: "",
-    expertise: "",
-    description: "",
-    instaLink: "",
-    linkedinLink: "",
-    startTime: "",
-    title: "",
-    imageUrl: "",
+    name: '',
+    expertise: '',
+    description: '',
+    instaLink: '',
+    linkedinLink: '',
+    startTime: '',
+    title: '',
+    imageUrl: '',
   });
   const [showOrganizerForm, setShowOrganizerForm] = useState(false);
   const [editingOrganizerIndex, setEditingOrganizerIndex] = useState(null);
@@ -61,23 +61,23 @@ const ManageAnnouncements = () => {
 
   // Schedule form state
   const [currentScheduleItem, setCurrentScheduleItem] = useState({
-    startTime: "",
-    endTime: "",
-    date: "",
-    title: "",
-    description: "",
-    presenter: "",
-    type: "session",
+    startTime: '',
+    endTime: '',
+    date: '',
+    title: '',
+    description: '',
+    presenter: '',
+    type: 'session',
   });
   const [showScheduleForm, setShowScheduleForm] = useState(false);
   const [editingScheduleIndex, setEditingScheduleIndex] = useState(null);
-  const [scheduleError, setScheduleError] = useState("");
+  const [scheduleError, setScheduleError] = useState('');
 
   const fetchData = async () => {
     try {
       await dispatch(getAnnouncements()).unwrap();
     } catch (error) {
-      console.error("Error fetching announcements:", error);
+      console.error('Error fetching announcements:', error);
     }
   };
 
@@ -91,7 +91,7 @@ const ManageAnnouncements = () => {
   const handleInputChange = (e) => {
     let { name, value, files } = e.target;
 
-    if (name === "mainImageUrl") {
+    if (name === 'mainImageUrl') {
       const file = files?.[0];
       if (!file) return;
       const reader = new FileReader();
@@ -122,14 +122,14 @@ const ManageAnnouncements = () => {
       ...currentEvent,
       hasRegistration: e.target.checked,
       // Clear the URL if unchecking
-      registrationUrl: e.target.checked ? currentEvent.registrationUrl : "",
+      registrationUrl: e.target.checked ? currentEvent.registrationUrl : '',
     });
   };
 
   // Organizer form handling
   const handleOrganizerInputChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === "imageUrl") {
+    if (name === 'imageUrl') {
       const file = files?.[0];
       if (!file) return;
       const reader = new FileReader();
@@ -168,7 +168,7 @@ const ManageAnnouncements = () => {
       await fetchData();
       resetForm();
     } catch (error) {
-      console.error("Error adding event:", error);
+      console.error('Error adding event:', error);
     }
   };
 
@@ -176,7 +176,7 @@ const ManageAnnouncements = () => {
     try {
       // Ensure we have the ID for the event being updated
       if (!currentEvent._id) {
-        console.error("Missing event ID for update operation");
+        console.error('Missing event ID for update operation');
         return;
       }
 
@@ -188,7 +188,7 @@ const ManageAnnouncements = () => {
       await fetchData();
       resetForm();
     } catch (error) {
-      console.error("Error updating event:", error);
+      console.error('Error updating event:', error);
     }
   };
 
@@ -196,13 +196,13 @@ const ManageAnnouncements = () => {
     try {
       // Ensure we have the ID for the event being updated
       if (!id) {
-        console.error("Missing event ID for deleting operation");
+        console.error('Missing event ID for deleting operation');
         return;
       }
       await dispatch(deleteAnnouncements(id)).unwrap();
       await fetchData();
     } catch (error) {
-      console.error("Error deleting event:", error);
+      console.error('Error deleting event:', error);
     } finally {
       setIsDeleting(null);
     }
@@ -212,8 +212,8 @@ const ManageAnnouncements = () => {
   const formatDateForInput = (date) => {
     const parsedDate = new Date(date);
     const year = parsedDate.getFullYear();
-    const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
-    const day = String(parsedDate.getDate()).padStart(2, "0");
+    const month = String(parsedDate.getMonth() + 1).padStart(2, '0');
+    const day = String(parsedDate.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
 
@@ -282,18 +282,18 @@ const ManageAnnouncements = () => {
     setShowForm(false);
     setCurrentEvent({
       id: null,
-      title: "",
-      description: "",
-      date: "",
-      time: "",
-      location: "",
-      category: "workshop",
-      mainImage: "",
+      title: '',
+      description: '',
+      date: '',
+      time: '',
+      location: '',
+      category: 'workshop',
+      mainImage: '',
       organizers: [],
       schedule: [],
       active: true,
       hasRegistration: false,
-      registrationUrl: "",
+      registrationUrl: '',
     });
     resetOrganizerForm();
   };
@@ -301,14 +301,14 @@ const ManageAnnouncements = () => {
   const resetOrganizerForm = () => {
     setCurrentOrganizer({
       id: null,
-      name: "",
-      expertise: "",
-      description: "",
-      instaLink: "",
-      linkedinLink: "",
-      startTime: "",
-      title: "",
-      image: "",
+      name: '',
+      expertise: '',
+      description: '',
+      instaLink: '',
+      linkedinLink: '',
+      startTime: '',
+      title: '',
+      image: '',
     });
     setShowOrganizerForm(false);
     setEditingOrganizerIndex(null);
@@ -320,14 +320,14 @@ const ManageAnnouncements = () => {
       ...prev,
       [name]: value,
     }));
-    if (scheduleError) setScheduleError("");
+    if (scheduleError) setScheduleError('');
   };
 
   const addScheduleItem = () => {
     // Basic validation for required fields
     const { startTime, title, presenter } = currentScheduleItem;
     if (!startTime || !title || !presenter) {
-      setScheduleError("Please fill in Start Time, Title, and Presenter.");
+      setScheduleError('Please fill in Start Time, Title, and Presenter.');
       return;
     }
 
@@ -346,15 +346,15 @@ const ManageAnnouncements = () => {
       }));
     }
     setCurrentScheduleItem({
-      startTime: "",
-      endTime: "",
-      date: "",
-      title: "",
-      description: "",
-      presenter: "",
-      type: "session",
+      startTime: '',
+      endTime: '',
+      date: '',
+      title: '',
+      description: '',
+      presenter: '',
+      type: 'session',
     });
-    setScheduleError("");
+    setScheduleError('');
     setShowScheduleForm(false);
   };
 
@@ -362,7 +362,7 @@ const ManageAnnouncements = () => {
     const scheduleItem = currentEvent.schedule[index];
     setCurrentScheduleItem({
       ...scheduleItem,
-      date: scheduleItem.date ? formatDateForInput(scheduleItem.date) : "",
+      date: scheduleItem.date ? formatDateForInput(scheduleItem.date) : '',
     });
     setEditingScheduleIndex(index);
     setShowScheduleForm(true);
@@ -386,7 +386,7 @@ const ManageAnnouncements = () => {
           className="flex items-center gap-2 px-4 py-2 bg-navy-blue text-white rounded-md hover:bg-sky-blue transition-colors"
         >
           {showForm ? <FaTimes size={18} /> : <FaPlus size={18} />}
-          {showForm ? "Cancel" : "New Event"}
+          {showForm ? 'Cancel' : 'New Event'}
         </button>
       </div>
 
@@ -397,7 +397,7 @@ const ManageAnnouncements = () => {
           onSubmit={handleEventSubmit} // Add form submission handler
         >
           <h2 className="text-xl font-semibold mb-4">
-            {isEditing ? "Edit Event" : "Create New Event"}
+            {isEditing ? 'Edit Event' : 'Create New Event'}
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -529,7 +529,7 @@ const ManageAnnouncements = () => {
                 className="text-sm text-navy-blue hover:text-sky-blue flex items-center gap-1"
               >
                 <FaPlus size={16} />
-                {showOrganizerForm ? "Cancel" : "Add Organizer"}
+                {showOrganizerForm ? 'Cancel' : 'Add Organizer'}
               </button>
             </div>
 
@@ -670,7 +670,7 @@ const ManageAnnouncements = () => {
                     onClick={handleOrganizerSubmit} // Direct click handler
                     className="px-3 py-1 bg-navy-blue text-white text-sm rounded-md hover:bg-sky-blue"
                   >
-                    {editingOrganizerIndex !== null ? "Update" : "Add"}
+                    {editingOrganizerIndex !== null ? 'Update' : 'Add'}
                   </button>
                 </div>
               </div>
@@ -809,10 +809,10 @@ const ManageAnnouncements = () => {
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{item.title}</span>
                         <span className="text-sm text-gray-500">
-                          ({item.startTime}{" "}
-                          {item.endTime ? `- ${item.endTime}` : ""})
+                          ({item.startTime}{' '}
+                          {item.endTime ? `- ${item.endTime}` : ''})
                         </span>
-                        {item.type === "break" && (
+                        {item.type === 'break' && (
                           <span className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full">
                             Break
                           </span>
@@ -857,8 +857,8 @@ const ManageAnnouncements = () => {
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-lg font-medium text-gray-900">
                       {editingScheduleIndex !== null
-                        ? "Edit Schedule Item"
-                        : "Add Schedule Item"}
+                        ? 'Edit Schedule Item'
+                        : 'Add Schedule Item'}
                     </h3>
                     <button
                       type="button"
@@ -866,12 +866,12 @@ const ManageAnnouncements = () => {
                         setShowScheduleForm(false);
                         setEditingScheduleIndex(null);
                         setCurrentScheduleItem({
-                          startTime: "",
-                          endTime: "",
-                          title: "",
-                          description: "",
-                          presenter: "",
-                          type: "session",
+                          startTime: '',
+                          endTime: '',
+                          title: '',
+                          description: '',
+                          presenter: '',
+                          type: 'session',
                         });
                       }}
                       className="text-gray-400 hover:text-gray-500"
@@ -958,7 +958,7 @@ const ManageAnnouncements = () => {
                       />
                     </div>
 
-                    {currentScheduleItem.type === "session" && (
+                    {currentScheduleItem.type === 'session' && (
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Presenter
@@ -981,13 +981,13 @@ const ManageAnnouncements = () => {
                           setShowScheduleForm(false);
                           setEditingScheduleIndex(null);
                           setCurrentScheduleItem({
-                            startTime: "",
-                            endTime: "",
-                            date: "",
-                            title: "",
-                            description: "",
-                            presenter: "",
-                            type: "session",
+                            startTime: '',
+                            endTime: '',
+                            date: '',
+                            title: '',
+                            description: '',
+                            presenter: '',
+                            type: 'session',
                           });
                         }}
                         className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
@@ -999,7 +999,7 @@ const ManageAnnouncements = () => {
                         onClick={addScheduleItem}
                         className="px-4 py-2 bg-navy-blue text-white rounded-md hover:bg-navy-blue/90"
                       >
-                        {editingScheduleIndex !== null ? "Update" : "Add"} Item
+                        {editingScheduleIndex !== null ? 'Update' : 'Add'} Item
                       </button>
                     </div>
                   </div>
@@ -1019,17 +1019,19 @@ const ManageAnnouncements = () => {
             <button
               type="submit"
               disabled={isLoading ? true : false}
-              className="flex items-center gap-2 px-4 py-2 bg-navy-blue text-white rounded-md hover:bg-sky-blue"
+              className={`flex items-center gap-2 px-4 py-2 ${
+                isLoading ? 'bg-navy-blue/30' : 'bg-navy-blue hover:bg-sky-blue'
+              } text-white rounded-md`}
             >
               <FaSave size={18} />
-              {isEditing ? "Update Event" : "Create Event"}
+              {isEditing ? 'Update Event' : 'Create Event'}
             </button>
           </div>
         </form>
       )}
 
       {/* Announcements list with skeleton isLoading */}
-      <div>
+      {!showForm ? (
         <div className="grid grid-cols-1 gap-6">
           {isLoading ? (
             <>
@@ -1072,7 +1074,7 @@ const ManageAnnouncements = () => {
             </div>
           )}
         </div>
-      </div>
+      ) : null}
 
       {/* Delete confirmation modal */}
       {isDeleting && (
