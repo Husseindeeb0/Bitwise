@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   FaPlus,
   FaEdit,
@@ -19,16 +19,16 @@ import {
   FaChevronDown,
   FaChevronUp,
   FaCalendar,
-} from "react-icons/fa";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+} from 'react-icons/fa';
+import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import {
   addCourse,
   editCourse,
   deleteCourse,
   getCourses,
-} from "../../../features/courses/coursesThunks";
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+} from '../../../features/courses/coursesThunks';
+import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function ManageCourses() {
   const dispatch = useDispatch();
@@ -37,46 +37,47 @@ export default function ManageCourses() {
   const isLoading = useSelector((state) => state.courses.isLoading);
   const [showForm, setShowForm] = useState(false);
   const [editingCourse, setEditingCourse] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterCategory, setFilterCategory] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterCategory, setFilterCategory] = useState('');
   const [expandedSections, setExpandedSections] = useState({});
 
   const [courseData, setCourseData] = useState({
-    title: "",
-    category: "",
+    title: '',
+    category: '',
+    type: 'Course',
     isPopular: false,
     isBestseller: false,
     instructor: {
-      name: "",
-      bio: "",
-      imageUrl: "",
-      imageId: "",
+      name: '',
+      bio: '',
+      imageUrl: '',
+      imageId: '',
       coursesNum: 0,
     },
-    price: "",
-    originalPrice: "",
-    posterUrl: "",
-    posterId: "",
-    description: "",
-    whatYouWillLearn: [""],
-    skillsGained: [""],
-    requirements: [""],
+    price: '',
+    originalPrice: '',
+    posterUrl: '',
+    posterId: '',
+    description: '',
+    whatYouWillLearn: [''],
+    skillsGained: [''],
+    requirements: [''],
     hours: 0,
     lecturesNum: 0,
-    difficulty: "Beginner",
+    difficulty: 'Beginner',
     studentsEnrolled: 0,
-    lastUpdated: new Date().toISOString().split("T")[0],
-    language: "English",
+    lastUpdated: new Date().toISOString().split('T')[0],
+    language: 'English',
     sections: [
       {
         id: 1,
-        title: "",
+        title: '',
         lectures: [
           {
             id: 1,
-            title: "",
-            duration: "",
-            lecture: "",
+            title: '',
+            duration: '',
+            lecture: '',
             isPreview: false,
           },
         ],
@@ -84,22 +85,22 @@ export default function ManageCourses() {
     ],
   });
 
-  const difficulties = ["Beginner", "Intermediate", "Advanced"];
-  const languages = ["English", "Arabic"];
+  const difficulties = ['Beginner', 'Intermediate', 'Advanced'];
+  const languages = ['English', 'Arabic'];
   const categories = [
-    "Web Development",
-    "Mobile Development",
-    "Data Science",
-    "Machine Learning",
-    "DevOps",
-    "Introduction",
+    'Web Development',
+    'Mobile Development',
+    'Data Science',
+    'Machine Learning',
+    'DevOps',
+    'Introduction',
   ];
 
   const fetchData = async () => {
     try {
       await dispatch(getCourses()).unwrap();
     } catch (error) {
-      console.error("Error fetching courses:", error);
+      console.error('Error fetching courses:', error);
     }
   };
 
@@ -113,7 +114,7 @@ export default function ManageCourses() {
     const { name, value, type, checked, files } = e.target;
 
     // Handle file inputs
-    if (type === "file" && files && files[0]) {
+    if (type === 'file' && files && files[0]) {
       const file = files[0];
       const reader = new FileReader();
       reader.onload = () => {
@@ -137,7 +138,7 @@ export default function ManageCourses() {
     }
 
     // Handle checkbox inputs
-    const inputValue = type === "checkbox" ? checked : value;
+    const inputValue = type === 'checkbox' ? checked : value;
 
     if (nested) {
       setCourseData((prev) => ({
@@ -166,7 +167,7 @@ export default function ManageCourses() {
   const addArrayItem = (field) => {
     setCourseData((prev) => ({
       ...prev,
-      [field]: [...prev[field], ""],
+      [field]: [...prev[field], ''],
     }));
   };
 
@@ -189,7 +190,7 @@ export default function ManageCourses() {
 
   const handleLectureChange = (e, sectionIndex, lectureIndex, field) => {
     const { value, type, checked } = e.target;
-    const inputValue = type === "checkbox" ? checked : value;
+    const inputValue = type === 'checkbox' ? checked : value;
 
     setCourseData((prev) => ({
       ...prev,
@@ -216,13 +217,13 @@ export default function ManageCourses() {
         ...prev.sections,
         {
           id: newId,
-          title: "",
+          title: '',
           lectures: [
             {
               id: 1,
-              title: "",
-              duration: "",
-              lecture: "",
+              title: '',
+              duration: '',
+              lecture: '',
               isPreview: false,
             },
           ],
@@ -252,9 +253,9 @@ export default function ManageCourses() {
                 ...section.lectures,
                 {
                   id: newId,
-                  title: "",
-                  duration: "",
-                  lecture: "",
+                  title: '',
+                  duration: '',
+                  lecture: '',
                   isPreview: false,
                 },
               ],
@@ -287,39 +288,40 @@ export default function ManageCourses() {
 
   const resetForm = () => {
     setCourseData({
-      title: "",
-      category: "",
+      title: '',
+      category: '',
+      type: 'Course',
       isPopular: false,
       isBestseller: false,
       instructor: {
-        name: "",
-        bio: "",
-        imageUrl: "",
+        name: '',
+        bio: '',
+        imageUrl: '',
         coursesNum: 0,
       },
-      price: "",
-      originalPrice: "",
-      posterUrl: "",
-      description: "",
-      whatYouWillLearn: [""],
-      skillsGained: [""],
-      requirements: [""],
-      hours: "",
-      lecturesNum: "",
-      difficulty: "Beginner",
+      price: '',
+      originalPrice: '',
+      posterUrl: '',
+      description: '',
+      whatYouWillLearn: [''],
+      skillsGained: [''],
+      requirements: [''],
+      hours: '',
+      lecturesNum: '',
+      difficulty: 'Beginner',
       studentsEnrolled: 0,
-      lastUpdated: new Date().toISOString().split("T")[0],
-      language: "English",
+      lastUpdated: new Date().toISOString().split('T')[0],
+      language: 'English',
       sections: [
         {
           id: 1,
-          title: "",
+          title: '',
           lectures: [
             {
               id: 1,
-              title: "",
-              duration: "",
-              lecture: "",
+              title: '',
+              duration: '',
+              lecture: '',
               isPreview: false,
             },
           ],
@@ -348,7 +350,7 @@ export default function ManageCourses() {
   };
 
   const handleDelete = async (courseId) => {
-    if (window.confirm("Are you sure you want to delete this course?")) {
+    if (window.confirm('Are you sure you want to delete this course?')) {
       await dispatch(deleteCourse(courseId)).unwrap();
       fetchData();
     }
@@ -426,7 +428,10 @@ export default function ManageCourses() {
                 <thead className="bg-sky-blue/20">
                   <tr>
                     <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Course
+                      Course/Workshop
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Type
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Category
@@ -459,10 +464,13 @@ export default function ManageCourses() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {course.category || "NA"}
+                        {course.type || 'NA'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {course.price ? `$${course.price}` : "Free"}
+                        {course.category || 'NA'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {course.price ? `$${course.price}` : 'Free'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {course.studentsEnrolled}
@@ -543,7 +551,7 @@ export default function ManageCourses() {
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-gray-900">
-                  {editingCourse ? "Edit Course" : "Add New Course"}
+                  {editingCourse ? 'Edit Course' : 'Add New Course'}
                 </h2>
                 <button
                   onClick={resetForm}
@@ -576,17 +584,38 @@ export default function ManageCourses() {
                       required
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Category(Optional)
-                    </label>
-                    <input
-                      value={courseData.category || ""}
-                      placeholder="Field name(e.g., web development, data science...)"
-                      name="category"
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
-                    />
+                  <div className="flex gap-5 items-center justify-between">
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Category(Optional)
+                      </label>
+                      <input
+                        value={courseData.category || ''}
+                        placeholder="Field name(e.g., web development, data science...)"
+                        name="category"
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Type
+                      </label>
+                      <select
+                        value={courseData.type}
+                        name="type"
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 border border-navy-blue rounded-lg focus:ring-2 focus:ring-navy-blue focus:border-transparent"
+                        required
+                      >
+                        <option value="Course" selected>
+                          Course
+                        </option>
+                        <option value="Workshop" selected>
+                          Workshop
+                        </option>
+                      </select>
+                    </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -679,7 +708,7 @@ export default function ManageCourses() {
                       value={courseData.instructor.name}
                       placeholder="Enter Instructor Name"
                       name="name"
-                      onChange={(e) => handleInputChange(e, "instructor")}
+                      onChange={(e) => handleInputChange(e, 'instructor')}
                       className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
                       required
                     />
@@ -692,7 +721,7 @@ export default function ManageCourses() {
                       type="number"
                       value={courseData.instructor.coursesNum}
                       name="coursesNum"
-                      onChange={(e) => handleInputChange(e, "instructor")}
+                      onChange={(e) => handleInputChange(e, 'instructor')}
                       className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
                     />
                   </div>
@@ -704,7 +733,7 @@ export default function ManageCourses() {
                       value={courseData.instructor.bio}
                       placeholder="Area Of Expertise..."
                       name="bio"
-                      onChange={(e) => handleInputChange(e, "instructor")}
+                      onChange={(e) => handleInputChange(e, 'instructor')}
                       rows={3}
                       className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
                       required
@@ -718,7 +747,7 @@ export default function ManageCourses() {
                       <input
                         type="file"
                         name="imageUrl"
-                        onChange={(e) => handleInputChange(e, "instructor")}
+                        onChange={(e) => handleInputChange(e, 'instructor')}
                         className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
                         accept="image/*"
                         required={!editingCourse}
@@ -750,7 +779,7 @@ export default function ManageCourses() {
                     </label>
                     <input
                       type="number"
-                      value={courseData.price || ""}
+                      value={courseData.price || ''}
                       placeholder="Enter Current Price"
                       name="price"
                       onChange={handleInputChange}
@@ -763,7 +792,7 @@ export default function ManageCourses() {
                     </label>
                     <input
                       type="number"
-                      value={courseData.originalPrice || ""}
+                      value={courseData.originalPrice || ''}
                       placeholder="Enter Original Price"
                       name="originalPrice"
                       onChange={handleInputChange}
@@ -864,7 +893,7 @@ export default function ManageCourses() {
                         type="text"
                         value={item}
                         onChange={(e) =>
-                          handleArrayChange(e, "whatYouWillLearn", index)
+                          handleArrayChange(e, 'whatYouWillLearn', index)
                         }
                         className="flex-1 px-4 py-2 border outline-navy-blue rounded-lg"
                         required
@@ -873,7 +902,7 @@ export default function ManageCourses() {
                       <button
                         type="button"
                         onClick={() =>
-                          removeArrayItem("whatYouWillLearn", index)
+                          removeArrayItem('whatYouWillLearn', index)
                         }
                         className="px-3 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
                       >
@@ -883,7 +912,7 @@ export default function ManageCourses() {
                   ))}
                   <button
                     type="button"
-                    onClick={() => addArrayItem("whatYouWillLearn")}
+                    onClick={() => addArrayItem('whatYouWillLearn')}
                     className="mt-2 px-4 py-2 bg-navy-blue/20 text-navy-blue rounded-lg hover:bg-navy-blue/30 transition-colors flex items-center gap-2"
                   >
                     <FaPlus /> Add Learning Outcome
@@ -893,7 +922,7 @@ export default function ManageCourses() {
                 {/* Skills Gained */}
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-3">
-                    Skills Gained
+                    Skills Gained(Optional)
                   </label>
                   {courseData.skillsGained.map((item, index) => (
                     <div key={index} className="flex gap-2 mb-2">
@@ -901,15 +930,14 @@ export default function ManageCourses() {
                         type="text"
                         value={item}
                         onChange={(e) =>
-                          handleArrayChange(e, "skillsGained", index)
+                          handleArrayChange(e, 'skillsGained', index)
                         }
                         className="flex-1 px-4 py-2 border outline-navy-blue rounded-lg"
-                        required
                         placeholder="Enter skill..."
                       />
                       <button
                         type="button"
-                        onClick={() => removeArrayItem("skillsGained", index)}
+                        onClick={() => removeArrayItem('skillsGained', index)}
                         className="px-3 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
                       >
                         <FaTimes />
@@ -918,7 +946,7 @@ export default function ManageCourses() {
                   ))}
                   <button
                     type="button"
-                    onClick={() => addArrayItem("skillsGained")}
+                    onClick={() => addArrayItem('skillsGained')}
                     className="mt-2 px-4 py-2 bg-navy-blue/20 text-navy-blue rounded-lg hover:bg-navy-blue/30 transition-colors flex items-center gap-2"
                   >
                     <FaPlus /> Add Skill
@@ -936,14 +964,14 @@ export default function ManageCourses() {
                         type="text"
                         value={item}
                         onChange={(e) =>
-                          handleArrayChange(e, "requirements", index)
+                          handleArrayChange(e, 'requirements', index)
                         }
                         className="flex-1 px-4 py-2 border outline-navy-blue rounded-lg"
                         placeholder="Enter requirement..."
                       />
                       <button
                         type="button"
-                        onClick={() => removeArrayItem("requirements", index)}
+                        onClick={() => removeArrayItem('requirements', index)}
                         className="px-3 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
                       >
                         <FaTimes />
@@ -952,7 +980,7 @@ export default function ManageCourses() {
                   ))}
                   <button
                     type="button"
-                    onClick={() => addArrayItem("requirements")}
+                    onClick={() => addArrayItem('requirements')}
                     className="mt-2 px-4 py-2 bg-navy-blue/20 text-navy-blue rounded-lg hover:bg-navy-blue/30 transition-colors flex items-center gap-2"
                   >
                     <FaPlus /> Add Requirement
@@ -998,7 +1026,7 @@ export default function ManageCourses() {
                           type="text"
                           value={section.title}
                           onChange={(e) =>
-                            handleSectionChange(e, sectionIndex, "title")
+                            handleSectionChange(e, sectionIndex, 'title')
                           }
                           className="flex-1 px-3 py-2 border outline-navy-blue rounded-lg"
                           required
@@ -1031,7 +1059,7 @@ export default function ManageCourses() {
                                     e,
                                     sectionIndex,
                                     lectureIndex,
-                                    "title"
+                                    'title'
                                   )
                                 }
                                 className="px-3 py-2 border outline-navy-blue rounded-lg"
@@ -1046,7 +1074,7 @@ export default function ManageCourses() {
                                     e,
                                     sectionIndex,
                                     lectureIndex,
-                                    "duration"
+                                    'duration'
                                   )
                                 }
                                 className="px-3 py-2 border outline-navy-blue rounded-lg"
@@ -1061,7 +1089,7 @@ export default function ManageCourses() {
                                     e,
                                     sectionIndex,
                                     lectureIndex,
-                                    "lecture"
+                                    'lecture'
                                   )
                                 }
                                 className="px-3 py-2 border outline-navy-blue rounded-lg"
@@ -1078,7 +1106,7 @@ export default function ManageCourses() {
                                         e,
                                         sectionIndex,
                                         lectureIndex,
-                                        "isPreview"
+                                        'isPreview'
                                       )
                                     }
                                     className="mr-2"
@@ -1118,7 +1146,11 @@ export default function ManageCourses() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className={`flex-1 bg-gradient-to-r text-white ${isLoading ? "cursor-not-allowed from-navy-blue/50 to-dark-purple/50" : "from-navy-blue to-dark-purple"} px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all duration-300 shadow-lg`}
+                  className={`flex-1 bg-gradient-to-r text-white ${
+                    isLoading
+                      ? 'cursor-not-allowed from-navy-blue/50 to-dark-purple/50'
+                      : 'from-navy-blue to-dark-purple'
+                  } px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all duration-300 shadow-lg`}
                 >
                   {isLoading ? (
                     <div>
@@ -1127,7 +1159,7 @@ export default function ManageCourses() {
                   ) : (
                     <div className="flex items-center gap-3">
                       <FaSave />
-                      {editingCourse ? "Update Course" : "Create Course"}
+                      {editingCourse ? 'Update Course' : 'Create Course'}
                     </div>
                   )}
                 </button>

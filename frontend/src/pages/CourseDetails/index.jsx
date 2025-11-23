@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from 'react';
 import {
   FiPlay,
   FiLock,
@@ -10,24 +10,24 @@ import {
   FiGlobe,
   FiPlayCircle,
   FiX,
-} from "react-icons/fi";
+} from 'react-icons/fi';
 
-import { useLocation } from "react-router-dom";
-import { getCourseById } from "../../features/courses/coursesThunks";
-import { useDispatch, useSelector } from "react-redux";
-import LectureModal from "../../components/LectureModal";
-import { getEmbedUrl } from "../../helpers/getEmbedUrl";
+import { useLocation } from 'react-router-dom';
+import { getCourseById } from '../../features/courses/coursesThunks';
+import { useDispatch, useSelector } from 'react-redux';
+import LectureModal from '../../components/LectureModal';
+import { getEmbedUrl } from '../../helpers/getEmbedUrl';
 
 const CourseDetails = () => {
   const [currentLecture, setCurrentLecture] = useState(null);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [expandedSections, setExpandedSections] = useState([1]);
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState('overview');
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const location = useLocation();
   const dispatch = useDispatch();
   const searchParams = new URLSearchParams(location.search);
-  const id = searchParams.get("id");
+  const id = searchParams.get('id');
   const [stateCourse, setStateCourse] = useState(null);
   const { courseById, isLoading, error } = useSelector(
     (state) => state.courses
@@ -38,7 +38,7 @@ const CourseDetails = () => {
       try {
         await dispatch(getCourseById(id)).unwrap();
       } catch (error) {
-        console.error("Error fetching course:", error);
+        console.error('Error fetching course:', error);
       }
     },
     [dispatch]
@@ -84,7 +84,7 @@ const CourseDetails = () => {
   };
 
   if (isLoading || (!courseData && !error)) {
-    return "Loading...";
+    return 'Loading...';
   }
 
   if (error) {
@@ -159,7 +159,7 @@ const CourseDetails = () => {
                 />
                 <div>
                   <p className="font-semibold">
-                    Created by {courseData.instructor.name}
+                    {courseData.instructor.name}
                   </p>
                   <p className="text-sm text-gray-300">
                     {courseData.instructor.bio}
@@ -169,102 +169,104 @@ const CourseDetails = () => {
             </div>
 
             {/* Right Sidebar - Course Preview */}
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl shadow-2xl p-6 text-gray-900 sticky top-6">
-                {/* Video Preview */}
-                {(() => {
-                  const previewLecture = courseData.sections
-                    .flatMap((section) => section.lectures)
-                    .find((lecture) => lecture.isPreview);
+            {courseData.type === 'Course' && (
+              <div className="lg:col-span-1">
+                <div className="bg-white rounded-2xl shadow-2xl p-6 text-gray-900 sticky top-6">
+                  {/* Video Preview */}
+                  {(() => {
+                    const previewLecture = courseData.sections
+                      .flatMap((section) => section.lectures)
+                      .find((lecture) => lecture.isPreview);
 
-                  if (!previewLecture) return null;
+                    if (!previewLecture) return null;
 
-                  return (
-                    <div className="relative mb-6">
-                      {!isVideoPlaying ? (
-                        <>
-                          <img
-                            src={courseData.posterUrl}
-                            alt={courseData.title}
-                            className="w-full h-48 object-cover rounded-xl"
-                          />
-                          <div className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center">
-                            <FiPlayCircle
-                              className="h-16 w-16 text-white hover:scale-110 transition-transform cursor-pointer"
-                              onClick={handlePlayVideo}
+                    return (
+                      <div className="relative mb-6">
+                        {!isVideoPlaying ? (
+                          <>
+                            <img
+                              src={courseData.posterUrl}
+                              alt={courseData.title}
+                              className="w-full h-48 object-cover rounded-xl"
                             />
+                            <div className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center">
+                              <FiPlayCircle
+                                className="h-16 w-16 text-white hover:scale-110 transition-transform cursor-pointer"
+                                onClick={handlePlayVideo}
+                              />
+                            </div>
+                            <div className="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-sm">
+                              Preview
+                            </div>
+                          </>
+                        ) : (
+                          <div className="relative">
+                            <iframe
+                              className="w-full h-48 rounded-xl"
+                              src={getEmbedUrl(previewLecture.lecture)}
+                              title="Course Preview"
+                              frameBorder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                              onLoad={() => {
+                                setTimeout(() => {
+                                  handleCloseVideo();
+                                }, 60 * 1000);
+                              }}
+                            />
+                            <button
+                              onClick={handleCloseVideo}
+                              className="absolute top-2 right-2 bg-black/60 text-white p-1 rounded-full hover:bg-black/80 transition-colors"
+                            >
+                              <FiX className="h-4 w-4" />
+                            </button>
                           </div>
-                          <div className="absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded text-sm">
-                            Preview
-                          </div>
-                        </>
+                        )}
+                      </div>
+                    );
+                  })()}
+                  {/* Pricing */}
+                  <div className="text-center mb-6">
+                    <div className="flex items-center justify-center space-x-3 mb-2">
+                      {courseData.price ? (
+                        <span className="text-3xl font-bold text-indigo-600">
+                          ${courseData.price}
+                        </span>
                       ) : (
-                        <div className="relative">
-                          <iframe
-                            className="w-full h-48 rounded-xl"
-                            src={getEmbedUrl(previewLecture.lecture)}
-                            title="Course Preview"
-                            frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                            onLoad={() => {
-                              setTimeout(() => {
-                                handleCloseVideo();
-                              }, 60 * 1000);
-                            }}
-                          />
-                          <button
-                            onClick={handleCloseVideo}
-                            className="absolute top-2 right-2 bg-black/60 text-white p-1 rounded-full hover:bg-black/80 transition-colors"
-                          >
-                            <FiX className="h-4 w-4" />
-                          </button>
-                        </div>
+                        <span className="text-navy-blue font-bold text-xl">
+                          Free Of Charge
+                        </span>
+                      )}
+                      {courseData.originalPrice && (
+                        <span className="text-lg text-gray-500 line-through">
+                          ${courseData.originalPrice}
+                        </span>
                       )}
                     </div>
-                  );
-                })()}
-                {/* Pricing */}
-                <div className="text-center mb-6">
-                  <div className="flex items-center justify-center space-x-3 mb-2">
-                    {courseData.price ? (
-                      <span className="text-3xl font-bold text-indigo-600">
-                        ${courseData.price}
-                      </span>
-                    ) : (
-                      <span className="text-navy-blue font-bold text-xl">
-                        Free Of Charge
-                      </span>
-                    )}
                     {courseData.originalPrice && (
-                      <span className="text-lg text-gray-500 line-through">
-                        ${courseData.originalPrice}
-                      </span>
+                      <div className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-medium inline-block">
+                        {(
+                          ((courseData.originalPrice - courseData.price) /
+                            courseData.originalPrice) *
+                          100
+                        ).toFixed(0)}
+                        % off - Limited time!
+                      </div>
                     )}
                   </div>
-                  {courseData.originalPrice && (
-                    <div className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-medium inline-block">
-                      {(
-                        ((courseData.originalPrice - courseData.price) /
-                          courseData.originalPrice) *
-                        100
-                      ).toFixed(0)}
-                      % off - Limited time!
-                    </div>
+                  {/* Enroll Button */}
+                  {/* ToDO: Increment enrolledStudents on clicking and save user enrollment to his database schema */}
+                  {courseData.price && (
+                    <button className="w-full bg-gradient-to-r from-navy-blue to-dark-purple text-white py-4 rounded-xl font-semibold text-lg hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 mb-4">
+                      Enroll Now
+                    </button>
                   )}
-                </div>
-                {/* Enroll Button */}
-                {/* ToDO: Increment enrolledStudents on clicking and save user enrollment to his database schema */}
-                {courseData.price && (
-                  <button className="w-full bg-gradient-to-r from-navy-blue to-dark-purple text-white py-4 rounded-xl font-semibold text-lg hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300 mb-4">
-                    Enroll Now
-                  </button>
-                )}
-                {/* <button className="w-full border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:border-navy-blue hover:text-navy-blue transition-colors duration-300 mb-6">
+                  {/* <button className="w-full border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:border-navy-blue hover:text-navy-blue transition-colors duration-300 mb-6">
                   Add to Wishlist
                 </button> */}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
@@ -277,17 +279,17 @@ const CourseDetails = () => {
             {/* Navigation Tabs */}
             <div className="flex space-x-8 border-b border-gray-200 mb-8">
               {[
-                { key: "overview", label: "Overview" },
-                { key: "curriculum", label: "Curriculum" },
-                { key: "instructor", label: "Instructor" },
+                { key: 'overview', label: 'Overview' },
+                { key: 'curriculum', label: 'Curriculum' },
+                { key: 'instructor', label: 'Instructor' },
               ].map((tab) => (
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
                   className={`py-3 px-1 border-b-2 font-medium text-sm transition-colors ${
                     activeTab === tab.key
-                      ? "border-indigo-500 text-indigo-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700"
+                      ? 'border-indigo-500 text-indigo-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700'
                   }`}
                 >
                   {tab.label}
@@ -296,7 +298,7 @@ const CourseDetails = () => {
             </div>
 
             {/* Tab Content */}
-            {activeTab === "overview" && (
+            {activeTab === 'overview' && (
               <div className="space-y-8">
                 {/* What You'll Learn */}
                 <div className="bg-white rounded-2xl shadow-lg p-8">
@@ -314,49 +316,58 @@ const CourseDetails = () => {
                 </div>
 
                 {/* Requirements */}
-                {courseData.requirements.length > 0 && (
-                  <div className="bg-white rounded-2xl shadow-lg p-8">
-                    <h2 className="text-2xl font-bold mb-6 text-gray-900">
-                      Requirements
-                    </h2>
-                    <ul className="space-y-3">
-                      {courseData.requirements.map((req, index) => (
-                        <li key={index} className="flex items-start space-x-3">
-                          <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
-                          <span className="text-gray-700">{req}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                {courseData.requirements[0] != '' &&
+                  courseData.requirements.length > 0 && (
+                    <div className="bg-white rounded-2xl shadow-lg p-8">
+                      <h2 className="text-2xl font-bold mb-6 text-gray-900">
+                        Requirements
+                      </h2>
+                      <ul className="space-y-3">
+                        {courseData.requirements.map((req, index) => (
+                          <li
+                            key={index}
+                            className="flex items-start space-x-3"
+                          >
+                            <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
+                            <span className="text-gray-700">{req}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
                 {/* Skills Gained */}
-                <div className="bg-white rounded-2xl shadow-lg p-8">
-                  <h2 className="text-2xl font-bold mb-6 text-gray-900">
-                    Skills you'll gain
-                  </h2>
-                  <div className="flex flex-wrap gap-3">
-                    {courseData.skillsGained.map((skill, index) => (
-                      <span
-                        key={index}
-                        className="bg-navy-blue/30 text-navy-blue px-4 py-2 rounded-full text-sm font-medium"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                {courseData.skillsGained[0] != '' &&
+                  courseData.skillsGained.length > 0 && (
+                    <div className="bg-white rounded-2xl shadow-lg p-8">
+                      <h2 className="text-2xl font-bold mb-6 text-gray-900">
+                        Skills you'll gain
+                      </h2>
+                      <div className="flex flex-wrap gap-3">
+                        {courseData.skillsGained.map((skill, index) => (
+                          <span
+                            key={index}
+                            className="bg-navy-blue/30 text-navy-blue px-4 py-2 rounded-full text-sm font-medium"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
               </div>
             )}
 
-            {activeTab === "curriculum" && (
+            {activeTab === 'curriculum' && (
               <div className="bg-white rounded-2xl shadow-lg p-8 max-w-4xl mx-auto">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-gray-900">
-                    Course Content
+                    {courseData.type === 'Course'
+                      ? 'Course Content'
+                      : 'Workshop'}
                   </h2>
                   <div className="text-sm text-gray-500">
-                    {courseData.sections.length} sections •{" "}
+                    {courseData.sections.length} sections •{' '}
                     {courseData.lecturesNum} lectures • {courseData.hours}h
                   </div>
                 </div>
@@ -393,8 +404,8 @@ const CourseDetails = () => {
                               key={lecture.id}
                               className={`flex items-center justify-between p-4 border-b border-gray-100 last:border-b-0 transition-colors ${
                                 lecture.isPreview
-                                  ? "hover:bg-indigo-50 cursor-pointer"
-                                  : "hover:bg-gray-50"
+                                  ? 'hover:bg-indigo-50 cursor-pointer'
+                                  : 'hover:bg-gray-50'
                               }`}
                               onClick={() => handleLectureClick(lecture)}
                             >
@@ -411,8 +422,8 @@ const CourseDetails = () => {
                                 <span
                                   className={`text-sm ${
                                     lecture.isPreview
-                                      ? "text-navy-blue font-medium"
-                                      : "text-gray-700"
+                                      ? 'text-navy-blue font-medium'
+                                      : 'text-gray-700'
                                   }`}
                                 >
                                   {lecture.title}
@@ -452,7 +463,7 @@ const CourseDetails = () => {
               />
             )}
 
-            {activeTab === "instructor" && (
+            {activeTab === 'instructor' && (
               <div className="bg-white rounded-2xl shadow-lg p-8">
                 <div className="flex items-start space-x-6">
                   <img
@@ -487,7 +498,11 @@ const CourseDetails = () => {
           {/* Right Sidebar - Additional Info */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-6">
-              <h3 className="text-xl font-semibold mb-4">Course Details</h3>
+              <h3 className="text-xl font-semibold mb-4">
+                {courseData.type === 'Course'
+                  ? 'Course Details'
+                  : 'Workshop Details'}
+              </h3>
               <div className="space-y-4">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Skill level</span>
