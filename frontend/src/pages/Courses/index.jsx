@@ -202,7 +202,7 @@ const Courses = () => {
             >
               {/* Badges */}
               <div className="absolute top-4 left-4 z-10 flex gap-2">
-                {(course.isPopular || course.isBestseller || true) && (
+                {(course.isPopular || course.isBestseller) && (
                   <span className="bg-gradient-to-r from-navy-blue to-dark-purple text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 uppercase">
                     {course.isPopular ? (
                       'POPULAR'
@@ -214,7 +214,7 @@ const Courses = () => {
                   </span>
                 )}
                 <span className="bg-gradient-to-r from-navy-blue to-dark-purple text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 uppercase">
-                  {course.type.toU || 'COURSE'}
+                  {course.type || 'COURSE'}
                 </span>
               </div>
 
