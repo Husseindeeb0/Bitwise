@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { inView, motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import "./style.css";
 import LatestAnnouncementCard from "../../components/LatestAnnouncementCard";
@@ -9,44 +9,27 @@ import {
   FaUsers,
   FaBriefcase,
   FaPhoneAlt,
+  FaChevronLeft,
+  FaChevronRight
 } from "react-icons/fa";
+import { useRef } from "react";
+import AchievementCalendar from "../../components/AchievementCalendar/AchievementCalendar";
 
 const Home = () => {
   // SVG dots positions
   const xPositions = [10, 20, 30, 40, 50, 60, 70, 80, 90];
   const yPositions = [10, 20, 30, 40, 50];
 
-  const achievements = [
-    {
-      id: 1,
-      image: "image1.jpg",
-      title: "Achievement Title 1",
-      description: "Short description of achievement 1.",
-      person: "Name1",
-    },
-    {
-      id: 2,
-      image: "image2.jpg",
-      title: "Achievement Title 2",
-      description: "Short description of achievement 2.",
-      person: "Name2",
-    },
-    {
-      id: 3,
-      image: "image3.jpg",
-      title: "Achievement Title 3",
-      description: "Short description of achievement 3.",
-      person: "Name3",
-    },
-    {
-      id: 4,
-      image: "image4.jpg",
-      title: "Achievement Title 4",
-      description: "Short description of achievement 4.",
-      person: "Name4",
-    },
-  ];
+  const section2Ref = useRef(null);
+  const section2InView = inView({triggerOnce: false,
+  threshold: 0.2,});
 
+ const achievements = [
+  { id: 1, image: 'image1.jpg', title: 'Achievement 1', description: 'Desc 1', person: 'Name1', date: '2024-2-11' },
+  { id: 2, image: 'image2.jpg', title: 'Achievement 2', description: 'Desc 2', person: 'Name2', date: '2024-2-15' },
+  { id: 3, image: 'image3.jpg', title: 'Achievement 3', description: 'Desc 3', person: 'Name3', date: '2024-2-15' },
+  { id: 4, image: 'image4.jpg', title: 'Achievement 4', description: 'Desc 4', person: 'Name4', date: '2024-2-16' },
+];
   const founders = [
     {
       name: "Hussein Ommies",
@@ -262,6 +245,8 @@ const Home = () => {
         </div>
       </section>
 
+     {/* achievements calendar section */}
+    <AchievementCalendar achievementsData={achievements} />
       {/* Achievements Section */}
       {/* <section ref={section2Ref} className="py-16 px-6 bg-sky-blue">
         <h2 className="text-3xl font-bold text-center text-white">
