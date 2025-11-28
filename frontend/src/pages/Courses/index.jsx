@@ -11,7 +11,7 @@ import { FaFilter, FaSearch } from 'react-icons/fa';
 import { MdFilterList, MdSearchOff } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCourses } from '../../features/courses/coursesThunks';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
 // Helper function for difficulty colors
 const getDifficultyColor = (difficulty) => {
@@ -65,15 +65,19 @@ const Courses = () => {
     (state) => state.courses
   );
   const courses = coursesData || [];
-  const categories = [
-    'Web Development',
-    'Mobile Development',
-    'Data Science',
-    'Machine Learning',
-    'DevOps',
-    'Introduction',
-    'AI Engineer',
-  ];
+
+  // DYNAMIC CATEGORIES LOGIC
+  // We use useMemo to avoid recalculating this on every render
+  const categories = useMemo(() => {
+    // 1. Map over courses to get all categories
+    // 2. Filter out null, undefined, or empty string categories
+    const allCategories = courses
+      .map((course) => course.category)
+      .filter((category) => category && category.trim() !== '');
+
+    // 3. Use Set to remove duplicates and sort them alphabetically
+    return [...new Set(allCategories)].sort();
+  }, [courses]);
 
   const fetchCoursesData = async () => {
     try {
@@ -304,7 +308,7 @@ const Courses = () => {
                 </div>
 
                 {/* Skills Preview */}
-                {course.skillsGained && course.skillsGained.length > 0 && (
+                {course.skillsGained[0] !== '' && course.skillsGained && course.skillsGained.length > 0 && (
                   <div className="mb-6">
                     <div className="flex flex-wrap gap-2">
                       {course.skillsGained.slice(0, 3).map((skill, index) => (
