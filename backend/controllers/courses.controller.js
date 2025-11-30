@@ -89,16 +89,6 @@ const editCourse = async (req, res) => {
           typeof imageUrl === 'string' &&
           !imageUrl.startsWith('http')
         ) {
-          // If there was an old image for this specific instructor (logic tricky if order changes,
-          // but assuming we replace the object or it's a new object)
-          // Ideally we should check if we are updating an existing instructor or adding new.
-          // For simplicity in this refactor, if it's a base64 string, we upload it.
-          // We might miss deleting old images if we don't track IDs carefully,
-          // but the original code was also simple.
-          // Let's try to find if this instructor existed before to delete old image?
-          // It's hard without unique IDs for instructors.
-          // User said "make it like other sections", so we just handle uploads.
-
           const fileName = `image_${uuidv4()}`;
           const uploadResponse = await imagekit.upload({
             file: imageUrl,
