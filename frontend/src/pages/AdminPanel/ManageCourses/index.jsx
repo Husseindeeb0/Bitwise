@@ -47,13 +47,15 @@ export default function ManageCourses() {
     type: 'Course',
     isPopular: false,
     isBestseller: false,
-    instructor: {
-      name: '',
-      bio: '',
-      imageUrl: '',
-      imageId: '',
-      coursesNum: 0,
-    },
+    instructors: [
+      {
+        name: '',
+        bio: '',
+        imageUrl: '',
+        imageId: '',
+        coursesNum: 0,
+      },
+    ],
     price: '',
     originalPrice: '',
     posterUrl: '',
@@ -110,7 +112,7 @@ export default function ManageCourses() {
     }
   }, [dispatch]);
 
-  const handleInputChange = (e, nested = null) => {
+  const handleInputChange = (e, nested = null, index = null) => {
     const { name, value, type, checked, files } = e.target;
 
     // Handle file inputs
@@ -118,7 +120,14 @@ export default function ManageCourses() {
       const file = files[0];
       const reader = new FileReader();
       reader.onload = () => {
-        if (nested) {
+        if (nested === 'instructors' && index !== null) {
+          setCourseData((prev) => ({
+            ...prev,
+            instructors: prev.instructors.map((inst, i) =>
+              i === index ? { ...inst, [name]: reader.result } : inst
+            ),
+          }));
+        } else if (nested) {
           setCourseData((prev) => ({
             ...prev,
             [nested]: {
@@ -140,7 +149,14 @@ export default function ManageCourses() {
     // Handle checkbox inputs
     const inputValue = type === 'checkbox' ? checked : value;
 
-    if (nested) {
+    if (nested === 'instructors' && index !== null) {
+      setCourseData((prev) => ({
+        ...prev,
+        instructors: prev.instructors.map((inst, i) =>
+          i === index ? { ...inst, [name]: inputValue } : inst
+        ),
+      }));
+    } else if (nested) {
       setCourseData((prev) => ({
         ...prev,
         [nested]: {
@@ -279,6 +295,28 @@ export default function ManageCourses() {
     }));
   };
 
+  const addInstructor = () => {
+    setCourseData((prev) => ({
+      ...prev,
+      instructors: [
+        ...prev.instructors,
+        {
+          name: '',
+          bio: '',
+          imageUrl: '',
+          coursesNum: 0,
+        },
+      ],
+    }));
+  };
+
+  const removeInstructor = (index) => {
+    setCourseData((prev) => ({
+      ...prev,
+      instructors: prev.instructors.filter((_, i) => i !== index),
+    }));
+  };
+
   const toggleSectionExpand = (index) => {
     setExpandedSections((prev) => ({
       ...prev,
@@ -293,12 +331,14 @@ export default function ManageCourses() {
       type: 'Course',
       isPopular: false,
       isBestseller: false,
-      instructor: {
-        name: '',
-        bio: '',
-        imageUrl: '',
-        coursesNum: 0,
-      },
+      instructors: [
+        {
+          name: '',
+          bio: '',
+          imageUrl: '',
+          coursesNum: 0,
+        },
+      ],
       price: '',
       originalPrice: '',
       posterUrl: '',
@@ -459,7 +499,12 @@ export default function ManageCourses() {
                             {course.title}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {course.instructor.name}
+                            {course.instructors && course.instructors[0]
+                              ? course.instructors[0].name
+                              : 'Unknown Instructor'}
+                            {course.instructors &&
+                              course.instructors.length > 1 &&
+                              ` +${course.instructors.length - 1} more`}
                           </div>
                         </div>
                       </td>
@@ -694,75 +739,111 @@ export default function ManageCourses() {
 
               {/* Instructor Information */}
               <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <FaUser className="text-navy-blue" />
-                  Instructor Information
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      value={courseData.instructor.name}
-                      placeholder="Enter Instructor Name"
-                      name="name"
-                      onChange={(e) => handleInputChange(e, 'instructor')}
-                      className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Courses Number(Optional)
-                    </label>
-                    <input
-                      type="number"
-                      value={courseData.instructor.coursesNum}
-                      name="coursesNum"
-                      onChange={(e) => handleInputChange(e, 'instructor')}
-                      className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Bio
-                    </label>
-                    <textarea
-                      value={courseData.instructor.bio}
-                      placeholder="Area Of Expertise..."
-                      name="bio"
-                      onChange={(e) => handleInputChange(e, 'instructor')}
-                      rows={3}
-                      className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
-                      required
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Upload Instructor Image
-                    </label>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="file"
-                        name="imageUrl"
-                        onChange={(e) => handleInputChange(e, 'instructor')}
-                        className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
-                        accept="image/*"
-                        required={!editingCourse}
-                      />
-                      {courseData.posterUrl && (
-                        <div className="border border-gray-300 rounded-md overflow-hidden">
-                          <img
-                            src={courseData.instructor.imageUrl}
-                            alt="Instructor profile preview"
-                            className="w-16 h-16 object-cover"
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <FaUser className="text-navy-blue" />
+                    Instructor Information
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={addInstructor}
+                    className="text-sm text-navy-blue hover:text-navy-blue/80 font-medium flex items-center gap-1"
+                  >
+                    <FaPlus size={12} /> Add Instructor
+                  </button>
+                </div>
+
+                <div className="space-y-6">
+                  {courseData.instructors.map((instructor, index) => (
+                    <div
+                      key={index}
+                      className="border border-gray-200 rounded-lg p-4 relative bg-white"
+                    >
+                      {courseData.instructors.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeInstructor(index)}
+                          className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                        >
+                          <FaTrash size={14} />
+                        </button>
+                      )}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Name
+                          </label>
+                          <input
+                            type="text"
+                            value={instructor.name}
+                            placeholder="Enter Instructor Name"
+                            name="name"
+                            onChange={(e) =>
+                              handleInputChange(e, 'instructors', index)
+                            }
+                            className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
+                            required
                           />
                         </div>
-                      )}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Courses Number(Optional)
+                          </label>
+                          <input
+                            type="number"
+                            value={instructor.coursesNum}
+                            name="coursesNum"
+                            onChange={(e) =>
+                              handleInputChange(e, 'instructors', index)
+                            }
+                            className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Bio
+                          </label>
+                          <textarea
+                            value={instructor.bio}
+                            placeholder="Area Of Expertise..."
+                            name="bio"
+                            onChange={(e) =>
+                              handleInputChange(e, 'instructors', index)
+                            }
+                            rows={3}
+                            className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
+                            required
+                          />
+                        </div>
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Upload Instructor Image
+                          </label>
+                          <div className="flex items-center gap-3">
+                            <input
+                              type="file"
+                              name="imageUrl"
+                              onChange={(e) =>
+                                handleInputChange(e, 'instructors', index)
+                              }
+                              className="w-full px-4 py-2 border outline-navy-blue rounded-lg"
+                              accept="image/*"
+                              required={!editingCourse && !instructor.imageUrl}
+                            />
+                            {instructor.imageUrl && (
+                              <div className="border border-gray-300 rounded-md overflow-hidden">
+                                <img
+                                  src={instructor.imageUrl}
+                                  alt="Instructor profile preview"
+                                  className="w-16 h-16 object-cover"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
               </div>
 
