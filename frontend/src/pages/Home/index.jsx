@@ -49,7 +49,7 @@ const Home = () => {
 
   const founders = [
     {
-      name: "Hussein Ommies",
+      name: "HUSSEIN OMEIS",
       title: "Founder",
       image: "hussein.jpg",
       education: "Information System and Data Intelligence",
@@ -58,7 +58,7 @@ const Home = () => {
       phone: "+961 76 764 155",
     },
     {
-      name: "Hassan Tofayli",
+      name: "HASSAN TOFAYLI",
       title: "Co-Founder",
       image: "hasssan.jpg",
       education: "Information System and Data Intelligence",
