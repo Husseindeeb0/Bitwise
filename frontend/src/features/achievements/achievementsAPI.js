@@ -1,0 +1,16 @@
+import { axiosInstance } from '../../lib/axios';
+
+export const addAchievementsAPI = (newAchievement) =>
+  axiosInstance.post('/achievements/addAchievements', { newAchievement });
+export const editAchievementsAPI = (updatedAchievement) =>
+  axiosInstance.patch('/achievements/editAchievements', {
+    updatedAchievement,
+  });
+export const deleteAchievementsAPI = (id) =>
+  axiosInstance.delete(`/achievements/deleteAchievements/${id}`);
+export const getAchievementsAPI = () =>
+  axiosInstance.get('/achievements/getAchievements');
+export const getAchievementByIdAPI = (id) =>
+  axiosInstance.get(`/achievements/getAchievementById/${id}`);
+export const getLatestAchievementAPI = () =>
+  axiosInstance.get('/achievements/getLatestAchievement');

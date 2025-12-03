@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const instructorSchema = new mongoose.Schema(
   {
@@ -16,7 +16,7 @@ const lectureSchema = new mongoose.Schema(
     id: { type: Number, required: true },
     title: { type: String, required: true },
     duration: { type: String, required: true },
-    lecture: { type: String, default: '' },
+    lecture: { type: String, default: "" },
     isPreview: { type: Boolean, default: false },
   },
   { _id: false }
@@ -38,7 +38,7 @@ const courseSchema = new mongoose.Schema(
     type: { type: String, required: true, default: 'Course' },
     isPopular: { type: Boolean, default: false },
     isBestseller: { type: Boolean, default: false },
-    instructors: { type: [instructorSchema], required: true },
+    instructor: { type: instructorSchema, required: true },
 
     price: { type: Number },
     originalPrice: { type: Number },
@@ -63,5 +63,5 @@ const courseSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Course = mongoose.model('Course', courseSchema);
+const Course = mongoose.model("Course", courseSchema);
 module.exports = Course;
