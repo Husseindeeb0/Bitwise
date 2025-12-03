@@ -151,25 +151,20 @@ const CourseDetails = () => {
               </div>
 
               {/* Instructor Info */}
-              <div className="flex flex-col space-y-4 bg-white/10 backdrop-blur-sm rounded-xl p-4">
-                {courseData.instructors &&
-                  courseData.instructors.map((instructor, index) => (
-                    <div key={index} className="flex items-center space-x-4">
-                      <img
-                        src={instructor.imageUrl}
-                        alt={instructor.name}
-                        className="w-12 h-12 rounded-full"
-                      />
-                      <div>
-                        <p className="font-semibold">{instructor.name}</p>
-                        <p className="text-sm text-gray-300">
-                          {instructor.bio.length > 50
-                            ? `${instructor.bio.substring(0, 50)}...`
-                            : instructor.bio}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+              <div className="flex items-center space-x-4 bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                <img
+                  src={courseData.instructor.imageUrl}
+                  alt={courseData.instructor.name}
+                  className="w-12 h-12 rounded-full"
+                />
+                <div>
+                  <p className="font-semibold">
+                    {courseData.instructor.name}
+                  </p>
+                  <p className="text-sm text-gray-300">
+                    {courseData.instructor.bio}
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -469,39 +464,33 @@ const CourseDetails = () => {
             )}
 
             {activeTab === 'instructor' && (
-              <div className="space-y-6">
-                {courseData.instructors &&
-                  courseData.instructors.map((instructor, index) => (
-                    <div
-                      key={index}
-                      className="bg-white rounded-2xl shadow-lg p-8"
-                    >
-                      <div className="flex items-start space-x-6">
-                        <img
-                          src={instructor.imageUrl}
-                          alt={instructor.name}
-                          className="w-32 h-32 rounded-full"
-                        />
-                        <div className="flex-1">
-                          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                            {instructor.name}
-                          </h2>
-                          <p className="text-gray-600 mb-4">{instructor.bio}</p>
+              <div className="bg-white rounded-2xl shadow-lg p-8">
+                <div className="flex items-start space-x-6">
+                  <img
+                    src={courseData.instructor.imageUrl}
+                    alt={courseData.instructor.name}
+                    className="w-32 h-32 rounded-full"
+                  />
+                  <div className="flex-1">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                      {courseData.instructor.name}
+                    </h2>
+                    <p className="text-gray-600 mb-4">
+                      {courseData.instructor.bio}
+                    </p>
 
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                            <div className="text-center">
-                              {instructor.coursesNum && (
-                                <p className="font-semibold text-lg">
-                                  {instructor.coursesNum}
-                                </p>
-                              )}
-                              <p className="text-sm text-gray-500">Courses</p>
-                            </div>
-                          </div>
-                        </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                      <div className="text-center">
+                        {courseData.instructor.coursesNum && (
+                          <p className="font-semibold text-lg">
+                            {courseData.instructor.coursesNum}
+                          </p>
+                        )}
+                        <p className="text-sm text-gray-500">Courses</p>
                       </div>
                     </div>
-                  ))}
+                  </div>
+                </div>
               </div>
             )}
           </div>
