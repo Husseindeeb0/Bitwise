@@ -1,6 +1,7 @@
 User-agent: *
 Disallow: /manageAdmins
 Disallow: /manageAnnouncements
+Disallow: /manageCourses
 Disallow: /manageAchievements
 
 Sitemap: https://bitwiseclub.com/sitemap.xml
