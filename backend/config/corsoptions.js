@@ -1,5 +1,6 @@
 const allowedOrigins = [
   "https://bitwiseclub.com",
+  "https://www.bitwiseclub.com",
   "https://bitwiseclub-frontend.onrender.com",
   "https://bitwiseclub-frontend-alt5.onrender.com",
   "http://localhost:5173",
