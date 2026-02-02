@@ -18,6 +18,8 @@ import CourseDetails from './pages/CourseDetails';
 import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from './protectedRoutes';
 import { checkAuth } from './features/auth/authThunks';
+import AchievementDetails from './components/AchievementsDetails/AchievementDetails';
+
 
 function App() {
   const dispatch = useDispatch();
@@ -88,6 +90,10 @@ function App() {
           <Route path="/registrationForm" element={<RegistrationForm />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/courseDetails" element={<CourseDetails />} />
+                  <Route path="/achievementDetails" element={<AchievementDetails />} />
+        
+        <Route path="/achievement/:id" element={<AchievementDetails />} />
+
         </Route>
       </Routes>
     </BrowserRouter>
