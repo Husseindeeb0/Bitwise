@@ -1,7 +1,7 @@
-import { inView, motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import "./style.css";
-import LatestAnnouncementCard from "../../components/LatestAnnouncementCard";
+import { inView, motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import './style.css';
+import LatestAnnouncementCard from '../../components/Announcements/LatestAnnouncementCard';
 import {
   FaArrowRight,
   FaQuoteLeft,
@@ -10,44 +10,66 @@ import {
   FaBriefcase,
   FaPhoneAlt,
   FaChevronLeft,
-  FaChevronRight
-} from "react-icons/fa";
-import { useRef } from "react";
-import AchievementCalendar from "../../components/AchievementCalendar/AchievementCalendar";
+  FaChevronRight,
+} from 'react-icons/fa';
+import { useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import AchievementCalendar from '../../components/Achievements/AchievementCalendar';
+import { getAchievements } from '../../features/achievements/achievementsThunks';
 
 const Home = () => {
+  const dispatch = useDispatch();
+  const { achievementsData, isLoading } = useSelector(
+    (state) => state.achievements
+  );
+
   // SVG dots positions
   const xPositions = [10, 20, 30, 40, 50, 60, 70, 80, 90];
   const yPositions = [10, 20, 30, 40, 50];
 
   const section2Ref = useRef(null);
-  const section2InView = inView({triggerOnce: false,
-  threshold: 0.2,});
+  const section2InView = inView({ triggerOnce: false, threshold: 0.2 });
 
- const achievements = [
-  { id: 1, image: 'image1.jpg', title: 'Achievement 1', description: 'Desc 1', person: 'Name1', date: '2024-2-11' },
-  { id: 2, image: 'image2.jpg', title: 'Achievement 2', description: 'Desc 2', person: 'Name2', date: '2024-2-15' },
-  { id: 3, image: 'image3.jpg', title: 'Achievement 3', description: 'Desc 3', person: 'Name3', date: '2024-2-15' },
-  { id: 4, image: 'image4.jpg', title: 'Achievement 4', description: 'Desc 4', person: 'Name4', date: '2024-2-16' },
-];
+  // Fetch achievements on component mount
+  useEffect(() => {
+    dispatch(getAchievements());
+  }, [dispatch]);
+
+  // Transform achievements data to match AchievementCalendar expected format
+  const achievements = achievementsData.map((achievement) => {
+    const achievementDate = new Date(achievement.time);
+    const year = achievementDate.getFullYear();
+    const month = achievementDate.getMonth() + 1;
+    const day = achievementDate.getDate();
+
+    return {
+      id: achievement._id,
+      image: achievement.imageUrl,
+      title: achievement.title,
+      description: achievement.description,
+      person:
+        achievement.instructors?.map((i) => i.name).join(', ') || 'Unknown',
+      date: `${year}-${month}-${day}`,
+    };
+  });
   const founders = [
     {
-      name: "HUSSEIN OMEIS",
-      title: "Founder",
-      image: "hussein.jpg",
-      education: "Information System and Data Intelligence",
+      name: 'HUSSEIN OMEIS',
+      title: 'Founder',
+      image: 'hussein.jpg',
+      education: 'Information System and Data Intelligence',
       description:
-        "Passionate about cybersecurity, committed to protecting digital systems, and dedicated to building communities that promote awareness and collaboration in the field.",
-      phone: "+961 76 764 155",
+        'Passionate about cybersecurity, committed to protecting digital systems, and dedicated to building communities that promote awareness and collaboration in the field.',
+      phone: '+961 76 764 155',
     },
     {
-      name: "HASSAN TOFAYLI",
-      title: "Co-Founder",
-      image: "hasssan.jpg",
-      education: "Information System and Data Intelligence",
+      name: 'HASSAN TOFAYLI',
+      title: 'Co-Founder',
+      image: 'hasssan.jpg',
+      education: 'Information System and Data Intelligence',
       description:
-        "Focused on turning raw data into meaningful insights by analyzing patterns, developing strategies driven by decisions.",
-      phone: "+961 81 675 164",
+        'Focused on turning raw data into meaningful insights by analyzing patterns, developing strategies driven by decisions.',
+      phone: '+961 81 675 164',
     },
   ];
 
@@ -185,24 +207,24 @@ const Home = () => {
 
               <div>
                 <p className="text-navy-blue leading-relaxed mb-6">
-                  <span className="font-bold">Bitwise Club</span> was founded in{" "}
+                  <span className="font-bold">Bitwise Club</span> was founded in{' '}
                   <span className="font-bold">2024</span> by Master 1 students
                   to fuel the growing interest in computer science. Established
-                  with the support of the Student Council, we focus on enhancing{" "}
+                  with the support of the Student Council, we focus on enhancing{' '}
                   <span className="font-bold">
                     practical and theoretical skills
-                  </span>{" "}
+                  </span>{' '}
                   for students passionate about the computing world.
                 </p>
 
                 <p className="text-navy-blue leading-relaxed">
-                  We cover multiple domains including{" "}
+                  We cover multiple domains including{' '}
                   <span className="font-bold">
                     programming, cybersecurity, artificial intelligence, and
                     robotics
-                  </span>{" "}
-                  through <span className="font-bold">hands-on activities</span>{" "}
-                  and collaborative learning experiences designed to build{" "}
+                  </span>{' '}
+                  through <span className="font-bold">hands-on activities</span>{' '}
+                  and collaborative learning experiences designed to build{' '}
                   <span className="font-bold">real-world expertise.</span>
                 </p>
               </div>
@@ -245,8 +267,8 @@ const Home = () => {
         </div>
       </section>
 
-     {/* achievements calendar section */}
-    <AchievementCalendar achievementsData={achievements} />
+      {/* achievements calendar section */}
+      <AchievementCalendar achievementsData={achievements} />
       {/* Achievements Section */}
       {/* <section ref={section2Ref} className="py-16 px-6 bg-sky-blue">
         <h2 className="text-3xl font-bold text-center text-white">
@@ -296,25 +318,25 @@ const Home = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             {
-              title: "Event Announcements",
-              desc: "Stay updated with our latest events and never miss out on exciting opportunities.",
-              emoji: "📢",
+              title: 'Event Announcements',
+              desc: 'Stay updated with our latest events and never miss out on exciting opportunities.',
+              emoji: '📢',
             },
 
             {
-              title: "Curated Learning Resources",
-              desc: "Find the best tutorials and courses tailored to whatever field you choose to learn.",
-              emoji: "📚",
+              title: 'Curated Learning Resources',
+              desc: 'Find the best tutorials and courses tailored to whatever field you choose to learn.',
+              emoji: '📚',
             },
             {
-              title: "Explore Career Paths",
+              title: 'Explore Career Paths',
               desc: "Get a clear breakdown of different programming fields—understand what each domain offers and whether it's the right fit for you.",
-              emoji: "🎯",
+              emoji: '🎯',
             },
             {
-              title: "Chatbot Assistant",
-              desc: "Ask our AI bot anything about programming to make your coding journey smoother and easier.",
-              emoji: "🤖",
+              title: 'Chatbot Assistant',
+              desc: 'Ask our AI bot anything about programming to make your coding journey smoother and easier.',
+              emoji: '🤖',
             },
           ].map((item, index) => (
             <motion.div
