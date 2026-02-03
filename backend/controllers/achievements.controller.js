@@ -46,7 +46,6 @@ const addAchievements = async (req, res) => {
 const editAchievements = async (req, res) => {
   try {
     const { updatedAchievement } = req.body;
-    console.log('UPDATED ', updatedAchievement);
     const mainImageUrl = updatedAchievement.imageUrl;
     const achievementId = updatedAchievement._id || updatedAchievement.id;
 
@@ -90,7 +89,7 @@ const editAchievements = async (req, res) => {
       const updatedImageUrl = uploadResponse.url;
       const updatedImageId = uploadResponse.fileId;
       updatedAchievement.imageUrl = updatedImageUrl;
-      updatedAchievement.imageUrl = updatedImageId;
+      updatedAchievement.imageId = updatedImageId;
     }
 
     // Update the announcement with new values and return the updated document
@@ -113,7 +112,6 @@ const editAchievements = async (req, res) => {
 
 const deleteAchievements = async (req, res) => {
   try {
-    console.log(req.params);
     const { id } = req.params;
 
     if (!id) {
@@ -130,10 +128,19 @@ const deleteAchievements = async (req, res) => {
       });
     }
 
-    const oldmainImageId = achievement.imageUrl;
-    await imagekit.deleteFile(oldmainImageId);
+    const oldMainImageId = achievement.imageId;
 
-    // Delete the announcement
+    if (oldMainImageId) {
+      try {
+        await imagekit.deleteFile(oldMainImageId);
+      } catch (imageError) {
+        console.log(
+          `Failed to delete image ${oldMainImageId}:`,
+          imageError.message
+        );
+      }
+    }
+
     await Achievement.findByIdAndDelete(id);
 
     return res.status(200).json({

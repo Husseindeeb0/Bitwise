@@ -1,10 +1,13 @@
 import { axiosInstance } from '../../lib/axios';
 
 export const addAchievementsAPI = (newAchievement) =>
-  axiosInstance.post('/achievements/addAchievements', { newAchievement });
-export const editAchievementsAPI = (updatedAchievement) =>
-  axiosInstance.patch('/achievements/editAchievements', {
-    updatedAchievement,
+  axiosInstance.post('/achievements/addAchievements', {
+    newAchievements: newAchievement,
+  });
+
+export const editAchievementsAPI = ({ id, achievementData }) =>
+  axiosInstance.post('/achievements/editAchievements', {
+    updatedAchievement: { ...achievementData, _id: id },
   });
 export const deleteAchievementsAPI = (id) =>
   axiosInstance.delete(`/achievements/deleteAchievements/${id}`);
