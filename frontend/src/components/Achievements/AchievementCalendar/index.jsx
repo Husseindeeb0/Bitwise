@@ -522,22 +522,22 @@ const AchievementCalendar = ({ achievementsData }) => {
                     </div>
 
                     {/* Achievement Stats */}
-                    <div className="mt-6 flex gap-4">
-                      <div className="flex-1 bg-navy-blue/10 rounded-xl p-4 border border-navy-blue/20 text-center hover:bg-navy-blue/15 transition-colors">
-                        <FaStar className="text-sky-blue text-2xl mx-auto mb-2" />
-                        <p className="text-navy-blue text-sm font-medium">
+                    <div className="mt-6 grid grid-cols-3 gap-2 md:gap-4">
+                      <div className="bg-navy-blue/10 rounded-xl p-2 sm:p-4 border border-navy-blue/20 text-center hover:bg-navy-blue/15 transition-colors">
+                        <FaStar className="text-sky-blue text-xl md:text-2xl mx-auto mb-2" />
+                        <p className="text-navy-blue text-[10px] sm:text-xs md:text-sm font-medium">
                           Excellence
                         </p>
                       </div>
-                      <div className="flex-1 bg-sky-blue/10 rounded-xl p-4 border border-sky-blue/30 text-center hover:bg-sky-blue/20 transition-colors">
-                        <FaAward className="text-navy-blue text-2xl mx-auto mb-2" />
-                        <p className="text-navy-blue text-sm font-medium">
+                      <div className="bg-sky-blue/10 rounded-xl p-2 sm:p-4 border border-sky-blue/30 text-center hover:bg-sky-blue/20 transition-colors">
+                        <FaAward className="text-navy-blue text-xl md:text-2xl mx-auto mb-2" />
+                        <p className="text-navy-blue text-[10px] sm:text-xs md:text-sm font-medium">
                           Recognition
                         </p>
                       </div>
-                      <div className="flex-1 bg-navy-blue/10 rounded-xl p-4 border border-navy-blue/20 text-center hover:bg-navy-blue/15 transition-colors">
-                        <FaTrophy className="text-sky-blue text-2xl mx-auto mb-2" />
-                        <p className="text-navy-blue text-sm font-medium">
+                      <div className="bg-navy-blue/10 rounded-xl p-2 sm:p-4 border border-navy-blue/20 text-center hover:bg-navy-blue/15 transition-colors">
+                        <FaTrophy className="text-sky-blue text-xl md:text-2xl mx-auto mb-2" />
+                        <p className="text-navy-blue text-[10px] sm:text-xs md:text-sm font-medium">
                           Achievement
                         </p>
                       </div>
