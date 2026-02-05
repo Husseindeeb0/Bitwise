@@ -1,10 +1,10 @@
-import { useEffect } from "react";
-import AnnouncementCardsLoader from "../../components/AnnouncementCardsLoader";
-import { getAnnouncements } from "../../features/announcements/announcementsThunks";
-import { FaCalendar } from "react-icons/fa";
-import AnnouncementCard from "../../components/AnnouncementCard";
-import { useDispatch, useSelector } from "react-redux";
-import { Helmet } from "@dr.pogodin/react-helmet";
+import { useEffect } from 'react';
+import AnnouncementCardsLoader from '../../components/Announcements/AnnouncementCardsLoader';
+import { getAnnouncements } from '../../features/announcements/announcementsThunks';
+import { FaCalendar } from 'react-icons/fa';
+import AnnouncementCard from '../../components/Announcements/AnnouncementCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { Helmet } from '@dr.pogodin/react-helmet';
 
 function Announcements() {
   const dispatch = useDispatch();
@@ -18,7 +18,7 @@ function Announcements() {
     try {
       await dispatch(getAnnouncements()).unwrap();
     } catch (error) {
-      console.error("Error fetching announcements:", error);
+      console.error('Error fetching announcements:', error);
     }
   };
 
