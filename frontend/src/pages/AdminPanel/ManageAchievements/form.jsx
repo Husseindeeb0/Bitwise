@@ -9,6 +9,7 @@ import {
   FaEdit,
   FaUser,
   FaSave,
+  FaBriefcase,
 } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,7 +26,7 @@ const AchievementForm = ({ initialData, modalMode, onSuccess, onCancel }) => {
   const [newAchievement, setNewAchievement] = useState(initialData);
   const [isInstructorFormOpen, setIsInstructorFormOpen] = useState(false);
   const [editingInstructorIndex, setEditingInstructorIndex] = useState(null);
-  const [newInstructor, setNewInstructor] = useState({ name: '' });
+  const [newInstructor, setNewInstructor] = useState({ name: '', role: '' });
 
   useEffect(() => {
     setNewAchievement(initialData);
@@ -98,6 +99,10 @@ const AchievementForm = ({ initialData, modalMode, onSuccess, onCancel }) => {
       toast.error('Instructor name is required');
       return;
     }
+    if (!newInstructor.role.trim()) {
+      toast.error('Instructor role is required');
+      return;
+    }
 
     if (editingInstructorIndex !== null) {
       const updatedInstructors = [...newAchievement.instructors];
@@ -121,13 +126,13 @@ const AchievementForm = ({ initialData, modalMode, onSuccess, onCancel }) => {
       toast.success('Instructor added');
     }
 
-    setNewInstructor({ name: '' });
+    setNewInstructor({ name: '', role: '' });
     setIsInstructorFormOpen(false);
     setEditingInstructorIndex(null);
   };
 
   const handleCancelInstructor = () => {
-    setNewInstructor({ name: '' });
+    setNewInstructor({ name: '', role: '' });
     setIsInstructorFormOpen(false);
     setEditingInstructorIndex(null);
   };
@@ -370,6 +375,9 @@ const AchievementForm = ({ initialData, modalMode, onSuccess, onCancel }) => {
                     <h4 className="font-semibold text-dark-purple text-sm truncate">
                       {instructor.name}
                     </h4>
+                    <p className="text-navy-blue/60 text-[10px] sm:text-xs truncate">
+                      {instructor.role}
+                    </p>
                   </div>
                   <div className="flex items-center gap-1">
                     <button
@@ -414,6 +422,17 @@ const AchievementForm = ({ initialData, modalMode, onSuccess, onCancel }) => {
                       value={newInstructor.name}
                       onChange={handleInstructorInputChange}
                       placeholder="Full Name *"
+                      className="w-full pl-8 pr-3 py-2 border border-sky-blue/30 rounded-lg text-sm focus:ring-2 focus:ring-navy-blue focus:border-navy-blue"
+                    />
+                  </div>
+                  <div className="relative">
+                    <FaBriefcase className="absolute left-3 top-1/2 -translate-y-1/2 text-navy-blue/40 text-xs" />
+                    <input
+                      type="text"
+                      name="role"
+                      value={newInstructor.role}
+                      onChange={handleInstructorInputChange}
+                      placeholder="Role (e.g. Instructor) *"
                       className="w-full pl-8 pr-3 py-2 border border-sky-blue/30 rounded-lg text-sm focus:ring-2 focus:ring-navy-blue focus:border-navy-blue"
                     />
                   </div>

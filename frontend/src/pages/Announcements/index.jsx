@@ -73,12 +73,15 @@ function Announcements() {
               <AnnouncementCardsLoader key={index} />
             ))}
           </>
-        ) : Array.isArray(announcementsData) && announcementsData.length > 0 ? (
-          announcementsData.map((event) => (
-            <div key={event._id}>
-              <AnnouncementCard event={event} page="announcements" />
-            </div>
-          ))
+        ) : Array.isArray(announcementsData) &&
+          announcementsData.filter((event) => event.active).length > 0 ? (
+          announcementsData
+            .filter((event) => event.active)
+            .map((event) => (
+              <div key={event._id}>
+                <AnnouncementCard event={event} page="announcements" />
+              </div>
+            ))
         ) : (
           <div className="border border-gray-200 rounded-lg p-6 text-center">
             <div className="flex flex-col items-center">

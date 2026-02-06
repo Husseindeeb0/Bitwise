@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { getLatestAnnouncement } from "../../../features/announcements/announcementsThunks";
-import { useDispatch, useSelector } from "react-redux";
-import { FaCalendar, FaMapMarkerAlt, FaClock } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import LoggingLoader from "../../LoggingLoader";
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { getLatestAnnouncement } from '../../../features/announcements/announcementsThunks';
+import { useDispatch, useSelector } from 'react-redux';
+import { FaCalendar, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import LoggingLoader from '../../LoggingLoader';
 
 // Component to be added within your homepage section
 const LatestAnnouncementCard = () => {
@@ -20,7 +20,7 @@ const LatestAnnouncementCard = () => {
       try {
         await dispatch(getLatestAnnouncement()).unwrap();
       } catch (error) {
-        console.error("Failed to fetch latest announcement:", error);
+        console.error('Failed to fetch latest announcement:', error);
       }
     };
     if (!latestAnnouncement && !error) {
@@ -29,11 +29,11 @@ const LatestAnnouncementCard = () => {
   }, [dispatch]);
 
   const convertTo12HourFormat = (time24) => {
-    if (!time24 || !time24.includes(":")) return "";
+    if (!time24 || !time24.includes(':')) return '';
 
-    const [hours, minutes] = time24.split(":");
+    const [hours, minutes] = time24.split(':');
     const h = parseInt(hours, 10);
-    const ampm = h >= 12 ? "PM" : "AM";
+    const ampm = h >= 12 ? 'PM' : 'AM';
     const hour = h % 12 || 12;
     return `${hour}:${minutes} ${ampm}`;
   };
@@ -47,20 +47,16 @@ const LatestAnnouncementCard = () => {
   }
 
   if (error || !latestAnnouncement) {
-    return (
-      <div className="w-full max-w-4xl mx-auto mt-12 p-6 bg-dark-purple/30 rounded-xl shadow-lg backdrop-blur-sm flex justify-center">
-        <div className="text-red-600">{error}</div>
-      </div>
-    );
+    return null;
   }
 
   // Format date for display
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
+    return date.toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
     });
   };
 
@@ -89,7 +85,7 @@ const LatestAnnouncementCard = () => {
       className="w-full max-w-4xl mx-auto mt-12 bg-light/30 rounded-xl shadow-lg overflow-hidden backdrop-blur-sm"
     >
       <div className="bg-navy-blue text-white py-2 px-4 text-sm font-semibold">
-        LATEST {category?.toUpperCase() || "ANNOUNCEMENT"}
+        LATEST {category?.toUpperCase() || 'ANNOUNCEMENT'}
       </div>
 
       <div className="flex flex-col md:flex-row">
@@ -146,7 +142,7 @@ const LatestAnnouncementCard = () => {
                         <span className="font-medium">{organizer.name}</span>
                         {organizer.role && (
                           <span className="text-dark-purple text-xs">
-                            {" "}
+                            {' '}
                             · {organizer.role}
                           </span>
                         )}
