@@ -506,18 +506,36 @@ const AchievementCalendar = ({ achievementsData }) => {
                     </p>
 
                     <div className="bg-background1 rounded-xl p-4 border border-sky-blue/20">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-navy-blue rounded-full flex items-center justify-center">
-                          <FaUsers className="text-white text-lg" />
-                        </div>
-                        <div>
-                          <p className="text-xs text-navy-blue uppercase tracking-wider">
-                            Achieved by
+                      <p className="text-xs text-navy-blue uppercase tracking-wider mb-3 font-semibold flex items-center gap-2">
+                        <FaUsers size={12} />
+                        Achievers
+                      </p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-40 overflow-y-auto pr-2">
+                        {currentAchievement.instructors &&
+                        currentAchievement.instructors.length > 0 ? (
+                          currentAchievement.instructors.map((inst, idx) => (
+                            <div
+                              key={idx}
+                              className="flex items-center gap-3 bg-white/50 p-2 rounded-lg border border-sky-blue/10"
+                            >
+                              <div className="w-8 h-8 bg-navy-blue rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0">
+                                {inst.name?.charAt(0) || '?'}
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-dark-purple font-bold text-sm truncate">
+                                  {inst.name}
+                                </p>
+                                <p className="text-navy-blue/60 text-[10px] truncate">
+                                  {inst.role}
+                                </p>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-dark-purple font-semibold">
+                            Unknown
                           </p>
-                          <p className="text-dark-purple font-semibold text-lg">
-                            {currentAchievement.person}
-                          </p>
-                        </div>
+                        )}
                       </div>
                     </div>
 

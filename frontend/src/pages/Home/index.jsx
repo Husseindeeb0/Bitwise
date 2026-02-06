@@ -47,8 +47,7 @@ const Home = () => {
       image: achievement.imageUrl,
       title: achievement.title,
       description: achievement.description,
-      person:
-        achievement.instructors?.map((i) => i.name).join(', ') || 'Unknown',
+      instructors: achievement.instructors || [],
       date: `${year}-${month}-${day}`,
     };
   });
