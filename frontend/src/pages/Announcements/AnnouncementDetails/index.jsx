@@ -49,13 +49,17 @@ const AnnouncementDetails = () => {
         setStateEvent(location.state.event);
       } else {
         // If not in state, fetch it using the ID
-        if (!announcementById && !error) {
+        if (
+          id &&
+          (!announcementById ||
+            (announcementById._id !== id && announcementById.id !== id))
+        ) {
           fetchAnnouncementData(id);
         }
       }
     };
     loadEvent();
-  }, [location, fetchAnnouncementData, dispatch]);
+  }, [location, id, fetchAnnouncementData, announcementById]);
 
   // Function to open the speaker modal
   const openSpeakerModal = (speaker) => {
