@@ -67,13 +67,17 @@ const CourseDetails = () => {
         setStateCourse(location.state.course);
       } else {
         // If not in state, fetch it using the ID
-        if (!courseById && !error) {
+        // Fetch if no course data or if the current id doesn't match the loaded course
+        if (
+          id &&
+          (!courseById || (courseById._id !== id && courseById.id !== id))
+        ) {
           fetchCourseData(id);
         }
       }
     };
     loadCourse();
-  }, [location, fetchCourseData, dispatch]);
+  }, [location, id, fetchCourseData, courseById]);
 
   const toggleSection = (sectionId) => {
     setExpandedSections((prev) =>
@@ -158,9 +162,7 @@ const CourseDetails = () => {
                   className="w-12 h-12 rounded-full"
                 />
                 <div>
-                  <p className="font-semibold">
-                    {courseData.instructor.name}
-                  </p>
+                  <p className="font-semibold">{courseData.instructor.name}</p>
                   <p className="text-sm text-gray-300">
                     {courseData.instructor.bio}
                   </p>
