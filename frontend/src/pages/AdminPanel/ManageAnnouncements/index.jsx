@@ -13,6 +13,8 @@ import AnnouncementCardsLoader from '../../../components/Announcements/Announcem
 import AnnouncementCard from '../../../components/Announcements/AnnouncementCard';
 import { useDispatch, useSelector } from 'react-redux';
 import AnnouncementForm from './form';
+import BookForm from './BookForm';
+import { AnimatePresence } from 'framer-motion';
 
 const ManageAnnouncements = () => {
   const dispatch = useDispatch();
@@ -40,6 +42,11 @@ const ManageAnnouncements = () => {
   });
 
   const [isDeleting, setIsDeleting] = useState(null);
+  const [managedEvent, setManagedEvent] = useState(null);
+
+  const handleBookForm = (event) => {
+    setManagedEvent(event);
+  };
 
   const fetchData = async () => {
     try {
@@ -158,6 +165,7 @@ const ManageAnnouncements = () => {
                   event={event}
                   editEvent={editEvent}
                   setIsDeleting={setIsDeleting}
+                  manageForm={handleBookForm}
                   page="adminPanel"
                 />
               </div>
@@ -185,6 +193,19 @@ const ManageAnnouncements = () => {
           )}
         </div>
       ) : null}
+
+      <AnimatePresence>
+        {managedEvent && (
+          <BookForm
+            announcement={managedEvent}
+            onClose={() => setManagedEvent(null)}
+            onSuccess={() => {
+              fetchData();
+              setManagedEvent(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {isDeleting && (
         <div className="fixed inset-0 z-10 overflow-y-auto">

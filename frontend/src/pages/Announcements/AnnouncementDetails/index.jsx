@@ -15,6 +15,7 @@ import {
 import { getAnnouncementById } from '../../../features/announcements/announcementsThunks';
 import AnnouncementDetailsLoader from '../../../components/Announcements/AnnouncementDetailsLoader';
 import SpeakerDetails from '../../../components/SpeakerDetails';
+import AnnouncementBookForm from '../../../components/Announcements/AnnouncementBookForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { Helmet } from '@dr.pogodin/react-helmet';
 
@@ -133,6 +134,71 @@ const AnnouncementDetails = () => {
     );
   }
 
+  const hasBookingForm = !!event?.bookFormId;
+
+  const renderEventDetails = (isSidebar = false) => (
+    <div
+      className={`bg-light/50 rounded-xl shadow-lg overflow-hidden ${isSidebar ? 'sticky top-8' : 'mb-8'}`}
+    >
+      <div className="p-6">
+        <h3 className="text-lg font-bold text-dark-purple mb-4">
+          Event Details
+        </h3>
+
+        <div className="space-y-4">
+          {/* Date */}
+          <div className="flex items-start">
+            <div className="flex-shrink-0 mt-1">
+              <FaCalendarAlt className="h-5 w-5 text-navy-blue" />
+            </div>
+            <div className="ml-3">
+              <p className="text-dark-purple font-medium">Date</p>
+              <p className="text-dark-purple/70">{formatDate(event.date)}</p>
+            </div>
+          </div>
+
+          {/* Time */}
+          <div className="flex items-start">
+            <div className="flex-shrink-0 mt-1">
+              <FaClock className="h-5 w-5 text-navy-blue" />
+            </div>
+            <div className="ml-3">
+              <p className="text-dark-purple font-medium">Time</p>
+              <p className="text-dark-purple/70">
+                {convertTo12HourFormat(event.time)}
+              </p>
+            </div>
+          </div>
+
+          {/* Location */}
+          <div className="flex items-start">
+            <div className="flex-shrink-0 mt-1">
+              <FaMapMarkerAlt className="h-5 w-5 text-navy-blue" />
+            </div>
+            <div className="ml-3">
+              <p className="text-dark-purple font-medium">Location</p>
+              <p className="text-dark-purple/70">{event.location || 'TBA'}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Status Indicator */}
+        <div className="mt-6 pt-4 border-t border-dark-purple">
+          <div className="flex items-center">
+            <div
+              className={`h-3 w-3 rounded-full ${
+                event.active ? 'bg-green-500' : 'bg-gray-400'
+              }`}
+            ></div>
+            <p className="ml-2 text-sm text-dark-purple/70">
+              {event.active ? 'This event is active' : 'This event is inactive'}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen mt-20">
       {/* Meta tags for SEO + social */}
@@ -225,9 +291,15 @@ const AnnouncementDetails = () => {
 
       {/* Main content */}
       <div className="max-w-5xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div
+          className={`grid grid-cols-1 ${
+            hasBookingForm ? 'md:grid-cols-3' : 'md:grid-cols-4'
+          } gap-8`}
+        >
           {/* Left column - Event details */}
-          <div className="md:col-span-2">
+          <div className={hasBookingForm ? 'md:col-span-2' : 'md:col-span-3'}>
+            {hasBookingForm && renderEventDetails(false)}
+
             {/* Event information card */}
             <div className="bg-light/50 rounded-xl shadow-lg overflow-hidden mb-8">
               <div className="p-6">
@@ -391,72 +463,12 @@ const AnnouncementDetails = () => {
             )}
           </div>
 
-          {/* Right column - Event meta information */}
-          <div className="md:col-span-1">
-            <div className="bg-light/50 rounded-xl shadow-lg overflow-hidden sticky top-8">
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-dark-purple mb-4">
-                  Event Details
-                </h3>
+          {/* Right column - Event meta information & Booking Form */}
+          <div className="md:col-span-1 space-y-8 sticky top-8 h-fit">
+            {/* Booking Form Component */}
+            {hasBookingForm && <AnnouncementBookForm announcement={event} />}
 
-                <div className="space-y-4">
-                  {/* Date */}
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 mt-1">
-                      <FaCalendarAlt className="h-5 w-5 text-navy-blue" />
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-dark-purple font-medium">Date</p>
-                      <p className="text-dark-purple/70">
-                        {formatDate(event.date)}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Time */}
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 mt-1">
-                      <FaClock className="h-5 w-5 text-navy-blue" />
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-dark-purple font-medium">Time</p>
-                      <p className="text-dark-purple/70">
-                        {convertTo12HourFormat(event.time)}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Location */}
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 mt-1">
-                      <FaMapMarkerAlt className="h-5 w-5 text-navy-blue font" />
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-dark-purple font-medium">Location</p>
-                      <p className="text-dark-purple/70">
-                        {event.location || 'TBA'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Status Indicator */}
-                <div className="mt-6 pt-4 border-t border-dark-purple">
-                  <div className="flex items-center">
-                    <div
-                      className={`h-3 w-3 rounded-full ${
-                        event.active ? 'bg-green-500' : 'bg-gray-400'
-                      }`}
-                    ></div>
-                    <p className="ml-2 text-sm text-dark-purple/70">
-                      {event.active
-                        ? 'This event is active'
-                        : 'This event is inactive'}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {!hasBookingForm && renderEventDetails(true)}
           </div>
         </div>
       </div>
