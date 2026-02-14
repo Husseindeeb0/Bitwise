@@ -9,14 +9,14 @@ import {
 } from 'react-icons/fa';
 import { submitBookSubmission } from '../../../features/bookSubmission/bookSubThunks';
 import { bookSubmissionActions } from '../../../features/bookSubmission/bookSubSlice';
-import { getUserRegistrations } from '../../../features/user/userThunks';
+// import { getUserRegistrations } from '../../../features/admin/users/usersThunks';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
 const AnnouncementBookForm = ({ announcement }) => {
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => state.auth);
-  const { registrations } = useSelector((state) => state.user);
+  // const { registrations } = useSelector((state) => state.user);
   const { isLoading, success, error } = useSelector(
     (state) => state.bookSubmission
   );
@@ -28,14 +28,14 @@ const AnnouncementBookForm = ({ announcement }) => {
   const [isSubmittedLocal, setIsSubmittedLocal] = useState(false);
 
   // Check if user has already registered for this announcement
-  const isAlreadyRegistered = registrations?.some(
+  const isAlreadyRegistered = null?.some(
     (reg) =>
       (reg.announcementId?._id || reg.announcementId) === announcement._id
   );
 
   useEffect(() => {
     if (userData) {
-      dispatch(getUserRegistrations());
+      // dispatch(getUserRegistrations());
     }
   }, [userData, dispatch]);
 
@@ -45,7 +45,7 @@ const AnnouncementBookForm = ({ announcement }) => {
       toast.success('Registration successful!');
       dispatch(bookSubmissionActions.clearSuccess());
       // Refresh registrations after successful submission
-      dispatch(getUserRegistrations());
+      // dispatch(getUserRegistrations());
     }
     if (error) {
       toast.error(error);

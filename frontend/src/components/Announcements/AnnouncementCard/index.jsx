@@ -14,6 +14,7 @@ const AnnouncementCard = ({
   editEvent,
   setIsDeleting,
   manageForm,
+  variant = 'default',
 }) => {
   const getCategoryColor = (category) => {
     switch (category) {
@@ -45,6 +46,52 @@ const AnnouncementCard = ({
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
+
+  if (variant === 'profile') {
+    return (
+      <div className="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300">
+        <div className="relative h-40">
+          <img
+            src={event.mainImageUrl}
+            alt={event.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute top-2 right-2">
+            <span
+              className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${getCategoryColor(
+                event.category
+              )}`}
+            >
+              {event.category}
+            </span>
+          </div>
+        </div>
+        <div className="p-4">
+          <h3 className="text-base font-bold text-dark-purple line-clamp-1 mb-1">
+            {event.title}
+          </h3>
+          <div className="flex flex-col gap-1.5 mb-3">
+            <div className="flex items-center text-xs text-gray-500">
+              <FaCalendar className="mr-1.5 text-navy-blue" />
+              <span>{formatDate(event.date)}</span>
+            </div>
+            <div className="flex items-center text-xs text-gray-500">
+              <FaMapMarkerAlt className="mr-1.5 text-navy-blue" />
+              <span className="line-clamp-1">{event.location}</span>
+            </div>
+          </div>
+          <Link
+            to={`/announcementDetails?id=${event._id}`}
+            state={{ event: event }}
+            className="text-navy-blue text-xs font-semibold hover:text-sky-blue transition-colors flex items-center"
+          >
+            View Details <span className="ml-1">→</span>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-light border border-gray-200 rounded-lg shadow-sm overflow-hidden">
       <div className="flex flex-col md:flex-row">

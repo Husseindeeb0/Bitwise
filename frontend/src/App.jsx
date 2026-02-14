@@ -14,6 +14,7 @@ import ManageCourses from './pages/AdminPanel/ManageCourses';
 import ManageAchievements from './pages/AdminPanel/ManageAchievements';
 import RegistrationForm from './pages/RegistrationForm';
 import AnnouncementDetails from './pages/Announcements/AnnouncementDetails';
+import Profile from './pages/Profile';
 import Courses from './pages/Courses';
 import CourseDetails from './pages/Courses/CourseDetails';
 import ScrollToTop from './helpers/ScrollToTop';
@@ -90,6 +91,14 @@ function App() {
             <Route path="/registrationForm" element={<RegistrationForm />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/courseDetails" element={<CourseDetails />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
           </Route>
         </Routes>
       </BrowserRouter>

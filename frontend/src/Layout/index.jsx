@@ -6,7 +6,7 @@ import Loader from '../components/Loader';
 import { useSelector, useDispatch } from 'react-redux';
 import { authActions } from '../features/auth/authSlice';
 import { announcementsActions } from '../features/announcements/announcementsSlice';
-import { userActions } from '../features/user/userSlice';
+import { userActions } from '../features/admin/users/usersSlice';
 import { useLocation } from 'react-router-dom';
 
 const Layout = () => {
