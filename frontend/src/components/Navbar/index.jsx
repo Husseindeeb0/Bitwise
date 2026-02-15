@@ -256,10 +256,10 @@ const Navbar = () => {
               }`}
             >
               <div className="w-10 h-10 rounded-full bg-navy-blue/5 flex items-center justify-center overflow-hidden border-2 border-white shadow-md">
-                {userData.profileImage ? (
+                {userData?.profileImage?.url ? (
                   <img
-                    src={userData.profileImage}
-                    alt={userData?.name || 'User'}
+                    src={userData.profileImage.url}
+                    alt={userData.username || 'User'}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -268,7 +268,7 @@ const Navbar = () => {
               </div>
               <div className="flex flex-col">
                 <span className="text-[14px] font-black text-dark-purple leading-tight">
-                  {userData?.name?.split(' ')[0] || 'User'}
+                  {userData?.username?.split(' ')[0] || 'User'}
                 </span>
                 <span className="text-[10px] text-sky-blue font-bold uppercase tracking-wider">
                   {userData.role?.replace('_', ' ') || 'Member'}

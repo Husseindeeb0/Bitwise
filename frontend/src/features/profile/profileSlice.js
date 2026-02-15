@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getMe } from './profileThunks';
+import { getMe, updateUser } from './profileThunks';
 
 const initialState = {
   userData: null,
+  announcements: [],
   isLoading: false,
   error: null,
 };
@@ -23,9 +24,23 @@ const profileSlice = createSlice({
       })
       .addCase(getMe.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.userData = action.payload;
+        state.userData = action.payload.user;
+        state.announcements = action.payload.announcements;
       })
       .addCase(getMe.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      });
+    builder
+      .addCase(updateUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.userData = action.payload;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });

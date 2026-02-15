@@ -13,14 +13,16 @@ import {
   FaBriefcase,
   FaInfoCircle,
 } from 'react-icons/fa';
-import { getMe } from '../../features/profile/profileThunks';
+import { getMe, updateUser } from '../../features/profile/profileThunks';
 import AnnouncementCard from '../../components/Announcements/AnnouncementCard';
 import Loader from '../../components/Loader';
 import toast from 'react-hot-toast';
 
 const Profile = () => {
   const dispatch = useDispatch();
-  const { userData, isLoading } = useSelector((state) => state.profile);
+  const { userData, announcements, isLoading } = useSelector(
+    (state) => state.profile
+  );
 
   // Local state for editing
   const [isEditing, setIsEditing] = useState(false);
@@ -32,8 +34,6 @@ const Profile = () => {
     newPassword: '',
     confirmPassword: '',
   });
-  const [profileImage, setProfileImage] = useState(null);
-  const [coverImage, setCoverImage] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
   const [coverPreview, setCoverPreview] = useState(null);
 
@@ -49,16 +49,16 @@ const Profile = () => {
   useEffect(() => {
     if (userData) {
       setFormData({
-        name: userData.name || '',
+        name: userData.username || '',
         email: userData.email || '',
         description: userData.description || 'No description provided.',
         currentPassword: '',
         newPassword: '',
         confirmPassword: '',
       });
-      setProfilePreview(userData.profileImage || null);
+      setProfilePreview(userData.profileImage?.url || null);
       setCoverPreview(
-        userData.coverImage ||
+        userData.coverImage?.url ||
           'https://images.unsplash.com/photo-1557683316-973673baf926?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'
       );
     }
@@ -75,10 +75,8 @@ const Profile = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         if (type === 'profile') {
-          setProfileImage(file);
           setProfilePreview(reader.result);
         } else {
-          setCoverImage(file);
           setCoverPreview(reader.result);
         }
       };
@@ -86,7 +84,7 @@ const Profile = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Simple validation for password match
@@ -98,14 +96,42 @@ const Profile = () => {
       return;
     }
 
-    // Simulate API call
-    console.log('Updating profile:', { formData, profileImage, coverImage });
+    const updateData = {
+      userId: userData._id,
+      username: formData.name,
+      email: formData.email,
+      description: formData.description,
+      password: formData.currentPassword,
+      newPassword: formData.newPassword,
+    };
 
-    // Show success message
-    toast.success('Profile updated successfully (Frontend only)');
+    // If previews exist and they are base64 (string), send them for upload
+    if (profilePreview && profilePreview.startsWith('data:image')) {
+      updateData.image = profilePreview;
+    }
+    if (
+      coverPreview &&
+      coverPreview.startsWith('data:image') &&
+      !coverPreview.includes('unsplash')
+    ) {
+      updateData.coverImage = coverPreview;
+    }
 
-    setIsEditing(false);
-    // In a real scenario, we would dispatch an update thunk here
+    const loadingToast = toast.loading('Updating profile...');
+
+    try {
+      const result = await dispatch(updateUser(updateData)).unwrap();
+      toast.success('Profile updated successfully!', { id: loadingToast });
+      setIsEditing(false);
+      setFormData((prev) => ({
+        ...prev,
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+      }));
+    } catch (error) {
+      toast.error(error || 'Failed to update profile.', { id: loadingToast });
+    }
   };
 
   if (isLoading && !userData) {
@@ -125,7 +151,7 @@ const Profile = () => {
           </p>
           <button
             onClick={() => (window.location.href = '/login')}
-            className="px-6 py-2 bg-navy-blue text-white rounded-lg hover:bg-sky-blue transition-colors"
+            className="px-8 py-3 bg-navy-blue text-white rounded-xl font-bold hover:bg-dark-purple transition-all duration-300 shadow-lg shadow-navy-blue/20"
           >
             Go to Login
           </button>
@@ -134,28 +160,36 @@ const Profile = () => {
     );
   }
 
-  // Mock booked announcements for demonstration
-  const bookedAnnouncements = userData?.bookedAnnouncements || [];
+  // Booked events are now coming from the backend via the getMe thunk
+  const bookedAnnouncements =
+    announcements?.map((ann) => ann.announcement).filter(Boolean) || [];
 
   return (
-    <div className="min-h-screen bg-background1 pb-12">
+    <div className="min-h-screen pb-12">
       {/* Hero / Cover Section */}
       <div className="relative h-64 md:h-80 w-full overflow-hidden group">
         <img
           src={coverPreview}
           alt="Cover"
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-700"
         />
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300" />
+
+        {/* Layered Color Transitions for Legibility and Aesthetics */}
+        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-dark-purple/90 via-navy-blue/40 to-transparent" />
+
+        {/* Decorative Bottom Edge Accent */}
+        <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-sky-blue via-navy-blue to-dark-purple shadow-[0_-5px_25px_rgba(14,165,233,0.3)]" />
 
         {isEditing && (
-          <button
-            onClick={() => coverInputRef.current.click()}
-            className="absolute top-4 right-4 bg-white/20 backdrop-blur-md hover:bg-white/40 text-white p-3 rounded-full transition-all duration-300 shadow-lg border border-white/30"
-            title="Change Cover Image"
-          >
-            <FaCamera size={20} />
-          </button>
+          <div className="absolute inset-0 flex items-center justify-center transition-opacity duration-300">
+            <button
+              onClick={() => coverInputRef.current.click()}
+              className="bg-white/95 backdrop-blur-md text-navy-blue px-8 py-3 rounded-2xl font-black flex items-center gap-3 shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-white hover:bg-white transition-all active:scale-95"
+            >
+              <FaCamera className="text-xl" />
+              <span>Change Cover Photo</span>
+            </button>
+          </div>
         )}
         <input
           type="file"
@@ -175,7 +209,7 @@ const Profile = () => {
                 {profilePreview ? (
                   <img
                     src={profilePreview}
-                    alt={userData.name}
+                    alt={userData.username}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -188,7 +222,6 @@ const Profile = () => {
                 <button
                   onClick={() => profileInputRef.current.click()}
                   className="absolute bottom-2 right-2 bg-navy-blue text-white p-2 rounded-lg shadow-lg hover:bg-sky-blue transition-all duration-300 border-2 border-white"
-                  title="Change Profile Image"
                 >
                   <FaCamera size={16} />
                 </button>
@@ -203,34 +236,36 @@ const Profile = () => {
             </div>
 
             {/* Profile Header Info */}
-            <div className="flex-1 pb-2">
-              <div className="flex justify-between items-start w-full">
-                <div>
-                  <h1 className="text-3xl md:text-4xl font-black text-dark-purple drop-shadow-sm">
-                    {userData.name}
+            <div className="flex-1 pb-4">
+              <div className="flex justify-between items-end w-full">
+                <div className="space-y-1 mb-5">
+                  <h1 className="text-4xl md:text-5xl font-black text-white drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] tracking-tight">
+                    {userData.username}
                   </h1>
-                  <p className="text-navy-blue font-semibold flex items-center gap-2 mt-1">
-                    <span className="px-3 py-1 bg-white/80 backdrop-blur-sm rounded-full text-xs uppercase tracking-wider border border-navy-blue/20">
-                      {userData.role || 'Member'}
+                  <div className="flex flex-wrap items-center gap-4">
+                    <span className="px-4 py-1.5 bg-gradient-to-r from-sky-blue to-navy-blue text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-white/20 shadow-lg shadow-sky-blue/20">
+                      {userData.role?.replace('_', ' ') || 'Member'}
                     </span>
-                    <span className="text-sm text-gray-500 font-normal ml-2 flex items-center gap-1">
-                      <FaCalendarAlt size={12} /> Joined{' '}
+                    <span className="text-sm text-gray-100/90 font-bold flex items-center gap-2 drop-shadow-md">
+                      <FaCalendarAlt className="text-sky-400" size={14} />
+                      <span className="uppercase tracking-widest text-[10px]">
+                        Joined
+                      </span>
                       {new Date(userData.createdAt).toLocaleDateString(
                         'en-US',
                         { month: 'long', year: 'numeric' }
                       )}
                     </span>
-                  </p>
+                  </div>
                 </div>
                 {!isEditing && (
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                  <button
                     onClick={() => setIsEditing(true)}
-                    className="bg-white text-navy-blue border-2 border-navy-blue px-6 py-2.5 rounded-xl font-bold flex items-center gap-2 shadow-lg hover:bg-navy-blue hover:text-white transition-all duration-300"
+                    className="bg-white text-navy-blue px-8 py-3.5 rounded-2xl font-black text-sm flex items-center gap-3 shadow-[0_15px_30px_rgba(0,0,0,0.15)] hover:bg-sky-blue hover:text-white transition-all duration-300 group ring-4 ring-white/10"
                   >
-                    <FaEdit /> Edit Profile
-                  </motion.button>
+                    <FaEdit className="group-hover:rotate-12 transition-transform text-lg" />
+                    <span>EDIT PROFILE</span>
+                  </button>
                 )}
               </div>
             </div>
@@ -303,7 +338,7 @@ const Profile = () => {
                           name="description"
                           value={formData.description}
                           onChange={handleInputChange}
-                          className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-navy-blue focus:border-transparent transition-all outline-none resize-none"
+                          className="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-navy-blue outline-none resize-none"
                           rows="4"
                           placeholder="Tell us about yourself..."
                         />
@@ -320,7 +355,7 @@ const Profile = () => {
                             value={formData.currentPassword}
                             onChange={handleInputChange}
                             placeholder="Current Password"
-                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-navy-blue outline-none text-sm transition-all"
+                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-navy-blue outline-none text-sm"
                           />
                           <input
                             type="password"
@@ -328,7 +363,7 @@ const Profile = () => {
                             value={formData.newPassword}
                             onChange={handleInputChange}
                             placeholder="New Password"
-                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-navy-blue outline-none text-sm transition-all"
+                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-navy-blue outline-none text-sm"
                           />
                           <input
                             type="password"
@@ -336,7 +371,7 @@ const Profile = () => {
                             value={formData.confirmPassword}
                             onChange={handleInputChange}
                             placeholder="Confirm New Password"
-                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-navy-blue outline-none text-sm transition-all"
+                            className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-navy-blue outline-none text-sm"
                           />
                         </div>
                       </div>
@@ -344,16 +379,16 @@ const Profile = () => {
                       <div className="flex gap-3 pt-6">
                         <button
                           type="submit"
-                          className="flex-1 bg-navy-blue text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-opacity-90 transition-all shadow-md"
+                          className="flex-1 bg-navy-blue text-white py-3 rounded-xl font-bold shadow-lg shadow-navy-blue/10 hover:bg-dark-purple transition-all duration-300"
                         >
-                          <FaCheck /> Save Changes
+                          Save Changes
                         </button>
                         <button
                           type="button"
                           onClick={() => setIsEditing(false)}
-                          className="flex-1 bg-gray-100 text-gray-600 py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-200 transition-all"
+                          className="flex-1 bg-gray-100 text-gray-600 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all duration-300"
                         >
-                          <FaTimes /> Cancel
+                          Cancel
                         </button>
                       </div>
                     </motion.form>
@@ -378,7 +413,6 @@ const Profile = () => {
                             </p>
                           </div>
                         </div>
-
                         <div className="flex items-start gap-4">
                           <div className="bg-light p-3 rounded-xl text-navy-blue">
                             <FaBriefcase size={18} />
@@ -388,17 +422,16 @@ const Profile = () => {
                               Role
                             </p>
                             <p className="text-dark-purple font-medium capitalize">
-                              {userData.role || 'General Member'}
+                              {userData.role || 'Member'}
                             </p>
                           </div>
                         </div>
                       </div>
-
                       <div className="pt-6 border-t border-gray-100">
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
                           About Me
                         </p>
-                        <p className="text-gray-600 leading-relaxed italic border-l-4 border-sky-blue pl-4 py-1">
+                        <p className="text-gray-600 leading-relaxed italic border-l-4 border-sky-blue pl-4">
                           "{userData.description || 'No description provided.'}"
                         </p>
                       </div>
@@ -425,7 +458,7 @@ const Profile = () => {
               {bookedAnnouncements.length > 0 ? (
                 bookedAnnouncements.map((event, index) => (
                   <motion.div
-                    key={event._id}
+                    key={event?._id || index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
@@ -442,12 +475,12 @@ const Profile = () => {
                     No bookings found
                   </h3>
                   <p className="text-gray-500 max-w-xs px-4">
-                    You haven't booked for any event yet. Check our latest
-                    news to find events!
+                    You haven't booked for any event yet. Check our latest news
+                    to find events!
                   </p>
                   <button
                     onClick={() => (window.location.href = '/announcements')}
-                    className="mt-6 px-6 py-2 bg-navy-blue text-white rounded-xl font-bold hover:bg-sky-blue transition-colors shadow-lg shadow-navy-blue/20"
+                    className="mt-6 px-8 py-3 bg-navy-blue text-white rounded-xl font-bold hover:bg-dark-purple transition-all duration-300 shadow-xl shadow-navy-blue/20"
                   >
                     Explore Announcements
                   </button>
