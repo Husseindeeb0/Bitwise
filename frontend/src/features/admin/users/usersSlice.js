@@ -2,13 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import {
   getAllUsers,
   changeUserRole,
-  getUserRegistrations,
-} from './userThunks';
+} from './usersThunks';
 
 const initialState = {
   users: [],
   admins: [],
-  registrations: [],
   isLoading: false,
   error: null,
 };
@@ -52,21 +50,6 @@ const userSlice = createSlice({
       })
       .addCase(changeUserRole.rejected, (state, action) => {
         state.isAuthenticating = false;
-        state.error = action.payload;
-      });
-
-    // getUserRegistrations
-    builder
-      .addCase(getUserRegistrations.pending, (state) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(getUserRegistrations.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.registrations = action.payload;
-      })
-      .addCase(getUserRegistrations.rejected, (state, action) => {
-        state.isLoading = false;
         state.error = action.payload;
       });
   },

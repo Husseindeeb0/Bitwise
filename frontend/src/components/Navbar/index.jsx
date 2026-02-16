@@ -10,7 +10,9 @@ import {
   FaSignInAlt,
   FaUserPlus,
   FaChevronDown,
+  FaChevronRight,
   FaGraduationCap,
+  FaUserCircle,
 } from 'react-icons/fa';
 import { MdManageAccounts } from 'react-icons/md';
 import { IoClose } from 'react-icons/io5';
@@ -28,9 +30,35 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const sidebarRef = useRef(null);
   const dropDownRef = useRef(null);
-  const [isDisplay, setIsDisplay] = useState(false);
+  // New states for dropdowns
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
+  const profileTimerRef = useRef(null);
+  const dashboardTimerRef = useRef(null);
 
-  const toggleDialog = () => setIsDisplay((prev) => !prev);
+  const handleProfileEnter = () => {
+    if (profileTimerRef.current) clearTimeout(profileTimerRef.current);
+    setIsProfileOpen(true);
+  };
+
+  const handleProfileLeave = () => {
+    profileTimerRef.current = setTimeout(() => {
+      setIsProfileOpen(false);
+      setIsDashboardOpen(false);
+    }, 300);
+  };
+
+  const handleDashboardEnter = () => {
+    if (dashboardTimerRef.current) clearTimeout(dashboardTimerRef.current);
+    setIsDashboardOpen(true);
+  };
+
+  const handleDashboardLeave = () => {
+    dashboardTimerRef.current = setTimeout(() => {
+      setIsDashboardOpen(false);
+    }, 100);
+  };
+
   const toggleSidebar = () => setIsOpen((prev) => !prev);
 
   const handleLogout = async () => {
@@ -44,9 +72,6 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropDownRef.current && !dropDownRef.current.contains(event.target)) {
-        setIsDisplay(false);
-      }
       if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
         setIsOpen(false);
       }
@@ -149,27 +174,26 @@ const Navbar = () => {
   };
 
   // Desktop dropdown item
-  const NavDropdownItem = ({ to, icon, label }) => {
+  const NavDropdownItem = ({ to, icon, label, isSubMenu = false }) => {
     const active = isActive(to);
     return (
-      <li>
-        <Link
-          to={to}
-          className={`flex gap-3 items-center px-4 py-3 transition-all duration-200 group ${
-            active
-              ? 'bg-sky-blue/15 text-navy-blue border-l-[3px] border-sky-blue'
-              : 'text-dark-purple hover:bg-sky-blue/10 hover:text-navy-blue border-l-[3px] border-transparent hover:border-sky-blue/50'
-          }`}
-          onClick={toggleDialog}
+      <Link
+        to={to}
+        className={`flex gap-3 items-center px-4 py-3 transition-all duration-200 group ${
+          isSubMenu ? 'hover:bg-sky-blue/10' : 'hover:bg-gray-50'
+        } ${
+          active
+            ? 'text-navy-blue font-bold bg-sky-blue/5'
+            : 'text-dark-purple group-hover:text-navy-blue font-medium'
+        }`}
+      >
+        <span
+          className={`text-lg transition-transform duration-300 group-hover:scale-110 ${active ? 'text-sky-blue' : 'text-navy-blue/60 group-hover:text-sky-blue'}`}
         >
-          <span
-            className={`text-lg ${active ? 'text-sky-blue' : 'text-navy-blue/70 group-hover:text-navy-blue'}`}
-          >
-            {icon}
-          </span>
-          <span className="font-medium text-[15px]">{label}</span>
-        </Link>
-      </li>
+          {icon}
+        </span>
+        <span className="text-[14px]">{label}</span>
+      </Link>
     );
   };
 
@@ -191,77 +215,6 @@ const Navbar = () => {
         <NavItem to="/" label="Home" />
         <NavItem to="/announcements" label="Announcements" />
         <NavItem to="/courses" label="Courses" />
-
-        {/* Management Dropdown */}
-        {(role === 'admin' || role === 'top_admin') && (
-          <div className="relative ml-1" ref={dropDownRef}>
-            <button
-              className={`px-4 py-2 flex items-center gap-2.5 rounded-xl transition-all duration-300 group ${
-                isManagementActive()
-                  ? 'bg-gradient-to-r from-navy-blue to-sky-blue text-white shadow-lg shadow-navy-blue/25'
-                  : 'bg-gradient-to-r from-navy-blue to-sky-blue text-white shadow-md shadow-navy-blue/15 hover:shadow-lg hover:shadow-navy-blue/25 hover:scale-[1.02]'
-              }`}
-              onClick={toggleDialog}
-            >
-              <div className="flex items-center justify-center bg-white/20 rounded-lg p-1.5">
-                <MdManageAccounts className="text-base" />
-              </div>
-              <span className="text-[15px]">Management</span>
-              <motion.div
-                animate={{ rotate: isDisplay ? 180 : 0 }}
-                transition={{ duration: 0.25 }}
-              >
-                <FaChevronDown className="text-xs" />
-              </motion.div>
-            </button>
-
-            <AnimatePresence>
-              {isDisplay && (
-                <motion.div
-                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
-                  className="absolute top-full right-0 w-72 mt-3 bg-white/95 backdrop-blur-xl shadow-2xl shadow-navy-blue/10 border border-gray-100/80 rounded-2xl overflow-hidden z-50"
-                >
-                  {/* Dropdown header with gradient */}
-                  <div className="bg-gradient-to-r from-navy-blue to-sky-blue/80 py-3 px-4">
-                    <p className="text-sm font-semibold text-white tracking-wide">
-                      Management Tools
-                    </p>
-                    <p className="text-[11px] text-white/70 mt-0.5">
-                      Manage your platform content
-                    </p>
-                  </div>
-                  <ul className="py-1">
-                    {role === 'top_admin' && (
-                      <NavDropdownItem
-                        to="/manageAdmins"
-                        icon={<RiAdminFill />}
-                        label="Manage Admins"
-                      />
-                    )}
-                    <NavDropdownItem
-                      to="/manageAnnouncements"
-                      icon={<GrAnnounce />}
-                      label="Manage Announcements"
-                    />
-                    <NavDropdownItem
-                      to="/manageCourses"
-                      icon={<FaGraduationCap />}
-                      label="Manage Courses"
-                    />
-                    <NavDropdownItem
-                      to="/manageAchievements"
-                      icon={<GiAchievement />}
-                      label="Manage Achievements"
-                    />
-                  </ul>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        )}
 
         {/* Divider */}
         <div className="w-px h-6 bg-gray-300/60 mx-2" />
@@ -287,13 +240,155 @@ const Navbar = () => {
             </Link>
           </div>
         ) : (
-          <button
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-dark-purple hover:text-red-500 hover:bg-red-50/60 transition-all duration-300 group"
-            onClick={handleLogout}
+          <div
+            className="relative"
+            onMouseEnter={handleProfileEnter}
+            onMouseLeave={handleProfileLeave}
           >
-            <FiLogOut className="group-hover:rotate-[-12deg] transition-transform duration-300" />
-            <span className="text-[15px]">Logout</span>
-          </button>
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              className={`flex items-center gap-3 pl-2 pr-4 py-1.5 rounded-2xl cursor-pointer transition-all duration-300 border-2 ${
+                isProfileOpen
+                  ? 'bg-navy-blue/5 border-navy-blue/20'
+                  : isActive('/profile')
+                    ? 'bg-sky-blue/10 border-sky-blue/30'
+                    : 'border-transparent hover:bg-gray-100/50'
+              }`}
+            >
+              <div className="w-10 h-10 rounded-full bg-navy-blue/5 flex items-center justify-center overflow-hidden border-2 border-white shadow-md">
+                {userData?.profileImage?.url ? (
+                  <img
+                    src={userData.profileImage.url}
+                    alt={userData.username || 'User'}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <FaUserCircle className="text-navy-blue text-2xl" />
+                )}
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[14px] font-black text-dark-purple leading-tight">
+                  {userData?.username?.split(' ')[0] || 'User'}
+                </span>
+                <span className="text-[10px] text-sky-blue font-bold uppercase tracking-wider">
+                  {userData.role?.replace('_', ' ') || 'Member'}
+                </span>
+              </div>
+              <motion.div
+                animate={{ rotate: isProfileOpen ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <FaChevronDown className="text-[10px] text-navy-blue/50" />
+              </motion.div>
+            </motion.div>
+
+            {/* Profile Dropdown */}
+            <AnimatePresence>
+              {isProfileOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 15, scale: 0.95 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  className="absolute top-full right-0 mt-3 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-visible z-50 transform-gpu"
+                >
+                  <div className="p-2 space-y-1">
+                    <NavDropdownItem
+                      to="/profile"
+                      icon={<FaUserCircle />}
+                      label="My Profile"
+                    />
+
+                    {(role === 'admin' || role === 'top_admin') && (
+                      <div
+                        className="relative"
+                        onMouseEnter={handleDashboardEnter}
+                        onMouseLeave={handleDashboardLeave}
+                      >
+                        <div
+                          className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer group ${
+                            isDashboardOpen || isManagementActive()
+                              ? 'bg-navy-blue text-white shadow-lg'
+                              : 'text-dark-purple hover:bg-gray-50 hover:text-navy-blue'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <span
+                              className={`text-lg transition-colors ${isDashboardOpen || isManagementActive() ? 'text-white' : 'text-navy-blue/60 group-hover:text-sky-blue'}`}
+                            >
+                              <MdManageAccounts />
+                            </span>
+                            <span className="text-[14px] font-bold">
+                              Dashboard
+                            </span>
+                          </div>
+                          <FaChevronRight
+                            className={`text-[10px] transition-transform duration-300 ${isDashboardOpen ? 'rotate-90 md:rotate-0 translate-x-1' : ''}`}
+                          />
+                        </div>
+
+                        {/* Management Sub-menu */}
+                        <AnimatePresence>
+                          {isDashboardOpen && (
+                            <motion.div
+                              initial={{ opacity: 0, x: 10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              exit={{ opacity: 0, x: 10 }}
+                              className="md:absolute md:top-0 md:right-full md:mr-2 w-full md:w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden"
+                            >
+                              <div className="bg-navy-blue/5 px-4 py-2 border-b border-gray-100">
+                                <span className="text-[10px] font-black text-navy-blue uppercase tracking-widest">
+                                  Management
+                                </span>
+                              </div>
+                              <div className="p-1">
+                                {role === 'top_admin' && (
+                                  <NavDropdownItem
+                                    to="/manageAdmins"
+                                    icon={<RiAdminFill />}
+                                    label="Admins"
+                                    isSubMenu={true}
+                                  />
+                                )}
+                                <NavDropdownItem
+                                  to="/manageAnnouncements"
+                                  icon={<GrAnnounce />}
+                                  label="Announcements"
+                                  isSubMenu={true}
+                                />
+                                <NavDropdownItem
+                                  to="/manageCourses"
+                                  icon={<FaGraduationCap />}
+                                  label="Courses"
+                                  isSubMenu={true}
+                                />
+                                <NavDropdownItem
+                                  to="/manageAchievements"
+                                  icon={<GiAchievement />}
+                                  label="Achievements"
+                                  isSubMenu={true}
+                                />
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    )}
+
+                    <div className="h-px bg-gray-100 my-1 mx-2" />
+
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200 group"
+                    >
+                      <FiLogOut className="text-lg group-hover:rotate-[-12deg] transition-transform" />
+                      <span className="text-[14px] font-bold">Logout</span>
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         )}
       </nav>
 
@@ -470,19 +565,28 @@ const Navbar = () => {
                     </motion.div>
                   </div>
                 ) : (
-                  <motion.button
-                    initial={{ opacity: 0, x: 40 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.56, duration: 0.3 }}
-                    onClick={() => {
-                      handleLogout();
-                      toggleSidebar();
-                    }}
-                    className="flex items-center gap-3 w-full p-3 rounded-xl text-red-300 hover:bg-red-500/10 hover:text-red-200 border border-red-400/20 hover:border-red-400/30 transition-all duration-200"
-                  >
-                    <FiLogOut className="text-lg" />
-                    <span className="font-medium">Logout</span>
-                  </motion.button>
+                  <div className="space-y-2">
+                    <MobileNavItem
+                      to="/profile"
+                      icon={<FaUserCircle />}
+                      label="My Profile"
+                      onClick={toggleSidebar}
+                      index={7}
+                    />
+                    <motion.button
+                      initial={{ opacity: 0, x: 40 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.64, duration: 0.3 }}
+                      onClick={() => {
+                        handleLogout();
+                        toggleSidebar();
+                      }}
+                      className="flex items-center gap-3 w-full p-3 rounded-xl text-red-300 hover:bg-red-500/10 hover:text-red-200 border border-red-400/20 hover:border-red-400/30 transition-all duration-200"
+                    >
+                      <FiLogOut className="text-lg" />
+                      <span className="font-medium">Logout</span>
+                    </motion.button>
+                  </div>
                 )}
               </div>
 

@@ -1,7 +1,5 @@
-import { axiosInstance } from '../../lib/axios';
+import { axiosInstance } from '../../../lib/axios';
 
 export const getAllUsersAPI = () => axiosInstance.get('/user/getAllUsers');
 export const changeUserRoleAPI = (userId, newRole) =>
   axiosInstance.patch('/user/changeUserRole', { userId, newRole });
-export const getUserRegistrationsAPI = () =>
-  axiosInstance.get('/bookSub/getSubmissionsByUserId');

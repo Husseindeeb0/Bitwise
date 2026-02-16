@@ -9,13 +9,12 @@ import {
   FaUsers,
   FaBriefcase,
   FaPhoneAlt,
-  FaChevronLeft,
-  FaChevronRight,
 } from 'react-icons/fa';
 import { useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import AchievementCalendar from '../../components/Achievements/AchievementCalendar';
+import AchievementSlideshow from '../../components/Achievements/AchievementSlideshow';
 import { getAchievements } from '../../features/achievements/achievementsThunks';
+import { useMemo } from 'react';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -35,22 +34,24 @@ const Home = () => {
     dispatch(getAchievements());
   }, [dispatch]);
 
-  // Transform achievements data to match AchievementCalendar expected format
-  const achievements = achievementsData.map((achievement) => {
-    const achievementDate = new Date(achievement.time);
-    const year = achievementDate.getFullYear();
-    const month = achievementDate.getMonth() + 1;
-    const day = achievementDate.getDate();
+  // Transform achievements data to match AchievementSlideshow expected format
+  const achievements = useMemo(() => {
+    return achievementsData.map((achievement) => {
+      const achievementDate = new Date(achievement.time);
+      const year = achievementDate.getFullYear();
+      const month = achievementDate.getMonth() + 1;
+      const day = achievementDate.getDate();
 
-    return {
-      id: achievement._id,
-      image: achievement.imageUrl,
-      title: achievement.title,
-      description: achievement.description,
-      instructors: achievement.instructors || [],
-      date: `${year}-${month}-${day}`,
-    };
-  });
+      return {
+        id: achievement._id,
+        image: achievement.imageUrl,
+        title: achievement.title,
+        description: achievement.description,
+        instructors: achievement.instructors || [],
+        date: `${year}-${month}-${day}`,
+      };
+    });
+  }, [achievementsData]);
   const founders = [
     {
       name: 'HUSSEIN OMEIS',
@@ -266,45 +267,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* achievements calendar section */}
-      <AchievementCalendar achievementsData={achievements} />
-      {/* Achievements Section */}
-      {/* <section ref={section2Ref} className="py-16 px-6 bg-sky-blue">
-        <h2 className="text-3xl font-bold text-center text-white">
-          Our Achievements
-        </h2>
-        <div className="mt-10 max-w-6xl mx-auto space-y-6">
-          <div className="flex gap-6 flex-wrap justify-center">
-            {achievements.map((achievement, index) => (
-              <motion.div
-                key={achievement.id}
-                initial={{ opacity: 0, x: -50 }}
-                animate={section2InView ? { opacity: 1, x: 0 } : {}}
-                transition={{ delay: 0.1 * index, duration: 0.5 }}
-                className="w-60 bg-navy-blue relative rounded-lg hover:scale-105 duration-200 shadow-md overflow-hidden"
-              >
-                <img
-                  src={achievement.image}
-                  alt={achievement.title}
-                  className="w-full h-40 object-cover"
-                />
-                <div className="p-4">
-                  <h3 className="text-xl font-semibold text-white">
-                    {achievement.title}
-                  </h3>
-                  <p className="text-sm text-gray-300">
-                    {achievement.description}
-                  </p>
-                  <p className="text-sm text-yellow-400 mt-2">
-                    By {achievement.person}
-                  </p>
-                </div>
-                <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 animate-[shine_2s_linear_infinite]"></span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section> */}
+      {/* Achievements Slideshow Section (Auto-moving) */}
+      <AchievementSlideshow achievementsData={achievements} />
 
       {/* Features Section */}
       <section
@@ -456,29 +420,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-      {/* Final Call to Action */}
-      {/* <section ref={section5Ref} className="py-16 px-6 text-center">
-        <h2 className="text-3xl font-bold text-dark-purple">
-          Start Learning Today!
-        </h2>
-        <p className="mt-4 text-lg max-w-2xl mx-auto text-gray-500">
-          Don’t waste time guessing what to learn next. Follow a proven roadmap
-          and start coding with confidence today!
-        </p>
-        <motion.button
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={section5InView ? { opacity: 1, scale: 1 } : {}}
-          transition={{ duration: 0.5 }}
-          whileHover={{
-            scale: 1.1,
-            boxShadow: "0px 0px 20px #3f56a4",
-          }}
-          whileTap={{ scale: 0.95 }}
-          className="mt-6 px-6 py-3 bg-white text-navy-blue text-lg font-semibold rounded-lg shadow-lg hover:bg-dark-purple"
-        >
-          Start Your Learning Journey
-        </motion.button>
-      </section> */}
     </div>
   );
 };

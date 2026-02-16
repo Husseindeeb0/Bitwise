@@ -1,5 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { checkAuth, signup, login, logout } from "./authThunks";
+import { createSlice } from '@reduxjs/toolkit';
+import { checkAuth, signup, login, logout } from './authThunks';
+import { updateUser } from '../profile/profileThunks';
 
 const initialState = {
   userData: null,
@@ -8,7 +9,7 @@ const initialState = {
 };
 
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     clearError: (state) => {

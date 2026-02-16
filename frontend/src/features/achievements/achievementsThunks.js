@@ -2,7 +2,6 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {addAchievementsAPI, 
     deleteAchievementsAPI, 
     getAchievementByIdAPI, 
-    getLatestAchievementAPI, 
     getAchievementsAPI,
     editAchievementsAPI} from "./achievementsAPI"
 
@@ -10,7 +9,6 @@ export const addAchievements = createAsyncThunk(
     "/achievements/addAchievements",
     async (newAchievements, thunkAPI) =>{
         try {
-            console.log("THUNK DATA:", newAchievements);
             const res = await addAchievementsAPI(newAchievements);
             return res.data;
         }catch (error) {
@@ -103,7 +101,6 @@ export const getAchievements = createAsyncThunk(
     async (_, thunkAPI) => {
         try{
             const res = await getAchievementsAPI();
-                  console.log("API Response:", res.data); 
             return res.data;
         } catch (error) {
             console.log(`Error in get achievements thunk: ${error}`);

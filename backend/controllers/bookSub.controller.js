@@ -121,34 +121,8 @@ const getBookSubmissions = async (req, res) => {
   }
 };
 
-const getBookSubmissionsByUserId = async (req, res) => {
-  try {
-    const userId = req.userId;
-
-    if (!userId) {
-      return res.status(400).json({
-        message: 'Missing user ID',
-      });
-    }
-
-    const bookSubmissions = await BookSubmission.find({ userId }).populate(
-      'announcementId'
-    );
-    return res.status(200).json({
-      message: 'Book submissions fetched successfully',
-      data: bookSubmissions,
-    });
-  } catch (error) {
-    console.error('Error fetching book submissions:', error);
-    return res.status(500).json({
-      message: 'Failed to fetch book submissions',
-    });
-  }
-};
-
 module.exports = {
   submitBookSubmission,
   deleteBookSubmission,
   getBookSubmissions,
-  getBookSubmissionsByUserId,
 };
