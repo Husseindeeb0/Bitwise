@@ -1,4 +1,7 @@
 const Announcement = require('../models/Announcements');
+const BookForm = require('../models/BookForm');
+const BookSubmission = require('../models/BookSubmission');
+const Ticket = require('../models/Ticket');
 const { v4: uuidv4 } = require('uuid');
 const imagekit = require('../config/imageKit');
 
@@ -185,6 +188,11 @@ const deleteAnnouncements = async (req, res) => {
 
     const oldmainImageId = announcement.mainImageId;
     await imagekit.deleteFile(oldmainImageId);
+
+    // Delete associated book form and submissions
+    await BookForm.deleteMany({ announcementId: id });
+    await BookSubmission.deleteMany({ announcementId: id });
+    await Ticket.deleteMany({ announcementId: id });
 
     // Delete the announcement
     await Announcement.findByIdAndDelete(id);

@@ -27,10 +27,10 @@ function App() {
   const isAuthenticated = localStorage.getItem('isAuthenticated');
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated === 'true') {
       dispatch(checkAuth());
     }
-  }, [dispatch]);
+  }, [dispatch, isAuthenticated]);
 
   return (
     <>

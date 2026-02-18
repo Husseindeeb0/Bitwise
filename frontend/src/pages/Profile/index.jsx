@@ -12,8 +12,10 @@ import {
   FaCalendarAlt,
   FaBriefcase,
   FaInfoCircle,
+  FaTicketAlt,
 } from 'react-icons/fa';
 import { getMe, updateUser } from '../../features/profile/profileThunks';
+import { downloadTicket } from '../../features/ticket/ticketThunks';
 import AnnouncementCard from '../../components/Announcements/AnnouncementCard';
 import Loader from '../../components/Loader';
 import toast from 'react-hot-toast';
@@ -23,6 +25,11 @@ const Profile = () => {
   const { userData, announcements, isLoading } = useSelector(
     (state) => state.profile
   );
+  const { isLoading: isDownloading, error: ticketError } = useSelector(
+    (state) => state.ticket
+  );
+
+  const [downloadingId, setDownloadingId] = useState(null);
 
   // Local state for editing
   const [isEditing, setIsEditing] = useState(false);
@@ -37,11 +44,24 @@ const Profile = () => {
   const [profilePreview, setProfilePreview] = useState(null);
   const [coverPreview, setCoverPreview] = useState(null);
 
+  const handleDownloadTicket = async (announcementId) => {
+    setDownloadingId(announcementId);
+    try {
+      await dispatch(downloadTicket(announcementId)).unwrap();
+      toast.success('Ticket downloaded successfully!');
+    } catch (err) {
+      toast.error(err || 'Failed to download ticket');
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
   const profileInputRef = useRef(null);
   const coverInputRef = useRef(null);
 
   useEffect(() => {
-    if (!userData) {
+    const isAuthenticated = localStorage.getItem('isAuthenticated');
+    if (!userData && isAuthenticated === 'true') {
       dispatch(getMe());
     }
   }, [dispatch, userData]);
@@ -463,7 +483,12 @@ const Profile = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                   >
-                    <AnnouncementCard event={event} variant="profile" />
+                    <AnnouncementCard
+                      event={event}
+                      variant="profile"
+                      onDownloadTicket={handleDownloadTicket}
+                      isDownloadingTicket={downloadingId}
+                    />
                   </motion.div>
                 ))
               ) : (

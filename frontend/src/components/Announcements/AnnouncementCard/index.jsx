@@ -5,6 +5,7 @@ import {
   FaMapMarkerAlt,
   FaWpforms,
   FaCheckCircle,
+  FaTicketAlt,
 } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
@@ -12,8 +13,9 @@ const AnnouncementCard = ({
   event,
   page,
   editEvent,
-  setIsDeleting,
   manageForm,
+  onDownloadTicket,
+  isDownloadingTicket,
   variant = 'default',
 }) => {
   const getCategoryColor = (category) => {
@@ -80,13 +82,33 @@ const AnnouncementCard = ({
               <span className="line-clamp-1">{event.location}</span>
             </div>
           </div>
-          <Link
-            to={`/announcementDetails?id=${event._id}`}
-            state={{ event: event }}
-            className="text-navy-blue text-xs font-semibold hover:text-sky-blue transition-colors flex items-center"
-          >
-            View Details <span className="ml-1">→</span>
-          </Link>
+          {onDownloadTicket && (
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                onDownloadTicket(event._id);
+              }}
+              disabled={isDownloadingTicket === event._id}
+              className="ml-auto bg-navy-blue/10 text-navy-blue p-2 rounded-lg hover:bg-navy-blue hover:text-white transition-all duration-300 group/ticket flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider disabled:opacity-50"
+              title="Download Ticket"
+            >
+              {isDownloadingTicket === event._id ? (
+                <div className="w-3 h-3 border-2 border-navy-blue/30 border-t-navy-blue rounded-full animate-spin" />
+              ) : (
+                <FaTicketAlt className="transition-transform group-hover/ticket:rotate-12" />
+              )}
+              Ticket
+            </button>
+          )}
+          {!onDownloadTicket && (
+            <Link
+              to={`/announcementDetails?id=${event._id}`}
+              state={{ event: event }}
+              className="text-navy-blue text-xs font-semibold hover:text-sky-blue transition-colors flex items-center"
+            >
+              View Details <span className="ml-1">→</span>
+            </Link>
+          )}
         </div>
       </div>
     );
