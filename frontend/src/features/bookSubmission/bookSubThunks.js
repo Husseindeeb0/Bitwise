@@ -51,7 +51,7 @@ export const getBookSubmissions = createAsyncThunk(
   async (announcementId, thunkAPI) => {
     try {
       const res = await getBookSubmissionsAPI(announcementId);
-      return res.data.data;
+      return res.data.bookSubmissions;
     } catch (error) {
       console.error(`Error in get book submissions thunk: ${error}`);
       if (

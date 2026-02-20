@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const BookSubmission = require('../models/BookSubmission');
+const Ticket = require('../models/Ticket');
 const imagekit = require('../config/imageKit');
 
 // Change user role
@@ -76,13 +77,13 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-// Get user profile data with their announcement submissions
+// Get user profile data with their announcement submissions and attended events
 const getMe = async (req, res) => {
   try {
     const userId = req.userId;
 
-    // Fetch user data and book submissions in parallel
-    const [user, bookSubmissions] = await Promise.all([
+    // Fetch user data, book submissions, and followed/attended tickets
+    const [user, bookSubmissions, attendedTickets] = await Promise.all([
       User.findById(userId).select('-password -refreshToken'),
       BookSubmission.find({ userId })
         .populate({
@@ -94,6 +95,13 @@ const getMe = async (req, res) => {
           },
         })
         .sort({ createdAt: -1 }),
+      Ticket.find({ userId, attendance: true })
+        .populate({
+          path: 'announcementId',
+          select:
+            'title description date time location category mainImageUrl active',
+        })
+        .sort({ updatedAt: -1 }), // Sort by most recently attended
     ]);
 
     if (!user) {
@@ -103,7 +111,7 @@ const getMe = async (req, res) => {
       });
     }
 
-    // Map submissions to a cleaner structure for the frontend
+    // Map submissions to a cleaner structure
     const announcements = bookSubmissions
       .filter((sub) => sub.announcementId !== null)
       .map((sub) => ({
@@ -112,12 +120,22 @@ const getMe = async (req, res) => {
         submittedAt: sub.createdAt,
       }));
 
+    // Map attended tickets
+    const attendedEvents = attendedTickets
+      .filter((ticket) => ticket.announcementId !== null)
+      .map((ticket) => ({
+        ticketId: ticket._id,
+        announcement: ticket.announcementId,
+        attendedAt: ticket.updatedAt,
+      }));
+
     res.status(200).json({
       status: 'success',
       message: 'Profile data fetched successfully',
       data: {
         user,
         announcements,
+        attendedEvents,
       },
     });
   } catch (error) {

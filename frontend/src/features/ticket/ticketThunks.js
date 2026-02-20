@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { downloadTicketAPI } from './ticketAPI';
+import { downloadTicketAPI, validateTicketAPI } from './ticketAPI';
 
 export const downloadTicket = createAsyncThunk(
   'ticket/download',
@@ -7,7 +7,6 @@ export const downloadTicket = createAsyncThunk(
     try {
       const response = await downloadTicketAPI(announcementId);
 
-      // The content-disposition header might contain the filename
       const contentDisposition = response.headers['content-disposition'];
       let fileName = `ticket-${announcementId}.pdf`;
 
@@ -18,7 +17,6 @@ export const downloadTicket = createAsyncThunk(
         }
       }
 
-      // Create a blob from the response data
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -26,7 +24,6 @@ export const downloadTicket = createAsyncThunk(
       document.body.appendChild(link);
       link.click();
 
-      // Cleanup
       link.remove();
       window.URL.revokeObjectURL(url);
 
@@ -41,6 +38,21 @@ export const downloadTicket = createAsyncThunk(
         return thunkAPI.rejectWithValue(error.response.data.message);
       }
       return thunkAPI.rejectWithValue('Failed to download ticket');
+    }
+  }
+);
+
+export const validateTicket = createAsyncThunk(
+  'ticket/validate',
+  async (ticketData, thunkAPI) => {
+    try {
+      const response = await validateTicketAPI(ticketData);
+      return response.data;
+    } catch (error) {
+      if (error.response && error.response.data) {
+        return thunkAPI.rejectWithValue(error.response.data);
+      }
+      return thunkAPI.rejectWithValue({ message: 'Validation failed' });
     }
   }
 );

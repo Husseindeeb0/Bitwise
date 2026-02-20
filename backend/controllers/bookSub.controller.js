@@ -108,7 +108,10 @@ const getBookSubmissions = async (req, res) => {
       });
     }
 
-    const bookSubmissions = await BookSubmission.find({ announcementId });
+    const bookSubmissions = await BookSubmission.find({ announcementId })
+      .populate('userId', 'username email profileImage role')
+      .populate('bookFormId');
+
     return res.status(200).json({
       message: 'Book submissions fetched successfully',
       bookSubmissions,
@@ -121,8 +124,29 @@ const getBookSubmissions = async (req, res) => {
   }
 };
 
+const getBookSubmissionsByUserId = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const bookSubmissions = await BookSubmission.find({ userId })
+      .populate('announcementId')
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      message: 'User submissions fetched successfully',
+      bookSubmissions,
+    });
+  } catch (error) {
+    console.error('Error fetching user submissions:', error);
+    return res.status(500).json({
+      message: 'Failed to fetch user submissions',
+    });
+  }
+};
+
 module.exports = {
   submitBookSubmission,
   deleteBookSubmission,
   getBookSubmissions,
+  getBookSubmissionsByUserId,
 };

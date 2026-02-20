@@ -1,4 +1,5 @@
 const Ticket = require('../models/Ticket');
+const User = require('../models/User');
 const BookSubmission = require('../models/BookSubmission');
 const Announcement = require('../models/Announcements');
 const PDFDocument = require('pdfkit');
@@ -129,6 +130,59 @@ const generateTicketPDF = async (req, res) => {
   }
 };
 
+const validateTicket = async (req, res) => {
+  try {
+    const { token, announcementId } = req.body;
+
+    if (!token || !announcementId) {
+      return res
+        .status(400)
+        .json({ message: 'Token and Announcement ID are required' });
+    }
+
+    // Find the ticket and populate user info
+    const ticket = await Ticket.findOne({ token, announcementId }).populate(
+      'userId',
+      'username email profileImage'
+    );
+
+    if (!ticket) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Invalid Ticket: This ticket does not exist for this event.',
+      });
+    }
+
+    if (ticket?.attendance == true) {
+      return res.status(200).json({
+        status: 'warning',
+        message: 'Already Scanned: This ticket has already been used.',
+        user: ticket.userId,
+      });
+    }
+
+    // Mark as attended
+    ticket.attendance = true;
+    await ticket.save();
+
+    // Increment user score by 5 points
+    if (ticket.userId) {
+      await User.findByIdAndUpdate(ticket.userId._id, { $inc: { score: 5 } });
+    }
+
+    return res.status(200).json({
+      status: 'success',
+      message:
+        'Access Granted: Ticket validated successfully. +5 Points awarded!',
+      user: ticket.userId,
+    });
+  } catch (error) {
+    console.error('Error validating ticket:', error);
+    return res.status(500).json({ message: 'Server error during validation' });
+  }
+};
+
 module.exports = {
   generateTicketPDF,
+  validateTicket,
 };
