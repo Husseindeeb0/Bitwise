@@ -10,7 +10,7 @@ import {
   deleteAnnouncements,
 } from '../../../features/announcements/announcementsThunks';
 import AnnouncementCardsLoader from '../../../components/Announcements/AnnouncementCardsLoader';
-import AnnouncementCard from '../../../components/Announcements/AnnouncementCard';
+import AdminAnnouncementCard from './AdminAnnouncementCard';
 import { useDispatch, useSelector } from 'react-redux';
 import AnnouncementForm from './form';
 import BookForm from './BookForm';
@@ -161,12 +161,11 @@ const ManageAnnouncements = () => {
             announcementsData.length > 0 ? (
             announcementsData.map((event) => (
               <div key={event._id}>
-                <AnnouncementCard
+                <AdminAnnouncementCard
                   event={event}
                   editEvent={editEvent}
                   setIsDeleting={setIsDeleting}
                   manageForm={handleBookForm}
-                  page="adminPanel"
                 />
               </div>
             ))

@@ -7,6 +7,7 @@ import achievementsReducer from '../features/achievements/achievementsSlice';
 import bookFormReducer from '../features/bookForm/bookFormSlice';
 import bookSubmissionReducer from '../features/bookSubmission/bookSubSlice';
 import profileReducer from '../features/profile/profileSlice';
+import ticketReducer from '../features/ticket/ticketSlice';
 
 export const store = configureStore({
   reducer: {
@@ -18,5 +19,6 @@ export const store = configureStore({
     bookForm: bookFormReducer,
     bookSubmission: bookSubmissionReducer,
     profile: profileReducer,
+    ticket: ticketReducer,
   },
 });

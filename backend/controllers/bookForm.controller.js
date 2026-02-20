@@ -1,5 +1,6 @@
 const BookForm = require('../models/BookForm');
 const Announcement = require('../models/Announcements');
+const BookSubmission = require('../models/BookSubmission');
 
 const createBookForm = async (req, res) => {
   try {
@@ -96,6 +97,9 @@ const deleteBookForm = async (req, res) => {
       { _id: existingBookForm.announcementId },
       { $set: { bookFormId: null } }
     );
+
+    // Delete associated submissions
+    await BookSubmission.deleteMany({ bookFormId });
 
     await existingBookForm.deleteOne();
     return res.status(200).json({

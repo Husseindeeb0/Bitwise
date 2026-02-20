@@ -12,6 +12,8 @@ import Signup from './pages/Signup';
 import ManageAnnouncements from './pages/AdminPanel/ManageAnnouncements';
 import ManageCourses from './pages/AdminPanel/ManageCourses';
 import ManageAchievements from './pages/AdminPanel/ManageAchievements';
+import Attendees from './pages/AdminPanel/Attendees';
+import Scanner from './pages/AdminPanel/Scanner';
 import RegistrationForm from './pages/RegistrationForm';
 import AnnouncementDetails from './pages/Announcements/AnnouncementDetails';
 import Profile from './pages/Profile';
@@ -27,10 +29,10 @@ function App() {
   const isAuthenticated = localStorage.getItem('isAuthenticated');
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated === 'true') {
       dispatch(checkAuth());
     }
-  }, [dispatch]);
+  }, [dispatch, isAuthenticated]);
 
   return (
     <>
@@ -53,6 +55,22 @@ function App() {
               element={
                 <ProtectedRoute requireAdmin={true}>
                   <ManageAnnouncements />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manageAnnouncements/attendees/:id"
+              element={
+                <ProtectedRoute requireAdmin={true}>
+                  <Attendees />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manageAnnouncements/scanner/:id"
+              element={
+                <ProtectedRoute requireAdmin={true}>
+                  <Scanner />
                 </ProtectedRoute>
               }
             />

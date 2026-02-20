@@ -12,17 +12,24 @@ import {
   FaCalendarAlt,
   FaBriefcase,
   FaInfoCircle,
+  FaTicketAlt,
 } from 'react-icons/fa';
 import { getMe, updateUser } from '../../features/profile/profileThunks';
+import { downloadTicket } from '../../features/ticket/ticketThunks';
 import AnnouncementCard from '../../components/Announcements/AnnouncementCard';
 import Loader from '../../components/Loader';
 import toast from 'react-hot-toast';
 
 const Profile = () => {
   const dispatch = useDispatch();
-  const { userData, announcements, isLoading } = useSelector(
+  const { userData, announcements, attendedEvents, isLoading } = useSelector(
     (state) => state.profile
   );
+  const { isLoading: isDownloading, error: ticketError } = useSelector(
+    (state) => state.ticket
+  );
+
+  const [downloadingId, setDownloadingId] = useState(null);
 
   // Local state for editing
   const [isEditing, setIsEditing] = useState(false);
@@ -37,11 +44,24 @@ const Profile = () => {
   const [profilePreview, setProfilePreview] = useState(null);
   const [coverPreview, setCoverPreview] = useState(null);
 
+  const handleDownloadTicket = async (announcementId) => {
+    setDownloadingId(announcementId);
+    try {
+      await dispatch(downloadTicket(announcementId)).unwrap();
+      toast.success('Ticket downloaded successfully!');
+    } catch (err) {
+      toast.error(err || 'Failed to download ticket');
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
   const profileInputRef = useRef(null);
   const coverInputRef = useRef(null);
 
   useEffect(() => {
-    if (!userData) {
+    const isAuthenticated = localStorage.getItem('isAuthenticated');
+    if (!userData && isAuthenticated === 'true') {
       dispatch(getMe());
     }
   }, [dispatch, userData]);
@@ -160,9 +180,13 @@ const Profile = () => {
     );
   }
 
-  // Booked events are now coming from the backend via the getMe thunk
+  // Booked events
   const bookedAnnouncements =
     announcements?.map((ann) => ann.announcement).filter(Boolean) || [];
+
+  // Attended events
+  const attendedAnnouncements =
+    attendedEvents?.map((att) => att.announcement).filter(Boolean) || [];
 
   return (
     <div className="min-h-screen pb-12">
@@ -246,6 +270,12 @@ const Profile = () => {
                     <span className="px-4 py-1.5 bg-gradient-to-r from-sky-blue to-navy-blue text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-white/20 shadow-lg shadow-sky-blue/20">
                       {userData.role?.replace('_', ' ') || 'Member'}
                     </span>
+                    <div className="px-4 py-1.5 bg-amber-500 text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-white/20 shadow-lg shadow-amber-500/20 flex items-center gap-2">
+                      <div className="w-4 h-4 bg-white/20 rounded-full flex items-center justify-center text-[8px]">
+                        ★
+                      </div>
+                      {userData.score || 0} POINTS
+                    </div>
                     <span className="text-sm text-gray-100/90 font-bold flex items-center gap-2 drop-shadow-md">
                       <FaCalendarAlt className="text-sky-400" size={14} />
                       <span className="uppercase tracking-widest text-[10px]">
@@ -442,50 +472,93 @@ const Profile = () => {
             </motion.div>
           </div>
 
-          {/* Right Column: Booked Announcements */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-2xl font-black text-dark-purple flex items-center gap-3">
-                <span className="w-2 h-8 bg-sky-blue rounded-full"></span>
-                My Booked Events
-              </h2>
-              <span className="bg-white px-3 py-1 rounded-full text-xs font-bold text-navy-blue border border-navy-blue/10 shadow-sm">
-                {bookedAnnouncements.length} Events
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {bookedAnnouncements.length > 0 ? (
-                bookedAnnouncements.map((event, index) => (
-                  <motion.div
-                    key={event?._id || index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <AnnouncementCard event={event} variant="profile" />
-                  </motion.div>
-                ))
-              ) : (
-                <div className="col-span-full py-16 bg-white rounded-3xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-center">
-                  <div className="bg-light p-6 rounded-full text-navy-blue mb-4">
-                    <FaCalendarAlt size={32} />
-                  </div>
-                  <h3 className="text-xl font-bold text-dark-purple mb-1">
-                    No bookings found
-                  </h3>
-                  <p className="text-gray-500 max-w-xs px-4">
-                    You haven't booked for any event yet. Check our latest news
-                    to find events!
-                  </p>
-                  <button
-                    onClick={() => (window.location.href = '/announcements')}
-                    className="mt-6 px-8 py-3 bg-navy-blue text-white rounded-xl font-bold hover:bg-dark-purple transition-all duration-300 shadow-xl shadow-navy-blue/20"
-                  >
-                    Explore Announcements
-                  </button>
+          <div className="lg:col-span-2 space-y-12">
+            {/* 1. Activity History (Now First) */}
+            {attendedAnnouncements.length > 0 && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-black text-emerald-600 flex items-center gap-3">
+                    <span className="w-2 h-8 bg-emerald-500 rounded-full"></span>
+                    Activity History
+                  </h2>
+                  <span className="bg-emerald-50 px-3 py-1 rounded-full text-xs font-black text-emerald-700 border border-emerald-100 uppercase tracking-widest flex items-center gap-2">
+                    <FaCheck size={10} />
+                    {attendedAnnouncements.length} Attended
+                  </span>
                 </div>
-              )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {attendedAnnouncements.map((event, index) => (
+                    <motion.div
+                      key={`attended-${event?._id || index}`}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.1 + index * 0.1 }}
+                      className="relative group"
+                    >
+                      <div className="absolute -top-3 -right-3 z-10 bg-emerald-500 text-white p-2 rounded-full shadow-lg border-2 border-white transform -rotate-12 group-hover:rotate-0 transition-transform duration-300">
+                        <FaCheck size={14} />
+                      </div>
+
+                      <div className="opacity-80 grayscale-[30%] hover:opacity-100 hover:grayscale-0 transition-all duration-500">
+                        <AnnouncementCard event={event} variant="profile" />
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* 2. My Booked Events Section */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-black text-dark-purple flex items-center gap-3">
+                  <span className="w-2 h-8 bg-sky-blue rounded-full"></span>
+                  My Booked Events
+                </h2>
+                <span className="bg-white px-3 py-1 rounded-full text-xs font-bold text-navy-blue border border-navy-blue/10 shadow-sm">
+                  {bookedAnnouncements.length} Events
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {bookedAnnouncements.length > 0 ? (
+                  bookedAnnouncements.map((event, index) => (
+                    <motion.div
+                      key={event?._id || index}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <AnnouncementCard
+                        event={event}
+                        variant="profile"
+                        onDownloadTicket={handleDownloadTicket}
+                        isDownloadingTicket={downloadingId}
+                      />
+                    </motion.div>
+                  ))
+                ) : (
+                  <div className="col-span-full py-16 bg-white rounded-3xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-center">
+                    <div className="bg-light p-6 rounded-full text-navy-blue mb-4">
+                      <FaCalendarAlt size={32} />
+                    </div>
+                    <h3 className="text-xl font-bold text-dark-purple mb-1">
+                      No bookings found
+                    </h3>
+                    <p className="text-gray-500 max-w-xs px-4">
+                      You haven't booked for any event yet. Check our latest
+                      news to find events!
+                    </p>
+                    <button
+                      onClick={() => (window.location.href = '/announcements')}
+                      className="mt-6 px-8 py-3 bg-navy-blue text-white rounded-xl font-bold hover:bg-dark-purple transition-all duration-300 shadow-xl shadow-navy-blue/20"
+                    >
+                      Explore Announcements
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

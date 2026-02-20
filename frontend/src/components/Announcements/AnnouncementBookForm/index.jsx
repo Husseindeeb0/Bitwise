@@ -11,6 +11,7 @@ import {
   FaUserAlt,
   FaEnvelope,
   FaChevronDown,
+  FaTicketAlt,
 } from 'react-icons/fa';
 import {
   submitBookSubmission,
@@ -18,6 +19,7 @@ import {
 } from '../../../features/bookSubmission/bookSubThunks';
 import { bookSubmissionActions } from '../../../features/bookSubmission/bookSubSlice';
 import { getMe } from '../../../features/profile/profileThunks';
+import { downloadTicket } from '../../../features/ticket/ticketThunks';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
@@ -29,6 +31,9 @@ const AnnouncementBookForm = ({ announcement }) => {
   );
   const { isLoading, success, error } = useSelector(
     (state) => state.bookSubmission
+  );
+  const { isLoading: isDownloadingTicket } = useSelector(
+    (state) => state.ticket
   );
 
   const form = announcement.bookFormId;
@@ -114,6 +119,15 @@ const AnnouncementBookForm = ({ announcement }) => {
     }
   };
 
+  const handleDownloadTicket = async () => {
+    try {
+      await dispatch(downloadTicket(announcement._id)).unwrap();
+      toast.success('Ticket downloaded successfully!');
+    } catch (err) {
+      toast.error(err || 'Failed to download ticket');
+    }
+  };
+
   if (!form) return null;
 
   if (!form.isActive) {
@@ -181,16 +195,31 @@ const AnnouncementBookForm = ({ announcement }) => {
           </div>
 
           <div className="pt-8 border-t border-gray-100 w-full">
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleDelete}
-              disabled={isLoading}
-              className="group flex items-center justify-center gap-3 w-full py-4 px-6 bg-red-50 text-red-600 rounded-2xl font-black text-sm hover:bg-red-100 transition-all shadow-sm hover:shadow-md disabled:opacity-50"
-            >
-              <FaTrashAlt className="group-hover:animate-bounce" />
-              {isLoading ? 'Processing...' : 'Cancel Registration'}
-            </motion.button>
+            <div className="flex flex-col gap-3">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleDownloadTicket}
+                disabled={isDownloadingTicket}
+                className="flex items-center justify-center gap-3 w-full py-4 px-6 bg-navy-blue text-white rounded-2xl font-black text-sm hover:bg-dark-purple transition-all shadow-lg shadow-navy-blue/20 disabled:opacity-50"
+              >
+                {isDownloadingTicket ? (
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <FaTicketAlt />
+                )}
+                Get My Ticket (PDF)
+              </motion.button>
+
+              <button
+                onClick={handleDelete}
+                disabled={isLoading}
+                className="group flex items-center justify-center gap-3 w-full py-3 px-6 text-gray-400 hover:text-red-500 rounded-2xl font-bold text-xs transition-all"
+              >
+                <FaTrashAlt className="group-hover:animate-bounce" />
+                {isLoading ? 'Processing...' : 'Cancel Registration'}
+              </button>
+            </div>
             <p className="text-[10px] text-gray-400 mt-4 uppercase tracking-[0.2em] font-bold">
               ID: {existingRegistration?.submissionId?.slice(-8) || 'PENDING'}
             </p>

@@ -4,6 +4,7 @@ import { getMe, updateUser } from './profileThunks';
 const initialState = {
   userData: null,
   announcements: [],
+  attendedEvents: [],
   isLoading: false,
   error: null,
 };
@@ -26,6 +27,7 @@ const profileSlice = createSlice({
         state.isLoading = false;
         state.userData = action.payload.user;
         state.announcements = action.payload.announcements;
+        state.attendedEvents = action.payload.attendedEvents;
       })
       .addCase(getMe.rejected, (state, action) => {
         state.isLoading = false;
