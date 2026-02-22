@@ -13,6 +13,7 @@ import {
   FaChevronRight,
   FaGraduationCap,
   FaUserCircle,
+  FaInfoCircle,
 } from 'react-icons/fa';
 import { MdManageAccounts } from 'react-icons/md';
 import { IoClose } from 'react-icons/io5';
@@ -199,7 +200,7 @@ const Navbar = () => {
 
   return (
     <header className="fixed top-0 left-0 w-full h-20 py-2 px-6 flex justify-between items-center z-50 bg-white/80 backdrop-blur-xl shadow-lg shadow-navy-blue/5 border-b border-white/50">
-      <Link to="/" className="relative group">
+      <Link to="/" className="relative group flex-shrink-0">
         <motion.img
           src="/Bitwise_logo.png"
           alt="Bitwise"
@@ -210,195 +211,197 @@ const Navbar = () => {
         <div className="absolute inset-0 bg-sky-blue/10 rounded-xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
       </Link>
 
-      {/* Desktop Navigation */}
-      <nav className="hidden md:flex items-center gap-1 text-navy-blue text-[17px] font-semibold">
+      {/* Centered Desktop Navigation */}
+      <nav className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-1 text-navy-blue text-[17px] font-semibold">
         <NavItem to="/" label="Home" />
+        <NavItem to="/about" label="About" />
         <NavItem to="/announcements" label="Announcements" />
         <NavItem to="/courses" label="Courses" />
-
-        {/* Divider */}
-        <div className="w-px h-6 bg-gray-300/60 mx-2" />
-
-        {/* Auth buttons */}
-        {!userData ? (
-          <div className="flex items-center gap-2">
-            <Link
-              to="/login"
-              className={`relative px-4 py-2 rounded-xl text-[15px] transition-all duration-300 ${
-                isActive('/login')
-                  ? 'text-navy-blue font-bold bg-sky-blue/10'
-                  : 'text-dark-purple hover:text-navy-blue hover:bg-gray-100/60'
-              }`}
-            >
-              Login
-            </Link>
-            <Link
-              to="/signup"
-              className="px-5 py-2 bg-gradient-to-r from-navy-blue to-sky-blue text-white text-[15px] rounded-xl shadow-md shadow-navy-blue/15 hover:shadow-lg hover:shadow-navy-blue/25 hover:scale-[1.02] transition-all duration-300"
-            >
-              Sign Up
-            </Link>
-          </div>
-        ) : (
-          <div
-            className="relative"
-            onMouseEnter={handleProfileEnter}
-            onMouseLeave={handleProfileLeave}
-          >
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              className={`flex items-center gap-3 pl-2 pr-4 py-1.5 rounded-2xl cursor-pointer transition-all duration-300 border-2 ${
-                isProfileOpen
-                  ? 'bg-navy-blue/5 border-navy-blue/20'
-                  : isActive('/profile')
-                    ? 'bg-sky-blue/10 border-sky-blue/30'
-                    : 'border-transparent hover:bg-gray-100/50'
-              }`}
-            >
-              <div className="w-10 h-10 rounded-full bg-navy-blue/5 flex items-center justify-center overflow-hidden border-2 border-white shadow-md">
-                {userData?.profileImage?.url ? (
-                  <img
-                    src={userData.profileImage.url}
-                    alt={userData.username || 'User'}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <FaUserCircle className="text-navy-blue text-2xl" />
-                )}
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[14px] font-black text-dark-purple leading-tight">
-                  {userData?.username?.split(' ')[0] || 'User'}
-                </span>
-                <span className="text-[10px] text-sky-blue font-bold uppercase tracking-wider">
-                  {userData.role?.replace('_', ' ') || 'Member'}
-                </span>
-              </div>
-              <motion.div
-                animate={{ rotate: isProfileOpen ? 180 : 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <FaChevronDown className="text-[10px] text-navy-blue/50" />
-              </motion.div>
-            </motion.div>
-
-            {/* Profile Dropdown */}
-            <AnimatePresence>
-              {isProfileOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 15, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 15, scale: 0.95 }}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
-                  className="absolute top-full right-0 mt-3 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-visible z-50 transform-gpu"
-                >
-                  <div className="p-2 space-y-1">
-                    <NavDropdownItem
-                      to="/profile"
-                      icon={<FaUserCircle />}
-                      label="My Profile"
-                    />
-
-                    {(role === 'admin' || role === 'top_admin') && (
-                      <div
-                        className="relative"
-                        onMouseEnter={handleDashboardEnter}
-                        onMouseLeave={handleDashboardLeave}
-                      >
-                        <div
-                          className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer group ${
-                            isDashboardOpen || isManagementActive()
-                              ? 'bg-navy-blue text-white shadow-lg'
-                              : 'text-dark-purple hover:bg-gray-50 hover:text-navy-blue'
-                          }`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <span
-                              className={`text-lg transition-colors ${isDashboardOpen || isManagementActive() ? 'text-white' : 'text-navy-blue/60 group-hover:text-sky-blue'}`}
-                            >
-                              <MdManageAccounts />
-                            </span>
-                            <span className="text-[14px] font-bold">
-                              Dashboard
-                            </span>
-                          </div>
-                          <FaChevronRight
-                            className={`text-[10px] transition-transform duration-300 ${isDashboardOpen ? 'rotate-90 md:rotate-0 translate-x-1' : ''}`}
-                          />
-                        </div>
-
-                        {/* Management Sub-menu */}
-                        <AnimatePresence>
-                          {isDashboardOpen && (
-                            <motion.div
-                              initial={{ opacity: 0, x: 10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              exit={{ opacity: 0, x: 10 }}
-                              className="md:absolute md:top-0 md:right-full md:mr-2 w-full md:w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden"
-                            >
-                              <div className="bg-navy-blue/5 px-4 py-2 border-b border-gray-100">
-                                <span className="text-[10px] font-black text-navy-blue uppercase tracking-widest">
-                                  Management
-                                </span>
-                              </div>
-                              <div className="p-1">
-                                {role === 'top_admin' && (
-                                  <NavDropdownItem
-                                    to="/manageAdmins"
-                                    icon={<RiAdminFill />}
-                                    label="Admins"
-                                    isSubMenu={true}
-                                  />
-                                )}
-                                <NavDropdownItem
-                                  to="/manageAnnouncements"
-                                  icon={<GrAnnounce />}
-                                  label="Announcements"
-                                  isSubMenu={true}
-                                />
-                                <NavDropdownItem
-                                  to="/manageCourses"
-                                  icon={<FaGraduationCap />}
-                                  label="Courses"
-                                  isSubMenu={true}
-                                />
-                                <NavDropdownItem
-                                  to="/manageAchievements"
-                                  icon={<GiAchievement />}
-                                  label="Achievements"
-                                  isSubMenu={true}
-                                />
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    )}
-
-                    <div className="h-px bg-gray-100 my-1 mx-2" />
-
-                    <button
-                      onClick={handleLogout}
-                      className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200 group"
-                    >
-                      <FiLogOut className="text-lg group-hover:rotate-[-12deg] transition-transform" />
-                      <span className="text-[14px] font-bold">Logout</span>
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        )}
       </nav>
 
-      {/* Mobile Hamburger Button */}
-      <button
-        onClick={toggleSidebar}
-        className="md:hidden relative w-10 h-10 flex items-center justify-center rounded-xl bg-navy-blue/5 hover:bg-navy-blue/10 transition-colors duration-200 z-50"
-      >
-        {!isOpen && <FaBars className="text-navy-blue text-lg" />}
-      </button>
+      <div className="flex items-center gap-4">
+        {/* Desktop Auth/Profile buttons */}
+        <div className="hidden md:block">
+          {!userData ? (
+            <div className="flex items-center gap-2">
+              <Link
+                to="/login"
+                className={`relative px-4 py-2 rounded-xl text-[15px] transition-all duration-300 ${
+                  isActive('/login')
+                    ? 'text-navy-blue font-bold bg-sky-blue/10'
+                    : 'text-dark-purple hover:text-navy-blue hover:bg-gray-100/60'
+                }`}
+              >
+                Login
+              </Link>
+              <Link
+                to="/signup"
+                className="px-5 py-2 bg-gradient-to-r from-navy-blue to-sky-blue text-white text-[15px] rounded-xl shadow-md shadow-navy-blue/15 hover:shadow-lg hover:shadow-navy-blue/25 hover:scale-[1.02] transition-all duration-300"
+              >
+                Sign Up
+              </Link>
+            </div>
+          ) : (
+            <div
+              className="relative"
+              onMouseEnter={handleProfileEnter}
+              onMouseLeave={handleProfileLeave}
+            >
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                className={`flex items-center gap-3 pl-2 pr-4 py-1.5 rounded-2xl cursor-pointer transition-all duration-300 border-2 ${
+                  isProfileOpen
+                    ? 'bg-navy-blue/5 border-navy-blue/20'
+                    : isActive('/profile')
+                      ? 'bg-sky-blue/10 border-sky-blue/30'
+                      : 'border-transparent hover:bg-gray-100/50'
+                }`}
+              >
+                <div className="w-10 h-10 rounded-full bg-navy-blue/5 flex items-center justify-center overflow-hidden border-2 border-white shadow-md">
+                  {userData?.profileImage?.url ? (
+                    <img
+                      src={userData.profileImage.url}
+                      alt={userData.username || 'User'}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <FaUserCircle className="text-navy-blue text-2xl" />
+                  )}
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[14px] font-black text-dark-purple leading-tight">
+                    {userData?.username?.split(' ')[0] || 'User'}
+                  </span>
+                  <span className="text-[10px] text-sky-blue font-bold uppercase tracking-wider">
+                    {userData.role?.replace('_', ' ') || 'Member'}
+                  </span>
+                </div>
+                <motion.div
+                  animate={{ rotate: isProfileOpen ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <FaChevronDown className="text-[10px] text-navy-blue/50" />
+                </motion.div>
+              </motion.div>
+
+              {/* Profile Dropdown */}
+              <AnimatePresence>
+                {isProfileOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 15, scale: 0.95 }}
+                    transition={{ duration: 0.2, ease: 'easeOut' }}
+                    className="absolute top-full right-0 mt-3 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-visible z-50 transform-gpu"
+                  >
+                    <div className="p-2 space-y-1">
+                      <NavDropdownItem
+                        to="/profile"
+                        icon={<FaUserCircle />}
+                        label="My Profile"
+                      />
+
+                      {(role === 'admin' || role === 'top_admin') && (
+                        <div
+                          className="relative"
+                          onMouseEnter={handleDashboardEnter}
+                          onMouseLeave={handleDashboardLeave}
+                        >
+                          <div
+                            className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer group ${
+                              isDashboardOpen || isManagementActive()
+                                ? 'bg-navy-blue text-white shadow-lg'
+                                : 'text-dark-purple hover:bg-gray-50 hover:text-navy-blue'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <span
+                                className={`text-lg transition-colors ${isDashboardOpen || isManagementActive() ? 'text-white' : 'text-navy-blue/60 group-hover:text-sky-blue'}`}
+                              >
+                                <MdManageAccounts />
+                              </span>
+                              <span className="text-[14px] font-bold">
+                                Dashboard
+                              </span>
+                            </div>
+                            <FaChevronRight
+                              className={`text-[10px] transition-transform duration-300 ${isDashboardOpen ? 'rotate-90 md:rotate-0 translate-x-1' : ''}`}
+                            />
+                          </div>
+
+                          {/* Management Sub-menu */}
+                          <AnimatePresence>
+                            {isDashboardOpen && (
+                              <motion.div
+                                initial={{ opacity: 0, x: 10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 10 }}
+                                className="md:absolute md:top-0 md:right-full md:mr-2 w-full md:w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden"
+                              >
+                                <div className="bg-navy-blue/5 px-4 py-2 border-b border-gray-100">
+                                  <span className="text-[10px] font-black text-navy-blue uppercase tracking-widest">
+                                    Management
+                                  </span>
+                                </div>
+                                <div className="p-1">
+                                  {role === 'top_admin' && (
+                                    <NavDropdownItem
+                                      to="/manageAdmins"
+                                      icon={<RiAdminFill />}
+                                      label="Admins"
+                                      isSubMenu={true}
+                                    />
+                                  )}
+                                  <NavDropdownItem
+                                    to="/manageAnnouncements"
+                                    icon={<GrAnnounce />}
+                                    label="Announcements"
+                                    isSubMenu={true}
+                                  />
+                                  <NavDropdownItem
+                                    to="/manageCourses"
+                                    icon={<FaGraduationCap />}
+                                    label="Courses"
+                                    isSubMenu={true}
+                                  />
+                                  <NavDropdownItem
+                                    to="/manageAchievements"
+                                    icon={<GiAchievement />}
+                                    label="Achievements"
+                                    isSubMenu={true}
+                                  />
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      )}
+
+                      <div className="h-px bg-gray-100 my-1 mx-2" />
+
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200 group"
+                      >
+                        <FiLogOut className="text-lg group-hover:rotate-[-12deg] transition-transform" />
+                        <span className="text-[14px] font-bold">Logout</span>
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
+        </div>
+
+        {/* Mobile Hamburger Button */}
+        <button
+          onClick={toggleSidebar}
+          className="md:hidden relative w-10 h-10 flex items-center justify-center rounded-xl bg-navy-blue/5 hover:bg-navy-blue/10 transition-colors duration-200 z-50"
+        >
+          {!isOpen && <FaBars className="text-navy-blue text-lg" />}
+        </button>
+      </div>
 
       {/* Mobile Overlay */}
       <AnimatePresence>
@@ -479,18 +482,25 @@ const Navbar = () => {
                   index={0}
                 />
                 <MobileNavItem
+                  to="/about"
+                  icon={<FaInfoCircle />}
+                  label="About Us"
+                  onClick={toggleSidebar}
+                  index={1}
+                />
+                <MobileNavItem
                   to="/announcements"
                   icon={<FaBullhorn />}
                   label="Announcements"
                   onClick={toggleSidebar}
-                  index={1}
+                  index={2}
                 />
                 <MobileNavItem
                   to="/courses"
                   icon={<FiBookOpen />}
                   label="Courses"
                   onClick={toggleSidebar}
-                  index={2}
+                  index={3}
                 />
               </div>
 

@@ -22,6 +22,7 @@ import CourseDetails from './pages/Courses/CourseDetails';
 import ScrollToTop from './helpers/ScrollToTop';
 import ProtectedRoute from './protectedRoutes';
 import { checkAuth } from './features/auth/authThunks';
+import AboutUs from './pages/Aboutus';
 
 function App() {
   const dispatch = useDispatch();
@@ -101,6 +102,7 @@ function App() {
 
             {/* Public or logged-in routes */}
             <Route index element={<Home />} />
+            <Route path="/about" element={<AboutUs />} />
             <Route path="/announcements" element={<Announcements />} />
             <Route
               path="/announcementDetails"

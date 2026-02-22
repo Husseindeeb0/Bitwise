@@ -24,3 +24,7 @@ input[type='password']::-webkit-credentials-auto-fill-button,
 input[type='password']::-webkit-clear-button {
   display: none;
 }
+
+h1, h2 {
+  font-family: 'Exo 2', sans-serif;
+}
