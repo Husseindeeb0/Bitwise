@@ -83,7 +83,7 @@ const LatestAnnouncementCard = () => {
             <img
               src={latestAnnouncement.mainImageUrl}
               alt={latestAnnouncement.title}
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-dark-purple/90 via-dark-purple/20 to-transparent" />
 
