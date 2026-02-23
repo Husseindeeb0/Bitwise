@@ -57,51 +57,86 @@ const AboutUs = () => {
       initial: 'RH',
     },
     {
-      name:  'Mohammad Fakih',
-      role: 'Research Lead',
+      name: 'Mohammad Fakih',
+      role: 'AI Lead',
       image: null,
       initial: 'MF',
     },
     {
-      name:  'Nour Al Zahraa',
-      role: 'Planning Lead',
+      name: 'Nour Al Zahraa Al Jabali',
+      role: 'Social Media Editor',
       image: null,
       initial: 'NAZ',
     },
     {
-      name:  'Rayan Ayash',
-      role: '',
+      name: 'Rayan Ayash',
+      role: 'Manager',
       image: null,
       initial: 'RA',
     },
     {
-      name: 'Nour Al Hoda',
+      name: 'Nour Al Hoda Chames Al Deen',
       role: 'Logistics Lead',
       image: null,
       initial: 'NAH',
     },
     {
       name: 'Saja Jaber',
-      role: '',
+      role: 'Marketing Lead',
       image: null,
       initial: 'SJ',
     },
     {
       name: 'Nisreen Hamze',
-      role: '',
+      role: 'Secretary',
       image: null,
       initial: 'NH',
     },
     {
       name: 'Batool Kassem',
-      role: '',
+      role: 'Human Resources Lead',
       image: null,
       initial: 'BK',
-    }
-    
+    },
+    {
+      name: 'Zahraa Tofayli',
+      role: 'Graphics Designer Lead',
+      image: null,
+      initial: 'ZT',
+    },
+    {
+      name: 'Fatima Cheib',
+      role: 'Research Lead',
+      image: null,
+      initial: 'FC',
+    },
+    {
+      name: 'Zahraa Tofayli',
+      role: 'Graphics Designer Lead',
+      image: null,
+      initial: 'ZT',
+    },
+    {
+      name: 'Hanan Hodeib',
+      role: 'Graphics Designer Lead',
+      image: null,
+      initial: 'HH',
+    },
+    {
+      name: 'Diala Maki',
+      role: 'Frontend Developer',
+      image: null,
+      initial: 'DM',
+    },
+    {
+      name: 'Hussein Deeb',
+      role: 'Website Manager',
+      image: null,
+      initial: 'HD',
+    },
   ];
 
-  // Founders / Leaders
+  // Leaders
   const founders = [
     {
       name: 'Hussein Omeis',
@@ -440,43 +475,53 @@ const AboutUs = () => {
             </motion.p>
           </div>
 
-          {/* Team Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-20">
-            {teamMembers.map((member, i) => (
-              <motion.div
-                key={i}
-                custom={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                className="group"
-              >
-                <div className="bg-gray-50 rounded-3xl p-8 text-center hover:bg-white hover:shadow-2xl hover:shadow-navy-blue/5 border border-transparent hover:border-gray-100 hover:-translate-y-2 transition-all duration-500">
-                  {/* Avatar */}
-                  <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-navy-blue/10 to-sky-blue/10 border-2 border-white shadow-lg flex items-center justify-center mb-5 group-hover:scale-110 group-hover:shadow-xl transition-all duration-500">
-                    {member.image ? (
-                      <img
-                        src={member.image}
-                        alt={member.name}
-                        className="w-full h-full rounded-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-xl font-black text-navy-blue">
-                        {member.initial}
-                      </span>
-                    )}
-                  </div>
+          {/* Infinite Horizontal Slideshow */}
+          <div className="relative overflow-hidden py-10 mb-20">
+            {/* Gradient Overlays for smooth edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white to-transparent z-10" />
+            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white to-transparent z-10" />
 
-                  <h3 className="text-lg font-black text-dark-purple group-hover:text-navy-blue transition-colors">
-                    {member.name}
-                  </h3>
-                  <p className="text-sm text-gray-400 font-medium mt-1">
-                    {member.role}
-                  </p>
+            <motion.div
+              className="flex gap-6 w-max"
+              animate={{
+                x: ['0%', '-50%'],
+              }}
+              transition={{
+                duration: 40,
+                repeat: Infinity,
+                ease: 'linear',
+              }}
+              whileHover={{ animationPlayState: 'paused' }}
+            >
+              {/* Render team members twice for infinite effect */}
+              {[...teamMembers, ...teamMembers].map((member, i) => (
+                <div key={i} className="group w-64 flex-shrink-0">
+                  <div className="bg-gray-50 rounded-3xl p-8 text-center hover:bg-white hover:shadow-2xl hover:shadow-navy-blue/5 border border-transparent hover:border-gray-100 transition-all duration-500">
+                    {/* Avatar */}
+                    <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-navy-blue/10 to-sky-blue/10 border-2 border-white shadow-lg flex items-center justify-center mb-5 group-hover:scale-110 group-hover:shadow-xl transition-all duration-500">
+                      {member.image ? (
+                        <img
+                          src={member.image}
+                          alt={member.name}
+                          className="w-full h-full rounded-full object-cover"
+                        />
+                      ) : (
+                        <span className="text-xl font-black text-navy-blue">
+                          {member.initial}
+                        </span>
+                      )}
+                    </div>
+
+                    <h3 className="text-lg font-black text-dark-purple group-hover:text-navy-blue transition-colors truncate">
+                      {member.name}
+                    </h3>
+                    <p className="text-sm text-gray-400 font-medium mt-1">
+                      {member.role}
+                    </p>
+                  </div>
                 </div>
-              </motion.div>
-            ))}
+              ))}
+            </motion.div>
           </div>
 
           {/* FOUNDERS — Special Design*/}
