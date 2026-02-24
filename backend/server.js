@@ -10,6 +10,9 @@ const userRoutes = require('./routes/userRoutes');
 const announcementsRoutes = require('./routes/announcementsRoutes');
 const achievementsRoutes = require('./routes/achievementsRoutes');
 const coursesRoutes = require('./routes/coursesRoutes');
+const bookFormRoutes = require('./routes/bookFormRoutes');
+const bookSubmissionsRoutes = require('./routes/bookSubRoutes');
+const ticketRoutes = require('./routes/ticketRoutes');
 
 dotenv.config();
 
@@ -27,6 +30,9 @@ app.use('/user', userRoutes);
 app.use('/announcements', announcementsRoutes);
 app.use('/courses', coursesRoutes);
 app.use('/achievements', achievementsRoutes);
+app.use('/bookForm', bookFormRoutes);
+app.use('/bookSub', bookSubmissionsRoutes);
+app.use('/tickets', ticketRoutes);
 
 app.listen(PORT, '0.0.0.0', () =>
   console.log(`Server started on port ${PORT}`)

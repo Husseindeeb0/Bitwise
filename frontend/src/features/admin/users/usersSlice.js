@@ -1,5 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { getAllUsers, changeUserRole } from "./userThunks";
+import { createSlice } from '@reduxjs/toolkit';
+import {
+  getAllUsers,
+  changeUserRole,
+} from './usersThunks';
 
 const initialState = {
   users: [],
@@ -9,7 +12,7 @@ const initialState = {
 };
 
 const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {
     clearError: (state) => {

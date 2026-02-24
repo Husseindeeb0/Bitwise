@@ -15,6 +15,7 @@ import {
 import { getAnnouncementById } from '../../../features/announcements/announcementsThunks';
 import AnnouncementDetailsLoader from '../../../components/Announcements/AnnouncementDetailsLoader';
 import SpeakerDetails from '../../../components/SpeakerDetails';
+import AnnouncementBookForm from '../../../components/Announcements/AnnouncementBookForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { Helmet } from '@dr.pogodin/react-helmet';
 
@@ -133,6 +134,86 @@ const AnnouncementDetails = () => {
     );
   }
 
+  const hasBookingForm = !!event?.bookFormId;
+
+  const renderEventDetails = (isSidebar = false) => (
+    <div
+      className={`bg-white/80 backdrop-blur-xl border border-white/50 rounded-[2rem] shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl ${isSidebar ? 'sticky top-8' : 'mb-8'}`}
+    >
+      <div className="p-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-1.5 h-5 bg-navy-blue rounded-full"></div>
+          <h3 className="text-xl font-black text-dark-purple tracking-tight">
+            Event Logistics
+          </h3>
+        </div>
+
+        <div className="space-y-6">
+          {/* Date */}
+          <div className="flex items-center group">
+            <div className="w-12 h-12 bg-navy-blue/5 rounded-2xl flex items-center justify-center text-navy-blue transition-colors group-hover:bg-navy-blue group-hover:text-white group-hover:shadow-lg group-hover:shadow-navy-blue/20">
+              <FaCalendarAlt className="h-5 w-5" />
+            </div>
+            <div className="ml-4">
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">
+                Date
+              </p>
+              <p className="text-dark-purple font-bold">
+                {formatDate(event.date)}
+              </p>
+            </div>
+          </div>
+
+          {/* Time */}
+          <div className="flex items-center group">
+            <div className="w-12 h-12 bg-navy-blue/5 rounded-2xl flex items-center justify-center text-navy-blue transition-colors group-hover:bg-navy-blue group-hover:text-white group-hover:shadow-lg group-hover:shadow-navy-blue/20">
+              <FaClock className="h-5 w-5" />
+            </div>
+            <div className="ml-4">
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">
+                Time
+              </p>
+              <p className="text-dark-purple font-bold">
+                {convertTo12HourFormat(event.time)}
+              </p>
+            </div>
+          </div>
+
+          {/* Location */}
+          <div className="flex items-center group">
+            <div className="w-12 h-12 bg-navy-blue/5 rounded-2xl flex items-center justify-center text-navy-blue transition-colors group-hover:bg-navy-blue group-hover:text-white group-hover:shadow-lg group-hover:shadow-navy-blue/20">
+              <FaMapMarkerAlt className="h-5 w-5" />
+            </div>
+            <div className="ml-4">
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">
+                Location
+              </p>
+              <p className="text-dark-purple font-bold">
+                {event.location || 'TBA'}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Status Indicator */}
+        <div className="mt-8 pt-6 border-t border-gray-100">
+          <div
+            className={`flex items-center gap-3 p-3 rounded-2xl ${event.active ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-500'}`}
+          >
+            <div
+              className={`h-2.5 w-2.5 rounded-full animate-pulse ${
+                event.active ? 'bg-green-500' : 'bg-gray-400'
+              }`}
+            ></div>
+            <p className="text-[10px] font-black uppercase tracking-widest">
+              {event.active ? 'Currently Active' : 'Event Inactive'}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen mt-20">
       {/* Meta tags for SEO + social */}
@@ -225,9 +306,11 @@ const AnnouncementDetails = () => {
 
       {/* Main content */}
       <div className="max-w-5xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className={`grid grid-cols-1 md:grid-cols-3 gap-8`}>
           {/* Left column - Event details */}
           <div className="md:col-span-2">
+            {hasBookingForm && renderEventDetails(false)}
+
             {/* Event information card */}
             <div className="bg-light/50 rounded-xl shadow-lg overflow-hidden mb-8">
               <div className="p-6">
@@ -391,72 +474,12 @@ const AnnouncementDetails = () => {
             )}
           </div>
 
-          {/* Right column - Event meta information */}
-          <div className="md:col-span-1">
-            <div className="bg-light/50 rounded-xl shadow-lg overflow-hidden sticky top-8">
-              <div className="p-6">
-                <h3 className="text-lg font-bold text-dark-purple mb-4">
-                  Event Details
-                </h3>
+          {/* Right column - Event meta information & Booking Form */}
+          <div className="md:col-span-1 space-y-8 sticky top-8 h-fit">
+            {/* Booking Form Component */}
+            {hasBookingForm && <AnnouncementBookForm announcement={event} />}
 
-                <div className="space-y-4">
-                  {/* Date */}
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 mt-1">
-                      <FaCalendarAlt className="h-5 w-5 text-navy-blue" />
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-dark-purple font-medium">Date</p>
-                      <p className="text-dark-purple/70">
-                        {formatDate(event.date)}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Time */}
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 mt-1">
-                      <FaClock className="h-5 w-5 text-navy-blue" />
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-dark-purple font-medium">Time</p>
-                      <p className="text-dark-purple/70">
-                        {convertTo12HourFormat(event.time)}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Location */}
-                  <div className="flex items-start">
-                    <div className="flex-shrink-0 mt-1">
-                      <FaMapMarkerAlt className="h-5 w-5 text-navy-blue font" />
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-dark-purple font-medium">Location</p>
-                      <p className="text-dark-purple/70">
-                        {event.location || 'TBA'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Status Indicator */}
-                <div className="mt-6 pt-4 border-t border-dark-purple">
-                  <div className="flex items-center">
-                    <div
-                      className={`h-3 w-3 rounded-full ${
-                        event.active ? 'bg-green-500' : 'bg-gray-400'
-                      }`}
-                    ></div>
-                    <p className="ml-2 text-sm text-dark-purple/70">
-                      {event.active
-                        ? 'This event is active'
-                        : 'This event is inactive'}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {!hasBookingForm && renderEventDetails(true)}
           </div>
         </div>
       </div>

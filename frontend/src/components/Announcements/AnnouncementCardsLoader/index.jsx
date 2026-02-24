@@ -1,43 +1,33 @@
 const AnnouncementCardsLoader = () => {
   return (
-    <div className="bg-light-purple border border-gray-200 rounded-lg shadow-sm overflow-hidden animate-pulse">
+    <div className="bg-white rounded-[2rem] overflow-hidden shadow-[0_20px_60px_-25px_rgba(0,0,0,0.05)] border border-gray-100 animate-pulse">
       <div className="flex flex-col md:flex-row">
-        <div className="md:w-1/3 md:my-auto md:ml-5 md:mr-0 mx-5 mt-5">
-          <div className="w-full h-52 bg-gray-300"></div>
+        {/* Visual Content Placeholder */}
+        <div className="md:w-[40%] bg-gray-100 relative min-h-[300px]">
+          <div className="absolute top-6 left-6 h-6 w-24 bg-gray-200 rounded-2xl"></div>
+          <div className="absolute bottom-6 left-6 right-6 h-20 bg-gray-200/50 rounded-[1.5rem]"></div>
         </div>
-        <div className="md:w-2/3 p-4">
-          <div className="flex justify-between items-start mb-4">
-            <div className="flex">
-              <div className="h-6 w-20 bg-gray-300 rounded-full"></div>
-              <div className="h-6 w-20 bg-gray-300 rounded-full ml-2"></div>
-            </div>
-            <div className="flex items-center space-x-3">
-              <div className="h-6 w-6 bg-gray-300 rounded"></div>
-              <div className="h-6 w-6 bg-gray-300 rounded"></div>
-            </div>
+
+        {/* Info Content Placeholder */}
+        <div className="md:w-[60%] p-8 md:p-10 space-y-6 flex flex-col justify-center">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-gray-200"></div>
+            <div className="h-3 w-32 bg-gray-100 rounded-full"></div>
           </div>
 
-          <div className="h-7 bg-gray-300 w-3/4 mb-3 rounded"></div>
-          <div className="h-4 bg-gray-300 w-full mb-2 rounded"></div>
-          <div className="h-4 bg-gray-300 w-5/6 mb-4 rounded"></div>
-
-          <div className="mt-3 flex flex-col space-y-3">
-            <div className="flex items-center">
-              <div className="h-5 w-5 bg-gray-300 rounded mr-2"></div>
-              <div className="h-4 bg-gray-300 w-1/2 rounded"></div>
-            </div>
-            <div className="flex items-center">
-              <div className="h-5 w-5 bg-gray-300 rounded mr-2"></div>
-              <div className="h-4 bg-gray-300 w-2/3 rounded"></div>
-            </div>
+          <div className="space-y-3">
+            <div className="h-10 bg-gray-200 w-3/4 rounded-2xl"></div>
+            <div className="h-10 bg-gray-200 w-1/2 rounded-2xl"></div>
           </div>
 
-          <div className="mt-4">
-            <div className="h-5 bg-gray-300 w-24 mb-2 rounded"></div>
-            <div className="flex flex-wrap gap-2">
-              <div className="flex items-center gap-2 bg-gray-300 px-4 py-3 rounded-md w-32"></div>
-              <div className="flex items-center gap-2 bg-gray-300 px-4 py-3 rounded-md w-36"></div>
-            </div>
+          <div className="space-y-2">
+            <div className="h-4 bg-gray-100 w-full rounded-full"></div>
+            <div className="h-4 bg-gray-100 w-5/6 rounded-full"></div>
+            <div className="h-4 bg-gray-100 w-4/6 rounded-full"></div>
+          </div>
+
+          <div className="flex items-center gap-4 pt-4">
+            <div className="h-14 bg-gray-200 w-full rounded-[1.25rem]"></div>
           </div>
         </div>
       </div>

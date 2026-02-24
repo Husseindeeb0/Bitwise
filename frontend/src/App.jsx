@@ -12,13 +12,17 @@ import Signup from './pages/Signup';
 import ManageAnnouncements from './pages/AdminPanel/ManageAnnouncements';
 import ManageCourses from './pages/AdminPanel/ManageCourses';
 import ManageAchievements from './pages/AdminPanel/ManageAchievements';
+import Attendees from './pages/AdminPanel/Attendees';
+import Scanner from './pages/AdminPanel/Scanner';
 import RegistrationForm from './pages/RegistrationForm';
 import AnnouncementDetails from './pages/Announcements/AnnouncementDetails';
+import Profile from './pages/Profile';
 import Courses from './pages/Courses';
 import CourseDetails from './pages/Courses/CourseDetails';
 import ScrollToTop from './helpers/ScrollToTop';
 import ProtectedRoute from './protectedRoutes';
 import { checkAuth } from './features/auth/authThunks';
+import AboutUs from './pages/Aboutus';
 
 function App() {
   const dispatch = useDispatch();
@@ -26,10 +30,10 @@ function App() {
   const isAuthenticated = localStorage.getItem('isAuthenticated');
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated === 'true') {
       dispatch(checkAuth());
     }
-  }, [dispatch]);
+  }, [dispatch, isAuthenticated]);
 
   return (
     <>
@@ -52,6 +56,22 @@ function App() {
               element={
                 <ProtectedRoute requireAdmin={true}>
                   <ManageAnnouncements />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manageAnnouncements/attendees/:id"
+              element={
+                <ProtectedRoute requireAdmin={true}>
+                  <Attendees />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manageAnnouncements/scanner/:id"
+              element={
+                <ProtectedRoute requireAdmin={true}>
+                  <Scanner />
                 </ProtectedRoute>
               }
             />
@@ -82,6 +102,7 @@ function App() {
 
             {/* Public or logged-in routes */}
             <Route index element={<Home />} />
+            <Route path="/about" element={<AboutUs />} />
             <Route path="/announcements" element={<Announcements />} />
             <Route
               path="/announcementDetails"
@@ -90,6 +111,14 @@ function App() {
             <Route path="/registrationForm" element={<RegistrationForm />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/courseDetails" element={<CourseDetails />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
           </Route>
         </Routes>
       </BrowserRouter>

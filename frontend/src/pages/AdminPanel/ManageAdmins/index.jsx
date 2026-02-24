@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { FiUserPlus, FiUserMinus, FiSearch, FiRefreshCw } from "react-icons/fi";
-import { changeUserRole, getAllUsers } from "../../../features/user/userThunks";
+import { changeUserRole, getAllUsers } from "../../../features/admin/users/usersThunks";
 import { useDispatch, useSelector } from "react-redux";
 
 const ManageAdmins = () => {

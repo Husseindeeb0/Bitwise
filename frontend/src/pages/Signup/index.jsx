@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { FaUser, FaLock, FaEnvelope } from "react-icons/fa";
-import Navbar from "../../components/Navbar";
-import { signup } from "../../features/auth/authThunks";
-import LoggingLoader from "../../components/LoggingLoader";
-import { useDispatch, useSelector } from "react-redux";
-import { authActions } from "../../features/auth/authSlice";
-import { Helmet } from "@dr.pogodin/react-helmet";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { FaUser, FaLock, FaEnvelope, FaEye, FaEyeSlash } from 'react-icons/fa';
+import Navbar from '../../components/Navbar';
+import { signup } from '../../features/auth/authThunks';
+import LoggingLoader from '../../components/LoggingLoader';
+import { useDispatch, useSelector } from 'react-redux';
+import { authActions } from '../../features/auth/authSlice';
+import { Helmet } from '@dr.pogodin/react-helmet';
 
 export default function Signup() {
   const dispatch = useDispatch();
@@ -15,10 +15,11 @@ export default function Signup() {
   const error = useSelector((state) => state.auth.error);
 
   const [userDetails, setUserDetails] = useState({
-    username: "",
-    email: "",
-    password: "",
+    username: '',
+    email: '',
+    password: '',
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setUserDetails({
@@ -33,9 +34,9 @@ export default function Signup() {
     try {
       await dispatch(signup(userDetails)).unwrap();
     } catch (error) {
-      console.log("Sign up failed:", error);
+      console.log('Sign up failed:', error);
     } finally {
-      setUserDetails({ username: "", email: "", password: "" });
+      setUserDetails({ username: '', email: '', password: '' });
     }
   };
 
@@ -111,25 +112,32 @@ export default function Signup() {
           <div className="flex items-center border-b border-gray-300 p-2">
             <FaLock className="text-navy-blue" />
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               name="password"
               placeholder="Password"
               value={userDetails.password}
               minLength={6}
               onChange={handleChange}
-              className="w-full p-2 outline-none"
+              className="w-full p-2 outline-none bg-transparent"
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="text-navy-blue focus:outline-none"
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
           </div>
 
           <button
             type="submit"
             className={`w-full ${
-              isAuthenticating ? "bg-navy-blue/80" : "bg-navy-blue"
+              isAuthenticating ? 'bg-navy-blue/80' : 'bg-navy-blue'
             } text-lg text-white py-2 rounded-lg hover:bg-navy-blue/80 transition duration-300`}
             disabled={isAuthenticating}
           >
-            {isAuthenticating ? <LoggingLoader /> : "Sign Up"}
+            {isAuthenticating ? <LoggingLoader /> : 'Sign Up'}
           </button>
         </form>
 
@@ -146,7 +154,7 @@ export default function Signup() {
         )}
 
         <p className="mt-4 text-gray-500">
-          Already have an account?{" "}
+          Already have an account?{' '}
           <Link
             to="/login"
             className="text-navy-blue cursor-pointer hover:underline"

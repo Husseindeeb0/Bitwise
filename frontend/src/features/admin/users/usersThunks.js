@@ -1,8 +1,11 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { changeUserRoleAPI, getAllUsersAPI } from "./userAPI";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import {
+  changeUserRoleAPI,
+  getAllUsersAPI,
+} from './usersAPI';
 
 export const getAllUsers = createAsyncThunk(
-  "/user/getAllUsers",
+  '/user/getAllUsers',
   async (_, thunkAPI) => {
     try {
       const res = await getAllUsersAPI();
@@ -21,8 +24,8 @@ export const getAllUsers = createAsyncThunk(
 );
 
 export const changeUserRole = createAsyncThunk(
-  "/user/changeUserRole",
-  async ({userId, newRole}, thunkAPI) => {
+  '/user/changeUserRole',
+  async ({ userId, newRole }, thunkAPI) => {
     try {
       const res = await changeUserRoleAPI(userId, newRole);
       return res.data;

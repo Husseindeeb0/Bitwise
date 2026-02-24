@@ -1,6 +1,9 @@
-const Announcement = require("../models/Announcements");
-const { v4: uuidv4 } = require("uuid");
-const imagekit = require("../config/imageKit");
+const Announcement = require('../models/Announcements');
+const BookForm = require('../models/BookForm');
+const BookSubmission = require('../models/BookSubmission');
+const Ticket = require('../models/Ticket');
+const { v4: uuidv4 } = require('uuid');
+const imagekit = require('../config/imageKit');
 
 // Add announcements
 const addAnnouncements = async (req, res) => {
@@ -46,12 +49,12 @@ const addAnnouncements = async (req, res) => {
     await announcement.save();
 
     return res.status(201).json({
-      message: "Announcement added successfully",
+      message: 'Announcement added successfully',
     });
   } catch (error) {
-    console.error("Error adding announcement:", error);
+    console.error('Error adding announcement:', error);
     return res.status(500).json({
-      message: "Failed to add announcement",
+      message: 'Failed to add announcement',
     });
   }
 };
@@ -65,7 +68,7 @@ const editAnnouncements = async (req, res) => {
 
     if (!announcementId) {
       return res.status(400).json({
-        message: "Announcement ID is required",
+        message: 'Announcement ID is required',
       });
     }
 
@@ -73,7 +76,7 @@ const editAnnouncements = async (req, res) => {
 
     if (!announcement) {
       return res.status(404).json({
-        message: "Announcement not found",
+        message: 'Announcement not found',
       });
     }
 
@@ -82,8 +85,8 @@ const editAnnouncements = async (req, res) => {
         const imageUrl = updatedAnnouncement.organizers[i].imageUrl;
         if (
           imageUrl &&
-          typeof imageUrl === "string" &&
-          !imageUrl.startsWith("http") &&
+          typeof imageUrl === 'string' &&
+          !imageUrl.startsWith('http') &&
           imageUrl !== announcement.organizers[i].imageUrl
         ) {
           const oldId = announcement.organizers?.[i]?.imageId;
@@ -112,8 +115,8 @@ const editAnnouncements = async (req, res) => {
     }
 
     if (
-      typeof mainImageUrl === "string" &&
-      !mainImageUrl.startsWith("http") &&
+      typeof mainImageUrl === 'string' &&
+      !mainImageUrl.startsWith('http') &&
       mainImageUrl !== announcement.mainImageUrl
     ) {
       const oldMainImageId = announcement.mainImageId;
@@ -148,12 +151,12 @@ const editAnnouncements = async (req, res) => {
     );
 
     return res.status(200).json({
-      message: "Announcement updated successfully",
+      message: 'Announcement updated successfully',
     });
   } catch (error) {
-    console.error("Error updating announcement:", error);
+    console.error('Error updating announcement:', error);
     return res.status(500).json({
-      message: "Failed to update announcement",
+      message: 'Failed to update announcement',
     });
   }
 };
@@ -165,7 +168,7 @@ const deleteAnnouncements = async (req, res) => {
 
     if (!id) {
       return res.status(400).json({
-        message: "Announcement ID is required",
+        message: 'Announcement ID is required',
       });
     }
 
@@ -173,7 +176,7 @@ const deleteAnnouncements = async (req, res) => {
 
     if (!announcement) {
       return res.status(404).json({
-        message: "Announcement not found",
+        message: 'Announcement not found',
       });
     }
 
@@ -186,16 +189,21 @@ const deleteAnnouncements = async (req, res) => {
     const oldmainImageId = announcement.mainImageId;
     await imagekit.deleteFile(oldmainImageId);
 
+    // Delete associated book form and submissions
+    await BookForm.deleteMany({ announcementId: id });
+    await BookSubmission.deleteMany({ announcementId: id });
+    await Ticket.deleteMany({ announcementId: id });
+
     // Delete the announcement
     await Announcement.findByIdAndDelete(id);
 
     return res.status(200).json({
-      message: "Announcement deleted successfully",
+      message: 'Announcement deleted successfully',
     });
   } catch (error) {
-    console.error("Error deleting announcement:", error);
+    console.error('Error deleting announcement:', error);
     return res.status(500).json({
-      message: "Failed to delete announcement",
+      message: 'Failed to delete announcement',
     });
   }
 };
@@ -203,16 +211,18 @@ const deleteAnnouncements = async (req, res) => {
 // Get announcements
 const getAnnouncements = async (req, res) => {
   try {
-    const announcements = await Announcement.find().sort({ createdAt: 1 });
+    const announcements = await Announcement.find()
+      .sort({ createdAt: 1 })
+      .populate('bookFormId');
 
     res.status(200).json({
-      message: "Announcements returned successfully",
+      message: 'Announcements returned successfully',
       announcementsData: announcements,
     });
   } catch (error) {
-    console.error("Error fetching announcements:", error);
+    console.error('Error fetching announcements:', error);
     res.status(500).json({
-      message: "Failed to fetch announcements",
+      message: 'Failed to fetch announcements',
     });
   }
 };
@@ -221,16 +231,16 @@ const getAnnouncements = async (req, res) => {
 const getAnnouncementById = async (req, res) => {
   const { id } = req.params;
   try {
-    const announcement = await Announcement.findById(id);
+    const announcement = await Announcement.findById(id).populate('bookFormId');
 
     res.status(200).json({
-      message: "Announcement returned successfully",
+      message: 'Announcement returned successfully',
       announcementData: announcement,
     });
   } catch (error) {
-    console.error("Error fetching announcement:", error);
+    console.error('Error fetching announcement:', error);
     res.status(500).json({
-      message: "Failed to fetch announcement",
+      message: 'Failed to fetch announcement',
     });
   }
 };
@@ -240,24 +250,26 @@ const getLatestAnnouncement = async (req, res) => {
   try {
     const latestAnnouncement = await Announcement.findOne({
       active: true,
-    }).sort({
-      createdAt: -1,
-    });
+    })
+      .sort({
+        createdAt: -1,
+      })
+      .populate('bookFormId');
 
     if (!latestAnnouncement) {
       return res.status(404).json({
-        message: "No active announcements found",
+        message: 'No active announcements found',
       });
     }
 
     res.status(200).json({
-      message: "Latest Announcement is fetched successfully",
+      message: 'Latest Announcement is fetched successfully',
       announcementData: latestAnnouncement,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      message: "Failed to fetch latest announcement",
+      message: 'Failed to fetch latest announcement',
     });
   }
 };
